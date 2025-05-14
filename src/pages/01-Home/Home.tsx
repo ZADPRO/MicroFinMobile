@@ -17,6 +17,8 @@ import { Calendar } from "primereact/calendar";
 import { Nullable } from "primereact/ts-helpers";
 import { calendarOutline } from "ionicons/icons";
 
+import { Chart } from "primereact/chart";
+
 const Home: React.FC = () => {
   const [selectedSegment, setSelectedSegment] = useState<string>("user");
   const [date, setDate] = useState<Nullable<Date>>(null);
@@ -42,6 +44,37 @@ const Home: React.FC = () => {
     };
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
+
+  const [chartData, setChartData] = useState({});
+  const [chartOptions, setChartOptions] = useState({});
+
+  useEffect(() => {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const data = {
+      labels: ["Salary", "Rent", "Travel"],
+      datasets: [
+        {
+          data: [300, 50, 100],
+          backgroundColor: [
+            documentStyle.getPropertyValue("--blue-500"),
+            documentStyle.getPropertyValue("--yellow-500"),
+            documentStyle.getPropertyValue("--green-500"),
+          ],
+          hoverBackgroundColor: [
+            documentStyle.getPropertyValue("--blue-400"),
+            documentStyle.getPropertyValue("--yellow-400"),
+            documentStyle.getPropertyValue("--green-400"),
+          ],
+        },
+      ],
+    };
+    const options = {
+      cutout: "70%",
+    };
+
+    setChartData(data);
+    setChartOptions(options);
+  }, []);
 
   return (
     <IonPage>
@@ -77,6 +110,17 @@ const Home: React.FC = () => {
 
           {selectedSegment === "user" && <UserLoanDashboard />}
           {selectedSegment === "admin" && <AdminLoanDashboard />}
+        </div>
+
+        {/* Chart Analysis for Profilt & Loss */}
+        <div className="profiltAnalysis mt-5">
+          <p>Expense Analysis</p>
+          <Chart
+            type="doughnut"
+            data={chartData}
+            options={chartOptions}
+            className="w-full md:w-30rem"
+          />
         </div>
 
         {/* Modal with Calendar */}

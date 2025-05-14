@@ -9,3 +9,19 @@ ion-datetime {
 .p-datepicker {
   width: 100% !important;
 }
+
+.profiltAnalysis .p-chart canvas {
+  width: 70% !important;
+  height: 70% !important;
+}
+
+.profiltAnalysis .p-chart {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.profiltAnalysis p {
+  text-align: center;
+}
