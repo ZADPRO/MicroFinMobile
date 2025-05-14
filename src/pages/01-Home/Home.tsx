@@ -4,18 +4,17 @@ import {
   IonPage,
   IonSegment,
   IonSegmentButton,
-  IonSegmentContent,
-  IonSegmentView,
 } from "@ionic/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import Header from "../../components/Header/Header";
 import "./Home.css";
 import UserLoanDashboard from "../../components/UserLoanDashboard/UserLoanDashboard";
 import AdminLoanDashboard from "../../components/AdminLoanDashboard/AdminLoanDashboard";
-import "./Home.css";
 
 const Home: React.FC = () => {
+  const [selectedSegment, setSelectedSegment] = useState<string>("user");
+
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setStyle({ style: Style.Dark });
@@ -24,27 +23,33 @@ const Home: React.FC = () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
   }, []);
+
   return (
     <IonPage>
       <IonContent>
         <Header />
         <div className="dashboardContentsTabSplit m-2">
-          <IonSegment value="user">
-            <IonSegmentButton value="user" contentId="user">
-              <IonLabel>User Loan</IonLabel>
+          <IonSegment
+            value={selectedSegment}
+            onIonChange={(e) => {
+              console.log("e", e);
+              const value = e.detail.value;
+              if (value) {
+                console.log("value", value);
+                setSelectedSegment(value);
+              }
+            }}
+          >
+            <IonSegmentButton value="user">
+              <IonLabel style={{ fontSize: "14px" }}>User Loan</IonLabel>
             </IonSegmentButton>
-            <IonSegmentButton value="admin" contentId="admin">
-              <IonLabel>Admin Loan</IonLabel>
+            <IonSegmentButton value="admin">
+              <IonLabel style={{ fontSize: "14px" }}>Admin Loan</IonLabel>
             </IonSegmentButton>
           </IonSegment>
-          <IonSegmentView>
-            <IonSegmentContent id="user">
-              <UserLoanDashboard />
-            </IonSegmentContent>
-            <IonSegmentContent id="admin">
-              <AdminLoanDashboard />
-            </IonSegmentContent>
-          </IonSegmentView>
+
+          {selectedSegment === "user" && <UserLoanDashboard />}
+          {selectedSegment === "admin" && <AdminLoanDashboard />}
         </div>
       </IonContent>
     </IonPage>

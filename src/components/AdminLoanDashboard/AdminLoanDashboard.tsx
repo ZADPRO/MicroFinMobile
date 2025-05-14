@@ -1,12 +1,15 @@
-import React from 'react';
-import "./AdminLoanDashboard.css"
+import React from "react";
+import "./AdminLoanDashboard.css";
 
 const AdminLoanDashboard: React.FC = () => {
-    return (
-        <div>
-            <p>Admin Loan Dashboard</p>
-        </div>
-    );
+  console.log("AdminLoanDashboard", AdminLoanDashboard);
+  return (
+    <div>
+      <div className="cardsForCarousel">
+        <p>Admin Loan Dashboard</p>
+      </div>{" "}
+    </div>
+  );
 };
 
 export default AdminLoanDashboard;

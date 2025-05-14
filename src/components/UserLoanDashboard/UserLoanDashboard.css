@@ -1,0 +1,9 @@
+.cardsForCarousel {
+  height: 100px;
+  display: flex;
+  background: rgb(211, 211, 211);
+  border-radius: 7px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
