@@ -2,6 +2,10 @@
   height: 40px;
 }
 
+.ios.in-toolbar {
+  --border-width: 0px !important;
+}
+
 ion-datetime {
   border-radius: 16px;
 }

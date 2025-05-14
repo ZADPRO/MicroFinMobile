@@ -28,6 +28,8 @@ import Bank from "../../pages/03-Bank/Bank";
 import Loan from "../../pages/04-Loan/Loan";
 import Report from "../../pages/05-Report/Report";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
+import UsersCustomerDetails from "../../components/UsersCustomerDetails/UsersCustomerDetails";
+import UsersAgentDetails from "../../components/UsersAgentDetails/UsersAgentDetails";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
@@ -65,6 +67,12 @@ const MainRoutes: React.FC = () => {
           </PrivateRoute>
           <PrivateRoute path="/report">
             <Report />
+          </PrivateRoute>
+          <PrivateRoute path="/userList">
+            <UsersCustomerDetails />
+          </PrivateRoute>
+          <PrivateRoute path="/agentList">
+            <UsersAgentDetails />
           </PrivateRoute>
           <PrivateRoute exact path="/">
             <Redirect to="/splash" />

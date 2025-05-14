@@ -78,9 +78,8 @@ const Home: React.FC = () => {
 
   return (
     <IonPage>
+      <Header />
       <IonContent>
-        <Header />
-
         {/* Date Display Row */}
         <div className="flex flex-row justify-content-between align-items-center px-3 pt-2">
           <p className="m-0">{formatDate(date)}</p>

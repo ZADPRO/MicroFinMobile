@@ -8,18 +8,16 @@ const Header: React.FC = () => {
   const userDetails = storedProfile ? JSON.parse(storedProfile) : null;
 
   return (
-    <div>
+    <IonHeader>
       <IonToolbar>
-        <IonHeader>
-          <div className="header p-2 flex justify-content-between align-items-center">
-            <div className="flex gap-2 align-items-center">
-              <p className="">Hi, {userDetails?.name} !</p>
-            </div>
-            <IonIcon icon={personCircleOutline} size="large" />
+        <div className="header p-2 flex justify-content-between align-items-center">
+          <div className="flex gap-2 align-items-center">
+            <p className="">Hi, {userDetails?.name} !</p>
           </div>
-        </IonHeader>
+          <IonIcon icon={personCircleOutline} size="large" />
+        </div>
       </IonToolbar>
-    </div>
+    </IonHeader>
   );
 };
 
