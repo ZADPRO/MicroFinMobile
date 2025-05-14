@@ -1,3 +1,11 @@
 .dashboardContentsTabSplit ion-segment {
   height: 40px;
 }
+
+ion-datetime {
+  border-radius: 16px;
+}
+
+.p-datepicker {
+  width: 100% !important;
+}

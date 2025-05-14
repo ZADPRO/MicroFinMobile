@@ -1,0 +1,38 @@
+.carousel-image {
+  border-radius: 7px;
+  overflow: scroll;
+}
+
+.carouselDiv img {
+  object-fit: fill;
+}
+
+.carouselDiv {
+  height: 185px !important;
+}
+
+.carousel.carousel-slider {
+  display: flex;
+  justify-content: center;
+}
+
+.control-dots {
+  background: rgba(0, 0, 0, 0.084);
+  inline-size: auto !important;
+  border-radius: 10px;
+}
+
+.roundedImage {
+  border-radius: 50%;
+  block-size: 60px;
+}
+
+.dot,
+.dot.selected {
+  box-shadow: none !important;
+}
+
+.control-dots {
+  /* margin-top: 10px; */
+  /* display: none; */
+}
