@@ -2,7 +2,10 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
+  IonFab,
+  IonFabButton,
   IonHeader,
+  IonIcon,
   IonPage,
   IonSearchbar,
   IonTitle,
@@ -13,6 +16,7 @@ import React, { useEffect, useState } from "react";
 import decrypt from "../../services/helper";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import UserCustomerDetailsCard from "../UserCustomerDetailsCard/UserCustomerDetailsCard";
+import { add } from "ionicons/icons";
 
 interface UserListProps {
   createdAt: string;
@@ -95,7 +99,7 @@ const UsersCustomerDetails: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/home" mode="md"></IonBackButton>
+            <IonBackButton defaultHref="/user" mode="md"></IonBackButton>
           </IonButtons>
           <IonTitle>Customer Details</IonTitle>
         </IonToolbar>
@@ -111,6 +115,12 @@ const UsersCustomerDetails: React.FC = () => {
         ) : (
           <p className="ion-text-center">No results found</p>
         )}
+
+        <IonFab slot="fixed" vertical="bottom" horizontal="end">
+          <IonFabButton>
+            <IonIcon icon={add}></IonIcon>
+          </IonFabButton>
+        </IonFab>
       </IonContent>
     </IonPage>
   );
