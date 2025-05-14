@@ -1,3 +1,19 @@
 .toolbar-background {
-  background-color: transparent;
+  background: transparent !important;
+}
+
+ion-segment-view {
+  height: 150px;
+}
+
+ion-segment-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ion-segment-content:nth-of-type(1) {
+  background: lightpink;
+}
+ion-segment-content:nth-of-type(2) {
+  background: lightblue;
 }
