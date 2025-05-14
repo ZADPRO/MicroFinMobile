@@ -11,14 +11,14 @@ import { Redirect, useLocation } from "react-router-dom";
 import {
   card,
   cardOutline,
-  cash,
-  cashOutline,
-  documentText,
-  documentTextOutline,
   home,
   homeOutline,
+  newspaper,
+  newspaperOutline,
   person,
   personOutline,
+  wallet,
+  walletOutline,
 } from "ionicons/icons";
 import Splash from "../../pages/00-Splash/Splash";
 import Login from "../../pages/00-Splash/Login";
@@ -79,7 +79,7 @@ const MainRoutes: React.FC = () => {
               className={getActiveClass("/home")}
               style={{
                 backgroundColor:
-                  location.pathname === "/home" ? "#0478df" : "transparent",
+                  location.pathname === "/home" ? "#0478df" : "#ffffff",
                 color: location.pathname === "/home" ? "white" : "#0478df",
               }}
             >
@@ -98,7 +98,7 @@ const MainRoutes: React.FC = () => {
               className={getActiveClass("/user")}
               style={{
                 backgroundColor:
-                  location.pathname === "/user" ? "#0478df" : "transparent",
+                  location.pathname === "/user" ? "#0478df" : "#ffffff",
                 color: location.pathname === "/user" ? "white" : "#0478df",
               }}
             >
@@ -117,13 +117,13 @@ const MainRoutes: React.FC = () => {
               className={getActiveClass("/bank")}
               style={{
                 backgroundColor:
-                  location.pathname === "/bank" ? "#0478df" : "transparent",
+                  location.pathname === "/bank" ? "#0478df" : "#ffffff",
                 color: location.pathname === "/bank" ? "white" : "#0478df",
               }}
             >
               <IonIcon
                 aria-hidden="true"
-                icon={getIcon("/bank", cash, cashOutline)}
+                icon={getIcon("/bank", wallet, walletOutline)}
                 style={{
                   color: location.pathname === "/bank" ? "white" : "#0478df",
                 }}
@@ -136,7 +136,7 @@ const MainRoutes: React.FC = () => {
               className={getActiveClass("/loan")}
               style={{
                 backgroundColor:
-                  location.pathname === "/loan" ? "#0478df" : "transparent",
+                  location.pathname === "/loan" ? "#0478df" : "#ffffff",
                 color: location.pathname === "/loan" ? "white" : "#0478df",
               }}
             >
@@ -155,13 +155,13 @@ const MainRoutes: React.FC = () => {
               className={getActiveClass("/report")}
               style={{
                 backgroundColor:
-                  location.pathname === "/report" ? "#0478df" : "transparent",
+                  location.pathname === "/report" ? "#0478df" : "#ffffff",
                 color: location.pathname === "/report" ? "white" : "#0478df",
               }}
             >
               <IonIcon
                 aria-hidden="true"
-                icon={getIcon("/report", documentText, documentTextOutline)}
+                icon={getIcon("/report", newspaper, newspaperOutline)}
                 style={{
                   color: location.pathname === "/report" ? "white" : "#0478df",
                 }}

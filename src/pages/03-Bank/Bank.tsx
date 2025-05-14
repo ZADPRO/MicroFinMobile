@@ -1,11 +1,21 @@
-import React from 'react';
+import { IonContent, IonPage } from "@ionic/react";
+import React, { useEffect } from "react";
+import { StatusBar, Style } from "@capacitor/status-bar";
 
 const Bank: React.FC = () => {
-    return (
-        <div>
+  useEffect(() => {
+    StatusBar.setOverlaysWebView({ overlay: false });
+    StatusBar.setStyle({ style: Style.Dark });
 
-        </div>
-    );
+    return () => {
+      StatusBar.setOverlaysWebView({ overlay: true });
+    };
+  }, []);
+  return (
+    <IonPage>
+      <IonContent></IonContent>
+    </IonPage>
+  );
 };
 
 export default Bank;

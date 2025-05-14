@@ -1,6 +1,15 @@
-import { IonContent, IonPage } from "@ionic/react";
+import {
+  IonContent,
+  IonLabel,
+  IonPage,
+  IonSegment,
+  IonSegmentButton,
+  IonToolbar,
+} from "@ionic/react";
 import React, { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
+import Header from "../../components/Header/Header";
+import "./Home.css";
 
 const Home: React.FC = () => {
   useEffect(() => {
@@ -13,7 +22,21 @@ const Home: React.FC = () => {
   }, []);
   return (
     <IonPage>
-      <IonContent></IonContent>
+      <IonContent>
+        <Header />
+        <div className="dashboardContentsTabSplit">
+          <IonToolbar>
+            <IonSegment value="user">
+              <IonSegmentButton value="user">
+                <IonLabel>User Loan</IonLabel>
+              </IonSegmentButton>
+              <IonSegmentButton value="admin">
+                <IonLabel>Admin Loan</IonLabel>
+              </IonSegmentButton>
+            </IonSegment>
+          </IonToolbar>
+        </div>
+      </IonContent>
     </IonPage>
   );
 };

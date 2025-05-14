@@ -7,6 +7,9 @@ import loginImg from "../../assets/login/login.png";
 import { InputText } from "primereact/inputtext";
 import { useHistory } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
+import { Password } from "primereact/password";
+import axios from "axios";
+import decrypt from "../../services/helper";
 
 const Login: React.FC = () => {
   // STATUS BAR
@@ -26,6 +29,8 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [error, setError] = useState("");
+
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setStyle({ style: Style.Dark });
@@ -39,12 +44,44 @@ const Login: React.FC = () => {
     };
   }, [isAuthenticated, history]);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (username === "admin" && password === "123456") {
       login({ username });
       history.replace("/home");
-    } else {
-      alert("Invalid credentials");
+    }
+
+    try {
+      const credentials = {
+        login: username,
+        password: password,
+      };
+
+      const response = await axios.post(
+        import.meta.env.VITE_API_URL + "/adminRoutes/adminLogin",
+        credentials
+      );
+
+      const data = decrypt(
+        response.data[1],
+        response.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+
+      if (data.success) {
+        console.log("data", data);
+        const profile = data.profile;
+
+        localStorage.setItem("JWTtoken", "Bearer " + data.token);
+        localStorage.setItem("loginStatus", "true");
+        localStorage.setItem("profile", JSON.stringify(profile));
+
+        history.push("/home");
+      } else {
+        setError(data.message || "Login failed.");
+      }
+    } catch (err) {
+      console.error("Login error", err);
+      setError("Something went wrong. Please try again.");
     }
   };
 
@@ -54,19 +91,22 @@ const Login: React.FC = () => {
         <div className="loginScreen">
           <img src={loginImg} alt="" />
           <div className="flex loginForm flex-column align-items-center mt-3 w-full px-6">
-            <p className="m-0">LOGIN</p>
+            <p className="m-0 font-bold">LOGIN</p>
             <InputText
               placeholder="Enter Username"
-              className="mt-3 w-full"
+              className="mt-3 w-full form-input"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <InputText
+            <Password
               placeholder="Enter Password"
-              className="mt-3 w-full"
+              className="mt-3 w-full form-input"
               value={password}
+              toggleMask
+              feedback={false}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <p>{error}</p>
             <p className="m-0 mt-3 w-full align-items-end flex justify-content-end">
               Forgot Password ?
             </p>

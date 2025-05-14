@@ -33,3 +33,9 @@
   padding-bottom: 10px;
   border-radius: 6px;
 }
+
+.form-input .p-inputtext,
+.form-input input {
+  width: 100% !important;
+  box-sizing: border-box;
+}
