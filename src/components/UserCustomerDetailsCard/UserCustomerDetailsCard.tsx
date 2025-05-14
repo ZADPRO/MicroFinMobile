@@ -1,6 +1,8 @@
 import { IonList } from "@ionic/react";
 import React from "react";
-import userImg from "../../assets/users/agent.svg";
+import userImg from "../../assets/users/userImg.png";
+import agentImg from "../../assets/users/agentImg.png";
+import { Divider } from "primereact/divider";
 
 interface UserCustomerDetailsCardProps {
   refCustId: string;
@@ -44,6 +46,7 @@ const UserCustomerDetailsCard: React.FC<UserCustomerDetailsCardProps> = ({
           </div>
         </div>
       </IonList>
+      <Divider />
     </div>
   );
 };

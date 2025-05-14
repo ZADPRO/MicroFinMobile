@@ -14,7 +14,8 @@ import React, { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { useHistory } from "react-router";
 
-import agentIcon from "../../assets/users/agent.svg";
+import agentIcon from "../../assets/users/agentImg.png";
+import userIcon from "../../assets/users/userImg.png";
 
 const User: React.FC = () => {
   useEffect(() => {
@@ -28,7 +29,7 @@ const User: React.FC = () => {
 
   const history = useHistory();
   const reportData = [
-    { imgSrc: agentIcon, text: "Users", route: "/userList" },
+    { imgSrc: userIcon, text: "Users", route: "/userList" },
     { imgSrc: agentIcon, text: "Agents", route: "/agentList" },
   ];
 
@@ -62,7 +63,7 @@ const User: React.FC = () => {
                     alt={item.text}
                     style={{ width: "80px", height: "auto", margin: "0 auto" }}
                   />
-                  <p>{item.text}</p>
+                  <p className="pt-2">{item.text}</p>
                 </div>
               </IonCol>
             ))}

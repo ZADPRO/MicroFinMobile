@@ -17,6 +17,7 @@ import axios from "axios";
 import decrypt from "../../services/helper";
 import UserCustomerDetailsCard from "../UserCustomerDetailsCard/UserCustomerDetailsCard";
 import { add } from "ionicons/icons";
+import { useHistory } from "react-router";
 
 interface UserListProps {
   createdAt: string;
@@ -52,7 +53,9 @@ const UsersAgentDetails: React.FC = () => {
     };
   }, []);
 
-  const [userLists, setUserLists] = useState<UserListProps[] | []>([]);
+  const [userLists, setUserLists] = useState<UserListProps[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const history = useHistory();
 
   const loadData = () => {
     try {
@@ -92,6 +95,15 @@ const UsersAgentDetails: React.FC = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  const filteredUsers = userLists.filter((user) => {
+    const fullName = `${user.refUserFname} ${user.refUserLname}`.toLowerCase();
+    return (
+      fullName.includes(searchTerm.toLowerCase()) ||
+      user.refUserMobileNo.includes(searchTerm) ||
+      user.refCustId.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
   return (
     <IonPage>
       <IonHeader>
@@ -102,20 +114,24 @@ const UsersAgentDetails: React.FC = () => {
           <IonTitle>Agent Details</IonTitle>
         </IonToolbar>
         <IonToolbar>
-          <IonSearchbar></IonSearchbar>
+          <IonSearchbar
+            value={searchTerm}
+            onIonInput={(e) => setSearchTerm(e.detail.value!)}
+            placeholder="Search by name, mobile, or ID"
+          ></IonSearchbar>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        {userLists.length > 0 ? (
-          userLists.map((data) => (
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map((data) => (
             <UserCustomerDetailsCard key={data.refComId} {...data} />
           ))
         ) : (
-          <p className="ion-text-center">No results found</p>
+          <p className="ion-text-center mt-4">No results found</p>
         )}
 
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton>
+          <IonFabButton onClick={() => history.push("/addUserDetails")}>
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonFab>
