@@ -445,7 +445,6 @@ const UserAddCustomer: React.FC = () => {
             </span>
             <Dropdown
               name="status"
-              style={{ width: "100%", minWidth: "100%" }}
               value={inputs.status}
               options={status}
               optionLabel="name"

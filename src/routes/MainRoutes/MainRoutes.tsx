@@ -31,6 +31,10 @@ import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import UsersCustomerDetails from "../../components/UsersCustomerDetails/UsersCustomerDetails";
 import UsersAgentDetails from "../../components/UsersAgentDetails/UsersAgentDetails";
 import UserAddCustomer from "../../components/UserAddCustomer/UserAddCustomer";
+import UserCustomerDetailsEdit from "../../components/UserCustomerDetailsEdit/UserCustomerDetailsEdit";
+import BankMgntBankDetails from "../../components/BankMgntBankDetails/BankMgntBankDetails";
+import BankMgntFunds from "../../components/BankMgntFunds/BankMgntFunds";
+import BankMgntExpense from "../../components/BankMgntExpense/BankMgntExpense";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
@@ -69,18 +73,37 @@ const MainRoutes: React.FC = () => {
           <PrivateRoute path="/report">
             <Report />
           </PrivateRoute>
+
+          {/* USER ROUTES */}
           <PrivateRoute path="/userList">
             <UsersCustomerDetails />
           </PrivateRoute>
           <PrivateRoute path="/addUserDetails">
             <UserAddCustomer />
           </PrivateRoute>
+          <PrivateRoute path="/viewUserDetails">
+            <UserCustomerDetailsEdit />
+          </PrivateRoute>
+
+          {/* AGENT ROUTES */}
           <PrivateRoute path="/agentList">
             <UsersAgentDetails />
           </PrivateRoute>
           <PrivateRoute path="/addAgentDetails">
             <UsersAgentDetails />
           </PrivateRoute>
+
+          {/* BANK ROUTES */}
+          <PrivateRoute path="/bankDetails">
+            <BankMgntBankDetails />
+          </PrivateRoute>
+          <PrivateRoute path="/fundDetails">
+            <BankMgntFunds />
+          </PrivateRoute>
+          <PrivateRoute path="/expenseDetails">
+            <BankMgntExpense />
+          </PrivateRoute>
+
           <PrivateRoute exact path="/">
             <Redirect to="/splash" />
           </PrivateRoute>

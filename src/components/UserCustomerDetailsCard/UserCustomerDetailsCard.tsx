@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import userImg from "../../assets/users/userImg.png";
 import { Divider } from "primereact/divider";
 import { InputSwitch } from "primereact/inputswitch";
+import { useHistory } from "react-router";
 
 interface UserCustomerDetailsCardProps {
   refCustId: string;
@@ -19,15 +20,26 @@ const UserCustomerDetailsCard: React.FC<UserCustomerDetailsCardProps> = ({
   refUserMobileNo,
   refActiveStatus,
 }) => {
-  const [isActive, setIsActive] = useState(refActiveStatus === "Active");
+  const [isActive, setIsActive] = useState(refActiveStatus === "active");
+  console.log("refActiveStatus", refActiveStatus);
 
   const handleStatusToggle = (e: boolean) => {
     setIsActive(e);
   };
 
+  const history = useHistory();
+
+  const handleCardClick = () => {
+    history.push("/viewUserDetails", { refCustId });
+  };
+
   return (
     <div>
-      <IonList inset={true} className="bg-white p-3 rounded shadow-1">
+      <IonList
+        inset={true}
+        className="bg-white p-3 rounded shadow-1"
+        onClick={handleCardClick}
+      >
         <div className="flex w-full">
           <img src={userImg} alt="User" width={70} />
           <div className="w-full">
