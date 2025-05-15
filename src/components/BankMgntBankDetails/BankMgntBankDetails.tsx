@@ -2,7 +2,10 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
+  IonFab,
+  IonFabButton,
   IonHeader,
+  IonIcon,
   IonPage,
   IonSearchbar,
   IonTitle,
@@ -13,6 +16,8 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
 import decrypt from "../../services/helper";
 import BankCardList from "./BankCardList";
+import { add } from "ionicons/icons";
+import { useHistory } from "react-router";
 
 interface BankAcDetails {
   createdAt: string;
@@ -43,7 +48,7 @@ const BankMgntBankDetails: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   //   BANK DETAILS FETCH API
-  const [userLists, setUserLists] = useState([]);
+  const [userLists, setUserLists] = useState<BankAcDetails[] | []>([]);
 
   const loadData = () => {
     try {
@@ -78,6 +83,8 @@ const BankMgntBankDetails: React.FC = () => {
     loadData();
   }, []);
 
+  const history = useHistory();
+
   return (
     <IonPage>
       <IonHeader>
@@ -97,6 +104,11 @@ const BankMgntBankDetails: React.FC = () => {
       </IonHeader>
       <IonContent>
         <BankCardList userLists={userLists} />
+        <IonFab slot="fixed" vertical="bottom" horizontal="end">
+          <IonFabButton onClick={() => history.push("/addNewBank")}>
+            <IonIcon icon={add}></IonIcon>
+          </IonFabButton>
+        </IonFab>
       </IonContent>
     </IonPage>
   );

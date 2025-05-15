@@ -35,6 +35,7 @@ import UserCustomerDetailsEdit from "../../components/UserCustomerDetailsEdit/Us
 import BankMgntBankDetails from "../../components/BankMgntBankDetails/BankMgntBankDetails";
 import BankMgntFunds from "../../components/BankMgntFunds/BankMgntFunds";
 import BankMgntExpense from "../../components/BankMgntExpense/BankMgntExpense";
+import AddNewBank from "../../components/BankMgntBankDetails/AddNewBank";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
@@ -97,6 +98,10 @@ const MainRoutes: React.FC = () => {
           <PrivateRoute path="/bankDetails">
             <BankMgntBankDetails />
           </PrivateRoute>
+          <PrivateRoute path="/addNewBank">
+            <AddNewBank />
+          </PrivateRoute>
+
           <PrivateRoute path="/fundDetails">
             <BankMgntFunds />
           </PrivateRoute>
