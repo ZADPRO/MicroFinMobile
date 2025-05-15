@@ -13,7 +13,7 @@ import {
 import React, { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { useHistory } from "react-router";
-
+import "./User.css";
 import agentIcon from "../../assets/users/agentImg.png";
 import userIcon from "../../assets/users/userImg.png";
 
