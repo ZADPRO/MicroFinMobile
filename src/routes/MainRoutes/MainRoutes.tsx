@@ -1,6 +1,4 @@
 import {
-  IonAvatar,
-  IonChip,
   IonIcon,
   IonLabel,
   IonModal,
@@ -43,6 +41,7 @@ import EditExistingBank from "../../components/BankMgntBankDetails/EditExistingB
 import BankMgntProducts from "../../components/BankMgntProducts/BankMgntProducts";
 import AddNewProduct from "../../components/BankMgntProducts/AddNewProduct";
 import EditExistingProduct from "../../components/BankMgntProducts/EditExistingProduct";
+import LoanMenuModal from "../../components/LoanMenuModal/LoanMenuModal";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
@@ -250,57 +249,7 @@ const MainRoutes: React.FC = () => {
         breakpoints={[0, 0.4, 0.75]}
         className="calendar-modal"
       >
-        <div
-          className="p-3 flex"
-          style={{
-            flexWrap: "wrap",
-            // justifyContent: "space-between",
-            gap: "2px",
-            width: "100%",
-            maxWidth: "400px",
-          }}
-        >
-          <IonChip outline={true}>
-            {" "}
-            <IonAvatar>
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonAvatar>
-            <IonLabel>User Loan</IonLabel>
-          </IonChip>
-          <IonChip outline={true}>
-            {" "}
-            <IonAvatar>
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonAvatar>
-            <IonLabel>User Repayment</IonLabel>
-          </IonChip>
-          <IonChip outline={true}>
-            {" "}
-            <IonAvatar>
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonAvatar>
-            <IonLabel>Admin Loan</IonLabel>
-          </IonChip>
-          <IonChip outline={true}>
-            {" "}
-            <IonAvatar>
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonAvatar>
-            <IonLabel>Admin Repayment</IonLabel>
-          </IonChip>
-        </div>
+        <LoanMenuModal />
       </IonModal>
     </div>
   );

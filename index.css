@@ -1,3 +1,7 @@
 p {
   margin: 0;
 }
+
+.loanChips .ios.chip-outline.ion-activatable {
+  border-radius: 7px;
+}
