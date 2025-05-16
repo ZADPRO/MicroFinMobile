@@ -279,7 +279,7 @@ const BankMgntFunds: React.FC = () => {
                       <div className="pl-3 flex w-full align-items-center justify-content-between">
                         <div className="flex flex-column">
                           <p>{item.refFundType}</p>
-                          <p>{item.createdAt}</p>
+                          <p style={{ fontSize: "13px" }}>{item.createdAt}</p>
                         </div>
                         <div className="amount">
                           <p
@@ -289,11 +289,16 @@ const BankMgntFunds: React.FC = () => {
                                 "debit"
                                   ? "red"
                                   : "green",
+                              fontSize: "16px",
                             }}
                           >
                             {item.refbfTrasactionType.toLowerCase() === "debit"
-                              ? `- ₹${item.refbfTransactionAmount}`
-                              : `+ ₹${item.refbfTransactionAmount}`}
+                              ? `- ₹${Number(
+                                  item.refbfTransactionAmount
+                                ).toFixed(2)}`
+                              : `+ ₹${Number(
+                                  item.refbfTransactionAmount
+                                ).toFixed(2)}`}
                           </p>
                         </div>
                       </div>

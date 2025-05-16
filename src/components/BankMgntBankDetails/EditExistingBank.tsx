@@ -127,6 +127,7 @@ const EditExistingBank: React.FC = () => {
 
           if (data.success) {
             localStorage.setItem("token", "Bearer " + data.token);
+            localStorage.removeItem("editBankItem");
             history.replace("/bankDetails", { reload: true });
           }
         });

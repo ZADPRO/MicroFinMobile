@@ -34,8 +34,8 @@ const Bank: React.FC = () => {
   const reportData = [
     { imgSrc: userIcon, text: "Bank", route: "/bankDetails" },
     { imgSrc: agentIcon, text: "Funds", route: "/fundDetails" },
-    // { imgSrc: agentIcon, text: "Expense", route: "/expenseDetails" },
-    // { imgSrc: "", text: "", route: "" },
+    { imgSrc: agentIcon, text: "Expense", route: "/expenseDetails" },
+    { imgSrc: userIcon, text: "Product", route: "/productDetails" },
   ];
 
   const handleNavigation = (route: string) => {

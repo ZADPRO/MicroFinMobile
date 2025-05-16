@@ -1,12 +1,15 @@
 import {
+  IonAvatar,
+  IonChip,
   IonIcon,
   IonLabel,
+  IonModal,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
   IonTabs,
 } from "@ionic/react";
-import React from "react";
+import React, { useState } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 import {
   card,
@@ -37,10 +40,14 @@ import BankMgntFunds from "../../components/BankMgntFunds/BankMgntFunds";
 import BankMgntExpense from "../../components/BankMgntExpense/BankMgntExpense";
 import AddNewBank from "../../components/BankMgntBankDetails/AddNewBank";
 import EditExistingBank from "../../components/BankMgntBankDetails/EditExistingBank";
+import BankMgntProducts from "../../components/BankMgntProducts/BankMgntProducts";
+import AddNewProduct from "../../components/BankMgntProducts/AddNewProduct";
+import EditExistingProduct from "../../components/BankMgntProducts/EditExistingProduct";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
 
+  // HIDE ROUTES BASED ON CONDITIONS
   const showTabBar = ["/home", "/user", "/bank", "/loan", "/report"].includes(
     location.pathname
   );
@@ -50,6 +57,10 @@ const MainRoutes: React.FC = () => {
 
   const getActiveClass = (tab: string) =>
     location.pathname === tab ? "active-tab" : "";
+
+  // SHOW MODAL HANDLER
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <div>
       <IonTabs>
@@ -113,6 +124,16 @@ const MainRoutes: React.FC = () => {
             <BankMgntExpense />
           </PrivateRoute>
 
+          <PrivateRoute path="/productDetails">
+            <BankMgntProducts />
+          </PrivateRoute>
+          <PrivateRoute path="/addNewProduct">
+            <AddNewProduct />
+          </PrivateRoute>
+          <PrivateRoute path="/editProductDetails">
+            <EditExistingProduct />
+          </PrivateRoute>
+
           <PrivateRoute exact path="/">
             <Redirect to="/splash" />
           </PrivateRoute>
@@ -160,19 +181,21 @@ const MainRoutes: React.FC = () => {
             </IonTabButton>
             <IonTabButton
               tab="loan"
-              href="/loan"
               className={getActiveClass("/loan")}
               style={{
-                backgroundColor:
-                  location.pathname === "/loan" ? "#0478df" : "#ffffff",
-                color: location.pathname === "/loan" ? "white" : "#0478df",
+                backgroundColor: showModal ? "#0478df" : "#ffffff",
+                color: showModal ? "white" : "#0478df",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                setShowModal(true);
               }}
             >
               <IonIcon
                 aria-hidden="true"
                 icon={getIcon("/loan", card, cardOutline)}
                 style={{
-                  color: location.pathname === "/loan" ? "white" : "#0478df",
+                  color: showModal ? "white" : "#0478df",
                 }}
               />
               <IonLabel>Loan</IonLabel>
@@ -218,6 +241,67 @@ const MainRoutes: React.FC = () => {
           </IonTabBar>
         )}
       </IonTabs>
+
+      <IonModal
+        isOpen={showModal}
+        onDidDismiss={() => setShowModal(false)}
+        keepContentsMounted={true}
+        initialBreakpoint={0.4}
+        breakpoints={[0, 0.4, 0.75]}
+        className="calendar-modal"
+      >
+        <div
+          className="p-3 flex"
+          style={{
+            flexWrap: "wrap",
+            // justifyContent: "space-between",
+            gap: "2px",
+            width: "100%",
+            maxWidth: "400px",
+          }}
+        >
+          <IonChip outline={true}>
+            {" "}
+            <IonAvatar>
+              <img
+                alt="Silhouette of a person's head"
+                src="https://ionicframework.com/docs/img/demos/avatar.svg"
+              />
+            </IonAvatar>
+            <IonLabel>User Loan</IonLabel>
+          </IonChip>
+          <IonChip outline={true}>
+            {" "}
+            <IonAvatar>
+              <img
+                alt="Silhouette of a person's head"
+                src="https://ionicframework.com/docs/img/demos/avatar.svg"
+              />
+            </IonAvatar>
+            <IonLabel>User Repayment</IonLabel>
+          </IonChip>
+          <IonChip outline={true}>
+            {" "}
+            <IonAvatar>
+              <img
+                alt="Silhouette of a person's head"
+                src="https://ionicframework.com/docs/img/demos/avatar.svg"
+              />
+            </IonAvatar>
+            <IonLabel>Admin Loan</IonLabel>
+          </IonChip>
+          <IonChip outline={true}>
+            {" "}
+            <IonAvatar>
+              <img
+                alt="Silhouette of a person's head"
+                src="https://ionicframework.com/docs/img/demos/avatar.svg"
+              />
+            </IonAvatar>
+            <IonLabel>Admin Repayment</IonLabel>
+          </IonChip>
+        </div>
+      </IonModal>
     </div>
   );
 };
