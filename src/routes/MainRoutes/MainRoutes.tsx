@@ -159,25 +159,6 @@ const MainRoutes: React.FC = () => {
               <IonLabel>User</IonLabel>
             </IonTabButton>
             <IonTabButton
-              tab="bank"
-              href="/bank"
-              className={getActiveClass("/bank")}
-              style={{
-                backgroundColor:
-                  location.pathname === "/bank" ? "#0478df" : "#ffffff",
-                color: location.pathname === "/bank" ? "white" : "#0478df",
-              }}
-            >
-              <IonIcon
-                aria-hidden="true"
-                icon={getIcon("/bank", wallet, walletOutline)}
-                style={{
-                  color: location.pathname === "/bank" ? "white" : "#0478df",
-                }}
-              />
-              <IonLabel>Bank</IonLabel>
-            </IonTabButton>
-            <IonTabButton
               tab="loan"
               href="/loan"
               className={getActiveClass("/loan")}
@@ -195,6 +176,25 @@ const MainRoutes: React.FC = () => {
                 }}
               />
               <IonLabel>Loan</IonLabel>
+            </IonTabButton>
+            <IonTabButton
+              tab="bank"
+              href="/bank"
+              className={getActiveClass("/bank")}
+              style={{
+                backgroundColor:
+                  location.pathname === "/bank" ? "#0478df" : "#ffffff",
+                color: location.pathname === "/bank" ? "white" : "#0478df",
+              }}
+            >
+              <IonIcon
+                aria-hidden="true"
+                icon={getIcon("/bank", wallet, walletOutline)}
+                style={{
+                  color: location.pathname === "/bank" ? "white" : "#0478df",
+                }}
+              />
+              <IonLabel>Bank</IonLabel>
             </IonTabButton>
             <IonTabButton
               tab="report"
