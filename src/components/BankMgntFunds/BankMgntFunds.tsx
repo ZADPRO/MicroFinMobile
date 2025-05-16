@@ -3,6 +3,8 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
+  IonIcon,
+  IonModal,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -11,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
 import decrypt from "../../services/helper";
+import { funnel } from "ionicons/icons";
 
 interface FundDetailsProps {
   createdAt: string;
@@ -30,14 +33,7 @@ interface FundDetailsProps {
 }
 
 const BankMgntFunds: React.FC = () => {
-  const [userLists, setUserLists] = useState<FundDetailsProps[]>([]);
-  const [monthlyData, setMonthlyData] = useState<any>({});
-  console.log("monthlyData", monthlyData);
-  const [currentMonthSummary, setCurrentMonthSummary] = useState({
-    label: "",
-    netAmount: 0,
-  });
-
+  // STATUS BAR HANDLER
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setStyle({ style: Style.Dark });
@@ -46,6 +42,17 @@ const BankMgntFunds: React.FC = () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
   }, []);
+
+  // USER DATA HANDLER
+  const [userLists, setUserLists] = useState<FundDetailsProps[]>([]);
+  const [monthlyData, setMonthlyData] = useState<any>({});
+  console.log("monthlyData", monthlyData);
+  const [currentMonthSummary, setCurrentMonthSummary] = useState({
+    label: "",
+    netAmount: 0,
+  });
+
+  // GET DATA FROM DATABASE
 
   const loadData = () => {
     try {
@@ -75,6 +82,7 @@ const BankMgntFunds: React.FC = () => {
     }
   };
 
+  // GROUPING THE MONTH FOR OVERALL SUMMARY
   const groupByMonth = (list: FundDetailsProps[]) => {
     const grouped: any = {};
     const now = new Date();
@@ -124,6 +132,79 @@ const BankMgntFunds: React.FC = () => {
     loadData();
   }, []);
 
+  // MODAL HANDLER
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  // FILTER OPTIONS - HANDLER
+  const [activeFilter, setActiveFilter] = useState("Bank Name");
+
+  const [selectedBankNames, setSelectedBankNames] = useState<string[]>([]);
+  const [selectedFundTypes, setSelectedFundTypes] = useState<string[]>([]);
+  const [selectedPaymentTypes, setSelectedPaymentTypes] = useState<string[]>(
+    []
+  );
+  const [selectedActions, setSelectedActions] = useState<string[]>([]);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  const handleCheckChange = (value: string, checked: boolean, type: string) => {
+    const setterMap: any = {
+      bank: setSelectedBankNames,
+      fund: setSelectedFundTypes,
+      payment: setSelectedPaymentTypes,
+      action: setSelectedActions,
+    };
+
+    const stateMap: any = {
+      bank: selectedBankNames,
+      fund: selectedFundTypes,
+      payment: selectedPaymentTypes,
+      action: selectedActions,
+    };
+
+    const updated = checked
+      ? [...stateMap[type], value]
+      : stateMap[type].filter((v: string) => v !== value);
+
+    setterMap[type](updated);
+  };
+
+  // APPLY FILTER DATA
+  const applyFilters = () => {
+    const filtered = userLists.filter((item) => {
+      const createdDate = new Date(item.createdAt);
+
+      const matchesBank =
+        selectedBankNames.length === 0 ||
+        selectedBankNames.includes(item.refBankName);
+      const matchesFund =
+        selectedFundTypes.length === 0 ||
+        selectedFundTypes.includes(item.refFundType);
+      const matchesPayment =
+        selectedPaymentTypes.length === 0 ||
+        selectedPaymentTypes.includes(item.refPaymentType);
+      const matchesAction =
+        selectedActions.length === 0 ||
+        selectedActions.includes(item.refbfTrasactionType);
+
+      const matchesFrom =
+        !fromDate || new Date(item.createdAt) >= new Date(fromDate);
+      const matchesTo = !toDate || new Date(item.createdAt) <= new Date(toDate);
+
+      return (
+        matchesBank &&
+        matchesFund &&
+        matchesPayment &&
+        matchesAction &&
+        matchesFrom &&
+        matchesTo
+      );
+    });
+
+    groupByMonth(filtered); // update UI
+    setShowModal(false);
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -132,6 +213,13 @@ const BankMgntFunds: React.FC = () => {
             <IonBackButton defaultHref="/bank" mode="md" />
           </IonButtons>
           <IonTitle>Funds</IonTitle>
+          <IonButtons slot="end">
+            <IonIcon
+              icon={funnel}
+              onClick={() => setShowModal(true)}
+              style={{ fontSize: "20px", paddingRight: "10px" }}
+            />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
@@ -152,17 +240,15 @@ const BankMgntFunds: React.FC = () => {
                     <p className="text-base font-medium">
                       {month.split(" ")[0]}
                     </p>{" "}
-                    {/* April */}
                     <p className="text-sm text-secondary">
                       {month.split(" ")[1]}
                     </p>{" "}
-                    {/* 2025 */}
                   </div>
                   <div
                     className="text-lg"
                     style={{ color: data.netAmount >= 0 ? "green" : "red" }}
                   >
-                    INR {data.netAmount >= 0 ? "+" : ""}
+                    {data.netAmount >= 0 ? "+ " : " "}₹{" "}
                     {data.netAmount.toFixed(2)}
                   </div>
                 </div>
@@ -172,7 +258,7 @@ const BankMgntFunds: React.FC = () => {
                   (item: FundDetailsProps, idx: number) => (
                     <div
                       key={idx}
-                      className="flex p-2 shadow-1 p-3 my-2 border-round-md"
+                      className="flex p-2 shadow-3 p-3 my-2 border-round-md"
                     >
                       <div
                         style={{
@@ -206,8 +292,8 @@ const BankMgntFunds: React.FC = () => {
                             }}
                           >
                             {item.refbfTrasactionType.toLowerCase() === "debit"
-                              ? `-₹${item.refbfTransactionAmount}`
-                              : `+₹${item.refbfTransactionAmount}`}
+                              ? `- ₹${item.refbfTransactionAmount}`
+                              : `+ ₹${item.refbfTransactionAmount}`}
                           </p>
                         </div>
                       </div>
@@ -217,6 +303,127 @@ const BankMgntFunds: React.FC = () => {
               </div>
             ))}
         </div>
+
+        <IonModal
+          isOpen={showModal}
+          onDidDismiss={() => setShowModal(false)}
+          keepContentsMounted={true}
+          initialBreakpoint={0.4}
+          breakpoints={[0, 0.4, 0.75]}
+          className="calendar-modal"
+        >
+          <div className="p-3">
+            <div className="flex">
+              {/* LEFT SIDE: Filter Types */}
+              <div className="w-4 border-right-1 pr-3">
+                {[
+                  "Bank Name",
+                  "Fund Type",
+                  "Payment Type",
+                  "Action",
+                  "From Date",
+                  "To Date",
+                ].map((item, idx) => (
+                  <p
+                    key={idx}
+                    className={`mb-3 cursor-pointer ${
+                      activeFilter === item ? "font-bold" : ""
+                    }`}
+                    onClick={() => setActiveFilter(item)}
+                  >
+                    {item}
+                  </p>
+                ))}
+              </div>
+
+              {/* RIGHT SIDE: Dynamic Filter Values */}
+              <div className="w-8 pl-3">
+                {activeFilter === "Bank Name" &&
+                  Array.from(new Set(userLists.map((i) => i.refBankName))).map(
+                    (name, idx) => (
+                      <div key={idx} className="mb-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedBankNames.includes(name)}
+                          onChange={(e) =>
+                            handleCheckChange(name, e.target.checked, "bank")
+                          }
+                        />{" "}
+                        {name}
+                      </div>
+                    )
+                  )}
+
+                {activeFilter === "Fund Type" &&
+                  Array.from(new Set(userLists.map((i) => i.refFundType))).map(
+                    (type, idx) => (
+                      <div key={idx} className="mb-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedFundTypes.includes(type)}
+                          onChange={(e) =>
+                            handleCheckChange(type, e.target.checked, "fund")
+                          }
+                        />{" "}
+                        {type}
+                      </div>
+                    )
+                  )}
+
+                {activeFilter === "Payment Type" &&
+                  Array.from(
+                    new Set(userLists.map((i) => i.refPaymentType))
+                  ).map((type, idx) => (
+                    <div key={idx} className="mb-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedPaymentTypes.includes(type)}
+                        onChange={(e) =>
+                          handleCheckChange(type, e.target.checked, "payment")
+                        }
+                      />{" "}
+                      {type}
+                    </div>
+                  ))}
+
+                {activeFilter === "Action" &&
+                  ["credit", "debit"].map((type, idx) => (
+                    <div key={idx} className="mb-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedActions.includes(type)}
+                        onChange={(e) =>
+                          handleCheckChange(type, e.target.checked, "action")
+                        }
+                      />{" "}
+                      {type}
+                    </div>
+                  ))}
+
+                {activeFilter === "From Date" && (
+                  <input
+                    type="date"
+                    value={fromDate}
+                    onChange={(e) => setFromDate(e.target.value)}
+                  />
+                )}
+
+                {activeFilter === "To Date" && (
+                  <input
+                    type="date"
+                    value={toDate}
+                    onChange={(e) => setToDate(e.target.value)}
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Apply Button */}
+            <div className="mt-3 text-center">
+              <button onClick={applyFilters}>Apply Filters</button>
+            </div>
+          </div>
+        </IonModal>
       </IonContent>
     </IonPage>
   );
