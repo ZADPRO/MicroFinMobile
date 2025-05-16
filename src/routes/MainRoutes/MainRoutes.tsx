@@ -36,6 +36,7 @@ import BankMgntBankDetails from "../../components/BankMgntBankDetails/BankMgntBa
 import BankMgntFunds from "../../components/BankMgntFunds/BankMgntFunds";
 import BankMgntExpense from "../../components/BankMgntExpense/BankMgntExpense";
 import AddNewBank from "../../components/BankMgntBankDetails/AddNewBank";
+import EditExistingBank from "../../components/BankMgntBankDetails/EditExistingBank";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
@@ -100,6 +101,9 @@ const MainRoutes: React.FC = () => {
           </PrivateRoute>
           <PrivateRoute path="/addNewBank">
             <AddNewBank />
+          </PrivateRoute>
+          <PrivateRoute path="/editBank">
+            <EditExistingBank />
           </PrivateRoute>
 
           <PrivateRoute path="/fundDetails">

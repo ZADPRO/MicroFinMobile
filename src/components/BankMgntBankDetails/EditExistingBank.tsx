@@ -14,9 +14,33 @@ import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
 import { InputText } from "primereact/inputtext";
 import axios from "axios";
 import decrypt from "../../services/helper";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
-const AddNewBank: React.FC = () => {
+interface BankItemProps {
+  createdAt: string;
+  createdBy: string;
+  refAccountType: number;
+  refAccountTypeName: string;
+  refBalance: string;
+  refBankAccountNo: string;
+  refBankAddress: string;
+  refBankId: number;
+  refBankName: string;
+  refIFSCsCode: string;
+}
+
+interface BankFormState {
+  refBankId: number;
+  refBankName: string;
+  refBankAccountNo: string;
+  refBankAddress: string;
+  refBalance: string;
+  refAccountType: number;
+  refAccountTypeName: string;
+  refIFSCsCode: string;
+}
+
+const EditExistingBank: React.FC = () => {
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setStyle({ style: Style.Dark });
@@ -26,19 +50,29 @@ const AddNewBank: React.FC = () => {
     };
   }, []);
 
+  //   CAPTURE EXISTING BANK DATA STATE
+  const location = useLocation();
+  const bankItem = location.state?.bankItem;
+  console.log("bankItem", bankItem);
+
   // USE HISTORY
   const history = useHistory();
 
   // SET BANK DETAILS
-  const [bankType, setBankType] = useState<string>("");
-
-  const [inputs, setInputs]: any = useState({
-    refBankName: "",
-    refBankAccountNo: "",
-    refBankAddress: "",
-    refBalance: 0,
-    refBankIFSCCode: "",
+  const [inputs, setInputs] = useState<BankFormState>({
+    refBankId: bankItem.refBankId,
+    refBankName: bankItem.refBankName,
+    refBankAccountNo: bankItem.refBankAccountNo,
+    refBankAddress: bankItem.refBankAddress,
+    refBalance: bankItem.refBalance,
+    refAccountType: bankItem.refAccountType,
+    refAccountTypeName: bankItem.refAccountTypeName,
+    refIFSCsCode: bankItem.refIFSCsCode,
   });
+
+  const [bankType, setBankType] = useState<string>(
+    bankItem.refAccountType === 1 ? "Bank" : "Cash"
+  );
 
   // INPUT HANDLER
   const handleInput = (e: any) => {
@@ -50,6 +84,15 @@ const AddNewBank: React.FC = () => {
     }));
   };
 
+  const handleBankTypeChange = (value: string) => {
+    setBankType(value);
+    setInputs((prevState) => ({
+      ...prevState,
+      refAccountType: value === "Bank" ? 1 : 2,
+      refAccountTypeName: value,
+    }));
+  };
+
   // CALL TO BACKEND TO UPDATE THE BANK CREATION
   const handleNewUser = async () => {
     try {
@@ -57,12 +100,14 @@ const AddNewBank: React.FC = () => {
         .post(
           import.meta.env.VITE_API_URL + "/adminRoutes/addBankAccount",
           {
+            refBankId: inputs.refBankId,
             refBankName: inputs.refBankName,
             refBankAccountNo: inputs.refBankAccountNo,
             refBankAddress: inputs.refBankAddress,
             refBalance: inputs.refBalance,
-            refIFSCsCode: inputs.refBankIFSCCode,
-            refAccountType: bankType === "Cash" ? 2 : 1,
+            refAccountType: inputs.refAccountType,
+            refAccountTypeName: inputs.refAccountTypeName,
+            refIFSCsCode: inputs.refIFSCsCode,
           },
           {
             headers: {
@@ -105,7 +150,9 @@ const AddNewBank: React.FC = () => {
             <div className="flex align-items-center">
               <RadioButton
                 value="Bank"
-                onChange={(e: RadioButtonChangeEvent) => setBankType(e.value)}
+                onChange={(e: RadioButtonChangeEvent) =>
+                  handleBankTypeChange(e.value)
+                }
                 checked={bankType === "Bank"}
               />
               <label htmlFor="bankType1" className="ml-2">
@@ -115,7 +162,9 @@ const AddNewBank: React.FC = () => {
             <div className="flex align-items-center">
               <RadioButton
                 value="Cash"
-                onChange={(e: RadioButtonChangeEvent) => setBankType(e.value)}
+                onChange={(e: RadioButtonChangeEvent) =>
+                  handleBankTypeChange(e.value)
+                }
                 checked={bankType === "Cash"}
               />
               <label htmlFor="bankType1" className="ml-2">
@@ -199,4 +248,4 @@ const AddNewBank: React.FC = () => {
   );
 };
 
-export default AddNewBank;
+export default EditExistingBank;

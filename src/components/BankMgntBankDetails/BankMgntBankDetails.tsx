@@ -17,7 +17,7 @@ import axios from "axios";
 import decrypt from "../../services/helper";
 import BankCardList from "./BankCardList";
 import { add } from "ionicons/icons";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 interface BankAcDetails {
   createdAt: string;
@@ -82,6 +82,18 @@ const BankMgntBankDetails: React.FC = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.reload) {
+      console.log("Reloading due to redirect state...");
+      loadData();
+
+      // Clear the state so it doesn't retrigger on re-render
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const history = useHistory();
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router";
 
 interface BankAcDetails {
   createdAt: string;
@@ -20,6 +21,14 @@ interface Props {
 }
 
 const BankCardList: React.FC<Props> = ({ userLists }) => {
+  const history = useHistory();
+  const handleEditBankData = (item: BankAcDetails) => {
+    history.push({
+      pathname: "/editBank",
+      state: { bankItem: item },
+    });
+  };
+
   return (
     <div>
       {userLists.length === 0 ? (
@@ -30,6 +39,7 @@ const BankCardList: React.FC<Props> = ({ userLists }) => {
             <div
               className="flex align-items-center justify-content-start shadow-2 p-3 m-3 border-round-xl"
               key={index}
+              onClick={() => handleEditBankData(item)}
             >
               <div
                 className="flex align-items-center justify-content-center bg-primary text-black font-bold"
@@ -43,21 +53,41 @@ const BankCardList: React.FC<Props> = ({ userLists }) => {
                 {index + 1}
               </div>
 
-              <div className="flex w-full justify-content-between pl-2">
+              <div className="flex w-full align-items-center justify-content-between pl-2">
                 <div className="bankDetails">
                   <p className="m-0 text-lg font-medium">
                     {item.refBankName?.trim() || "-"}
                   </p>
-                  <p className="m-0 pt-2 text-sm text-color-secondary">
-                    {item.refBankAccountNo?.trim() || "-"}
-                  </p>
+                  {item.refBankAccountNo?.trim() ? (
+                    <>
+                      <p className="m-0 pt-2 text-sm text-color-secondary">
+                        {item.refBankAccountNo?.trim()
+                          ? item.refBankAccountNo.trim().slice(0, 16)
+                          : ""}
+                      </p>
+                    </>
+                  ) : (
+                    <>{}</>
+                  )}
                 </div>
                 <div className="bankBalance">
-                  <p className="m-0 font-semibold">
+                  <p className="m-0 font-semibold" style={{ textAlign: "end" }}>
                     ₹{" "}
                     {item.refBalance?.trim()
-                      ? parseFloat(item.refBalance).toFixed(2)
+                      ? new Intl.NumberFormat("en-IN", {
+                          style: "currency",
+                          currency: "INR",
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                          .format(parseFloat(item.refBalance))
+                          .replace("₹", "")
+                          .trim()
                       : "-"}
+                  </p>
+
+                  <p className="m-0 pt-2" style={{ textAlign: "end" }}>
+                    {item.refAccountType === 1 ? "Bank" : "Cash"}
                   </p>
                 </div>
               </div>
