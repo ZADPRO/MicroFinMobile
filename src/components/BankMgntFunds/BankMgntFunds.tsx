@@ -30,6 +30,14 @@ interface FundDetailsProps {
 }
 
 const BankMgntFunds: React.FC = () => {
+  const [userLists, setUserLists] = useState<FundDetailsProps[]>([]);
+  const [monthlyData, setMonthlyData] = useState<any>({});
+  console.log("monthlyData", monthlyData);
+  const [currentMonthSummary, setCurrentMonthSummary] = useState({
+    label: "",
+    netAmount: 0,
+  });
+
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setStyle({ style: Style.Dark });
@@ -39,14 +47,7 @@ const BankMgntFunds: React.FC = () => {
     };
   }, []);
 
-  // GET THE FUND DETAILS FROM BACKEND
-
-  const [userLists, setUserLists] = useState<FundDetailsProps[] | []>([]);
-  const [originalUserLists, setOriginalUserLists] = useState<
-    FundDetailsProps[] | []
-  >([]);
   const loadData = () => {
-    console.log("line --------- 25");
     try {
       axios
         .get(import.meta.env.VITE_API_URL + "/adminRoutes/getBankFundList", {
@@ -65,14 +66,58 @@ const BankMgntFunds: React.FC = () => {
           localStorage.setItem("token", "Bearer " + data.token);
 
           if (data.success) {
-            console.log("data", data);
             setUserLists(data.BankFund);
-            setOriginalUserLists(data.BankFund);
+            groupByMonth(data.BankFund);
           }
         });
     } catch (e: any) {
       console.log(e);
     }
+  };
+
+  const groupByMonth = (list: FundDetailsProps[]) => {
+    const grouped: any = {};
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    let currentMonthKey = "";
+    let netAmount = 0;
+
+    list.forEach((item) => {
+      const date = new Date(item.refbfTransactionDate);
+      const monthYear = date.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      }); // e.g. "May 2025"
+
+      const amount = parseFloat(item.refbfTransactionAmount) || 0;
+      const isCredit = item.refbfTrasactionType.toLowerCase() === "credit";
+      const signedAmount = isCredit ? amount : -amount;
+
+      if (!grouped[monthYear]) {
+        grouped[monthYear] = {
+          transactions: [],
+          netAmount: 0,
+        };
+      }
+
+      grouped[monthYear].transactions.push(item);
+      grouped[monthYear].netAmount += signedAmount;
+
+      if (
+        date.getMonth() === currentMonth &&
+        date.getFullYear() === currentYear
+      ) {
+        currentMonthKey = monthYear;
+        netAmount += signedAmount;
+      }
+    });
+
+    setMonthlyData(grouped);
+    setCurrentMonthSummary({
+      label: currentMonthKey,
+      netAmount: parseFloat(netAmount.toFixed(2)),
+    });
   };
 
   useEffect(() => {
@@ -84,7 +129,7 @@ const BankMgntFunds: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/bank" mode="md"></IonBackButton>
+            <IonBackButton defaultHref="/bank" mode="md" />
           </IonButtons>
           <IonTitle>Funds</IonTitle>
         </IonToolbar>
@@ -92,41 +137,62 @@ const BankMgntFunds: React.FC = () => {
 
       <IonContent>
         <div className="recyclerContent p-2">
+          {/* Top Monthly Summary */}
           <div className="flex align-items-center justify-content-between">
             <div className="flex flex-column">
-              <p>Year</p>
-              <p>Month</p>
+              <p>{currentMonthSummary.label.split(" ")[0]}</p>
+              <p>{currentMonthSummary.label.split(" ")[1]}</p>
             </div>
-            <div className="totalAmt">INR</div>
+            <div className="totalAmt">
+              INR {currentMonthSummary.netAmount >= 0 ? "+" : ""}
+              {currentMonthSummary.netAmount}
+            </div>
           </div>
+
           <div className="transactionData">
-            <div className="flex p-2 shadow-1 p-3 my-2 border-round-md">
+            {userLists.map((item, idx) => (
               <div
-                style={{
-                  width: "40px",
-                  height: "35px",
-                  borderRadius: "50%",
-                  background: "#3a3a3e",
-                  color: "white",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                }}
+                key={idx}
+                className="flex p-2 shadow-1 p-3 my-2 border-round-md"
               >
-                C
-              </div>
-              <div className="pl-3 flex w-full align-items-center justify-content-between">
-                <div className="flex flex-column">
-                  <p>Fund Type</p>
-                  <p>Date - DD-MM-YYYY</p>
+                <div
+                  style={{
+                    width: "40px",
+                    height: "35px",
+                    borderRadius: "50%",
+                    background: "#3a3a3e",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                  }}
+                >
+                  {item.refFundType.charAt(0).toUpperCase()}
                 </div>
-                <div className="amount">
-                  <p>Amount</p>
+                <div className="pl-3 flex w-full align-items-center justify-content-between">
+                  <div className="flex flex-column">
+                    <p>{item.refFundType}</p>
+                    <p>{item.createdAt}</p>
+                  </div>
+                  <div className="amount">
+                    <p
+                      style={{
+                        color:
+                          item.refbfTrasactionType.toLowerCase() === "debit"
+                            ? "red"
+                            : "green",
+                      }}
+                    >
+                      {item.refbfTrasactionType.toLowerCase() === "debit"
+                        ? `-₹${item.refbfTransactionAmount}`
+                        : `+₹${item.refbfTransactionAmount}`}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </IonContent>
