@@ -42,6 +42,12 @@ import BankMgntProducts from "../../components/BankMgntProducts/BankMgntProducts
 import AddNewProduct from "../../components/BankMgntProducts/AddNewProduct";
 import EditExistingProduct from "../../components/BankMgntProducts/EditExistingProduct";
 import LoanMenuModal from "../../components/LoanMenuModal/LoanMenuModal";
+import LoanUserRepayment from "../../components/LoanUserRepayment/LoanUserRepayment";
+import LoanNewCreation from "../../components/LoanNewCreation/LoanNewCreation";
+import LoanViewDetails from "../../components/LoanViewDetails/LoanViewDetails";
+import LoanAdminNewCreation from "../../components/LoanAdminNewCreation/LoanAdminNewCreation";
+import LoanAdminRepayment from "../../components/LoanAdminRepayment/LoanAdminRepayment";
+import LoanViewAdminDetails from "../../components/LoanViewAdminDetails/LoanViewAdminDetails";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
@@ -131,6 +137,26 @@ const MainRoutes: React.FC = () => {
           </PrivateRoute>
           <PrivateRoute path="/editProductDetails">
             <EditExistingProduct />
+          </PrivateRoute>
+
+          {/* LOAN ROUTES */}
+          <PrivateRoute path="/userLoanRepayment">
+            <LoanUserRepayment />
+          </PrivateRoute>
+          <PrivateRoute path="/userNewLoan">
+            <LoanNewCreation />
+          </PrivateRoute>
+          <PrivateRoute path="/userViewLoan">
+            <LoanViewDetails />
+          </PrivateRoute>
+          <PrivateRoute path="/adminLoanRepayment">
+            <LoanAdminRepayment />
+          </PrivateRoute>
+          <PrivateRoute path="/adminNewLoan">
+            <LoanAdminNewCreation />
+          </PrivateRoute>
+          <PrivateRoute path="/adminViewLoan">
+            <LoanViewAdminDetails />
           </PrivateRoute>
 
           <PrivateRoute exact path="/">
@@ -245,11 +271,11 @@ const MainRoutes: React.FC = () => {
         isOpen={showModal}
         onDidDismiss={() => setShowModal(false)}
         keepContentsMounted={true}
-        initialBreakpoint={0.4}
-        breakpoints={[0, 0.4, 0.75]}
+        initialBreakpoint={0.6}
+        breakpoints={[0, 0.6]}
         className="calendar-modal"
       >
-        <LoanMenuModal />
+        <LoanMenuModal onClose={() => setShowModal(false)} />
       </IonModal>
     </div>
   );

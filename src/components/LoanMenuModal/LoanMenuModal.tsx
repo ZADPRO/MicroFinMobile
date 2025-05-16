@@ -2,7 +2,21 @@ import { IonAvatar, IonChip, IonLabel } from "@ionic/react";
 import { Divider } from "primereact/divider";
 import React from "react";
 
-const LoanMenuModal: React.FC = () => {
+import { useIonRouter } from "@ionic/react";
+
+type LoanMenuModalProps = {
+  onClose: () => void;
+};
+
+const LoanMenuModal: React.FC<LoanMenuModalProps> = ({ onClose }) => {
+  // ION ROUTER FROM MODAL FOR LOAN NAVIGATION
+  const router = useIonRouter();
+
+  const handleNavigation = (path: string) => {
+    router.push(path, "forward", "push");
+    onClose();
+  };
+
   return (
     <div>
       <div
@@ -14,7 +28,10 @@ const LoanMenuModal: React.FC = () => {
       >
         <IonLabel>User</IonLabel>
         <div className="flex flex-wrap loanChips">
-          <IonChip outline={true}>
+          <IonChip
+            outline={true}
+            onClick={() => handleNavigation("/userLoanRepayment")}
+          >
             {" "}
             <IonAvatar>
               <img
@@ -24,7 +41,10 @@ const LoanMenuModal: React.FC = () => {
             </IonAvatar>
             <IonLabel>Repayment</IonLabel>
           </IonChip>
-          <IonChip outline={true}>
+          <IonChip
+            outline={true}
+            onClick={() => handleNavigation("/userNewLoan")}
+          >
             {" "}
             <IonAvatar>
               <img
@@ -34,7 +54,10 @@ const LoanMenuModal: React.FC = () => {
             </IonAvatar>
             <IonLabel>New Loan</IonLabel>
           </IonChip>
-          <IonChip outline={true}>
+          <IonChip
+            outline={true}
+            onClick={() => handleNavigation("/userViewLoan")}
+          >
             {" "}
             <IonAvatar>
               <img
@@ -48,7 +71,10 @@ const LoanMenuModal: React.FC = () => {
         <Divider />
         <IonLabel>Admin</IonLabel>
         <div className="flex flex-wrap loanChips">
-          <IonChip outline={true}>
+          <IonChip
+            outline={true}
+            onClick={() => handleNavigation("/adminLoanRepayment")}
+          >
             {" "}
             <IonAvatar>
               <img
@@ -58,7 +84,10 @@ const LoanMenuModal: React.FC = () => {
             </IonAvatar>
             <IonLabel>Repayment</IonLabel>
           </IonChip>
-          <IonChip outline={true}>
+          <IonChip
+            outline={true}
+            onClick={() => handleNavigation("/adminNewLoan")}
+          >
             {" "}
             <IonAvatar>
               <img
@@ -68,7 +97,10 @@ const LoanMenuModal: React.FC = () => {
             </IonAvatar>
             <IonLabel>New Loan</IonLabel>
           </IonChip>
-          <IonChip outline={true}>
+          <IonChip
+            outline={true}
+            onClick={() => handleNavigation("/adminViewLoan")}
+          >
             {" "}
             <IonAvatar>
               <img

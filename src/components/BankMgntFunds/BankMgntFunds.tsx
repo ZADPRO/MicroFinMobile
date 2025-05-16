@@ -63,7 +63,7 @@ const BankMgntFunds: React.FC = () => {
             "Content-Type": "application/json",
           },
         })
-        .then((response: any) => {
+        .then((response) => {
           const data = decrypt(
             response.data[1],
             response.data[0],
