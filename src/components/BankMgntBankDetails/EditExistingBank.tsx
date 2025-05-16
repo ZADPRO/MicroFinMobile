@@ -52,8 +52,9 @@ const EditExistingBank: React.FC = () => {
 
   //   CAPTURE EXISTING BANK DATA STATE
   const location = useLocation();
-  const bankItem = location.state?.bankItem;
-  console.log("bankItem", bankItem);
+  const bankItem =
+    location.state?.bankItem ||
+    JSON.parse(localStorage.getItem("editBankItem") || "null");
 
   // USE HISTORY
   const history = useHistory();
@@ -98,9 +99,9 @@ const EditExistingBank: React.FC = () => {
     try {
       axios
         .post(
-          import.meta.env.VITE_API_URL + "/adminRoutes/addBankAccount",
+          import.meta.env.VITE_API_URL + "/adminRoutes/updateBankAccount",
           {
-            refBankId: inputs.refBankId,
+            refBankId: bankItem.refBankId,
             refBankName: inputs.refBankName,
             refBankAccountNo: inputs.refBankAccountNo,
             refBankAddress: inputs.refBankAddress,
@@ -197,6 +198,7 @@ const EditExistingBank: React.FC = () => {
               style={{
                 cursor: bankType === "Cash" ? "not-allowed" : "auto",
               }}
+              maxLength={16}
               onChange={(e: any) => {
                 handleInput(e);
               }}
@@ -221,9 +223,9 @@ const EditExistingBank: React.FC = () => {
           </div>
           <div className="mt-3">
             <InputText
-              id="refBankIFSCCode"
-              name="refBankIFSCCode"
-              value={inputs.refBankIFSCCode}
+              id="refIFSCsCode"
+              name="refIFSCsCode"
+              value={inputs.refIFSCsCode}
               placeholder="Enter IFSC Code"
               className="w-full"
               disabled={bankType === "Cash"}
@@ -240,7 +242,7 @@ const EditExistingBank: React.FC = () => {
             className="px-5 mt-3 submitButton w-full"
             onClick={handleNewUser}
           >
-            Submit
+            Update
           </button>
         </div>
       </IonContent>

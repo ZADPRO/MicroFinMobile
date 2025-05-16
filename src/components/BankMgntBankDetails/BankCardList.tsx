@@ -23,10 +23,9 @@ interface Props {
 const BankCardList: React.FC<Props> = ({ userLists }) => {
   const history = useHistory();
   const handleEditBankData = (item: BankAcDetails) => {
-    history.push({
-      pathname: "/editBank",
-      state: { bankItem: item },
-    });
+    // In the previous page when navigating to EditExistingBank:
+    history.push("/editBank", { item });
+    localStorage.setItem("editBankItem", JSON.stringify(item));
   };
 
   return (
