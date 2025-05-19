@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import decrypt from "../../services/helper";
 
+import { IonRow, IonCol } from "@ionic/react";
+
 interface UserLoanRepaymentProps {
   InteresePay: string;
   isInterestFirst: boolean;
@@ -103,58 +105,99 @@ const LoanDetails: React.FC<{ userData: UserDataProps }> = ({ userData }) => {
           {userData.refUserFname} {userData.refUserLname}
         </p>
         <p className="text-center mt-2">
-          <b>Mobile:</b> {userData.refUserMobileNo}
+          <b>Mobile</b> {userData.refUserMobileNo}
         </p>
         <p className="mt-3 uppercase underline font-bold">Loan Details</p>
-        <p className="mt-3">
-          <b>Payment Month</b>: {loanDetails?.refPaymentDate}
-        </p>
-        <p className="mt-2">
-          <b>Total Amount</b>: {loanDetails?.refBalanceAmt}
-        </p>
-        <p className="mt-2">
-          <b>Balance Amount</b>: {loanDetails?.refLoanAmount}
-        </p>
-        <p className="mt-2">
-          <b>Loan Duration</b>: {loanDetails?.refProductDuration}
-        </p>
-
-        <p className="mt-2">
-          <b>Interest</b>: {loanDetails?.refProductInterest} %
-        </p>
-        <p className="mt-2">
-          <b>Re-Payment Type</b>: {loanDetails?.refRepaymentTypeName}
-        </p>
-        <p className="mt-2">
-          <b>Interest Paid Initial</b>:{" "}
-          {loanDetails?.isInterestFirst === true ? "Yes" : "No"}
-        </p>
-        <p className="mt-2">
-          <b>No of Month Paid First</b>: {loanDetails?.refInterestMonthCount}
-        </p>
-        <p className="mt-2">
-          <b>Initial Interest</b>: ₹ {loanDetails?.refInitialInterest}
-        </p>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Payment Month</b>
+          </IonCol>
+          <IonCol>{loanDetails?.refPaymentDate}</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Total Amount</b>
+          </IonCol>
+          <IonCol>₹ {loanDetails?.refBalanceAmt}</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Balance Amount</b>
+          </IonCol>
+          <IonCol>₹ {loanDetails?.refLoanAmount}</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Loan Duration</b>
+          </IonCol>
+          <IonCol>{loanDetails?.refProductDuration} months</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Interest</b>
+          </IonCol>
+          <IonCol>{loanDetails?.refProductInterest}%</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Repayment Type</b>
+          </IonCol>
+          <IonCol>{loanDetails?.refRepaymentTypeName}</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Interest Paid Initial</b>
+          </IonCol>
+          <IonCol>{loanDetails?.isInterestFirst ? "Yes" : "No"}</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>No. of Months Paid First</b>
+          </IonCol>
+          <IonCol>{loanDetails?.refInterestMonthCount}</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Initial Interest</b>
+          </IonCol>
+          <IonCol>₹ {loanDetails?.refInitialInterest}</IonCol>
+        </IonRow>
 
         <p className="mt-3 uppercase underline font-bold">Current Details</p>
-        <p className="mt-2">
-          <b>Loan Get Date</b>: {loanDetails?.refLoanStartDate}
-        </p>
-        <p className="mt-2">
-          <b>Loan Start Month</b>:{" "}
-          {loanDetails?.refRepaymentStartDate
-            ? formatToFirstOfMonth(loanDetails.refRepaymentStartDate)
-            : " -"}
-        </p>
-        <p className="mt-2">
-          <b>Loan End Month</b>: {loanDetails?.refLoanDueDate}
-        </p>
-        <p className="mt-2">
-          <b>Total Interst Paid</b>: ₹ {loanDetails?.totalInterest}
-        </p>
-        <p className="mt-2">
-          <b>Total Principal Paid</b>: ₹ {loanDetails?.totalPrincipal}
-        </p>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Loan Get Date</b>
+          </IonCol>
+          <IonCol>{loanDetails?.refLoanStartDate}</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Loan Start Month</b>
+          </IonCol>
+          <IonCol>
+            {loanDetails?.refRepaymentStartDate
+              ? formatToFirstOfMonth(loanDetails.refRepaymentStartDate)
+              : "-"}
+          </IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Loan End Month</b>
+          </IonCol>
+          <IonCol>{loanDetails?.refLoanDueDate}</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Total Interest Paid</b>
+          </IonCol>
+          <IonCol>₹ {loanDetails?.totalInterest}</IonCol>
+        </IonRow>
+        <IonRow className="mt-2">
+          <IonCol>
+            <b>Total Principal Paid</b>
+          </IonCol>
+          <IonCol>₹ {loanDetails?.totalPrincipal}</IonCol>
+        </IonRow>
       </div>
     </div>
   );

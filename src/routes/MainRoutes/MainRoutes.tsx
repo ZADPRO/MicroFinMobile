@@ -7,6 +7,7 @@ import {
   IonTabButton,
   IonTabs,
 } from "@ionic/react";
+import "../../pages/04-Loan/Loan.css";
 import React, { useState } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 import {

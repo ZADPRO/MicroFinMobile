@@ -1,0 +1,11 @@
+.status-paid {
+  color: green;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.status-unpaid {
+  color: red;
+  font-weight: bold;
+  text-transform: capitalize;
+}
