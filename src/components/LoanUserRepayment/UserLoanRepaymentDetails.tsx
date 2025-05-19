@@ -17,7 +17,26 @@ import LoanDetails from "./LoanDetails";
 import Repayment from "./Repayment";
 import Followup from "./Followup";
 import Audit from "./Audit";
-import { useLocation } from "react-router";
+import { useHistory, useLocation } from "react-router";
+
+interface UserDataProps {
+  refCustId: string;
+  refLoanAmount: string;
+  refLoanId: number;
+  refPaymentDate: string;
+  refProductDuration: string;
+  refProductInterest: string;
+  refProductName: string;
+  refRpayId: number;
+  refUserAddress: string;
+  refUserDistrict: string;
+  refUserFname: string;
+  refUserId: number;
+  refUserLname: string;
+  refUserMobileNo: string;
+  refUserPincode: string;
+  refUserState: string;
+}
 
 const UserLoanRepaymentDetails: React.FC = () => {
   // STATUS BAR
@@ -31,11 +50,27 @@ const UserLoanRepaymentDetails: React.FC = () => {
   }, []);
 
   // GET THE DATA FROM STATE
+  const history = useHistory();
   const location = useLocation();
   const { userData } = location.state || {};
+  useEffect(() => {
+    if (!userData) {
+      history.replace("/userLoanRepayment"); // or show an error page
+    }
+  }, [userData, history]);
 
   // HANDLE SEGMENTS
   const [selectedSegment, setSelectedSegment] = useState<string>("loanDetails");
+
+  if (!userData) {
+    return (
+      <IonPage>
+        <IonContent className="ion-padding">
+          <p>Error: No user data found. Redirecting...</p>
+        </IonContent>
+      </IonPage>
+    );
+  }
 
   return (
     <IonPage>
@@ -47,7 +82,7 @@ const UserLoanRepaymentDetails: React.FC = () => {
               mode="md"
             ></IonBackButton>
           </IonButtons>
-          <IonTitle>Loan Repayment Details</IonTitle>
+          <IonTitle>{userData.refCustId}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -75,10 +110,12 @@ const UserLoanRepaymentDetails: React.FC = () => {
             </IonSegmentButton>
           </IonSegment>
 
-          {selectedSegment === "loanDetails" && <LoanDetails />}
-          {selectedSegment === "repayment" && <Repayment />}
-          {selectedSegment === "followup" && <Followup />}
-          {selectedSegment === "audit" && <Audit />}
+          {selectedSegment === "loanDetails" && (
+            <LoanDetails userData={userData} />
+          )}
+          {selectedSegment === "repayment" && <Repayment userData={userData} />}
+          {selectedSegment === "followup" && <Followup userData={userData} />}
+          {selectedSegment === "audit" && <Audit userData={userData} />}
         </div>
       </IonContent>
     </IonPage>
