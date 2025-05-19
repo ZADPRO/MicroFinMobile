@@ -2,6 +2,8 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
+  IonFab,
+  IonFabButton,
   IonHeader,
   IonIcon,
   IonModal,
@@ -13,7 +15,8 @@ import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
 import decrypt from "../../services/helper";
-import { funnel } from "ionicons/icons";
+import { add, funnel } from "ionicons/icons";
+import { useHistory } from "react-router";
 
 interface FundDetailsProps {
   createdAt: string;
@@ -42,6 +45,9 @@ const BankMgntFunds: React.FC = () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
   }, []);
+
+  // HISTORY NAV
+  const history = useHistory();
 
   // USER DATA HANDLER
   const [userLists, setUserLists] = useState<FundDetailsProps[]>([]);
@@ -122,6 +128,7 @@ const BankMgntFunds: React.FC = () => {
     });
 
     setMonthlyData(grouped);
+    console.log("grouped", grouped);
     setCurrentMonthSummary({
       label: currentMonthKey,
       netAmount: parseFloat(netAmount.toFixed(2)),
@@ -308,6 +315,13 @@ const BankMgntFunds: React.FC = () => {
               </div>
             ))}
         </div>
+
+        {/* ADD NEW FUNDS */}
+        <IonFab slot="fixed" vertical="bottom" horizontal="end">
+          <IonFabButton onClick={() => history.push("/addNewFunds")}>
+            <IonIcon icon={add}></IonIcon>
+          </IonFabButton>
+        </IonFab>
 
         <IonModal
           isOpen={showModal}

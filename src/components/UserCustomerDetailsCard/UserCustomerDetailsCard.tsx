@@ -1,8 +1,7 @@
 import { IonList } from "@ionic/react";
-import React, { useState } from "react";
+import React from "react";
 import userImg from "../../assets/users/userImg.png";
 import { Divider } from "primereact/divider";
-import { InputSwitch } from "primereact/inputswitch";
 import { useHistory } from "react-router";
 
 interface UserCustomerDetailsCardProps {
@@ -20,13 +19,6 @@ const UserCustomerDetailsCard: React.FC<UserCustomerDetailsCardProps> = ({
   refUserMobileNo,
   refActiveStatus,
 }) => {
-  const [isActive, setIsActive] = useState(refActiveStatus === "active");
-  console.log("refActiveStatus", refActiveStatus);
-
-  const handleStatusToggle = (e: boolean) => {
-    setIsActive(e);
-  };
-
   const history = useHistory();
 
   const handleCardClick = () => {
@@ -50,11 +42,14 @@ const UserCustomerDetailsCard: React.FC<UserCustomerDetailsCardProps> = ({
                 </b>
               </p>
               <div className="flex align-items-center gap-2">
-                <InputSwitch
-                  checked={isActive}
-                  disabled
-                  onChange={(e) => handleStatusToggle(e.value)}
-                />
+                <p
+                  style={{
+                    color: refActiveStatus === "active" ? "green" : "red",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {refActiveStatus === "active" ? "ACTIVE" : "INACTIVE "}
+                </p>
               </div>
             </div>
             <div className="flex w-full pl-3 pt-1">

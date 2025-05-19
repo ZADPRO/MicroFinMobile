@@ -48,6 +48,8 @@ import LoanViewDetails from "../../components/LoanViewDetails/LoanViewDetails";
 import LoanAdminNewCreation from "../../components/LoanAdminNewCreation/LoanAdminNewCreation";
 import LoanAdminRepayment from "../../components/LoanAdminRepayment/LoanAdminRepayment";
 import LoanViewAdminDetails from "../../components/LoanViewAdminDetails/LoanViewAdminDetails";
+import AddNewFunds from "../../components/BankMgntFunds/AddNewFunds";
+import UserLoanRepaymentDetails from "../../components/LoanUserRepayment/UserLoanRepaymentDetails";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
@@ -128,6 +130,9 @@ const MainRoutes: React.FC = () => {
           <PrivateRoute path="/expenseDetails">
             <BankMgntExpense />
           </PrivateRoute>
+          <PrivateRoute path="/addNewFunds">
+            <AddNewFunds />
+          </PrivateRoute>
 
           <PrivateRoute path="/productDetails">
             <BankMgntProducts />
@@ -143,6 +148,10 @@ const MainRoutes: React.FC = () => {
           <PrivateRoute path="/userLoanRepayment">
             <LoanUserRepayment />
           </PrivateRoute>
+          <PrivateRoute path="/userLoanRepaymentDetails">
+            <UserLoanRepaymentDetails />
+          </PrivateRoute>
+
           <PrivateRoute path="/userNewLoan">
             <LoanNewCreation />
           </PrivateRoute>
