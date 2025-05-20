@@ -15,6 +15,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { calendarOutline } from "ionicons/icons";
+import { useHistory } from "react-router";
 
 interface UserLoanDetailsProps {
   refCustId: string;
@@ -43,6 +44,9 @@ const LoanViewDetails: React.FC = () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
   }, []);
+
+  // NAVIGATION STATES
+  const history = useHistory();
 
   // STATES FOR USER DATA
   const [userLists, setUserLists] = useState<UserLoanDetailsProps[] | []>([]);
@@ -125,6 +129,11 @@ const LoanViewDetails: React.FC = () => {
               return (
                 <div
                   key={index}
+                  onClick={() =>
+                    history.push("/viewIndividualUserLoan", {
+                      userData: item,
+                    })
+                  }
                   className="flex p-2 shadow-3 p-3 my-2 border-round-md align-items-center"
                 >
                   <div
