@@ -242,6 +242,7 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
               max={parseFloat(loanDetails?.refBalanceAmt ?? "0")} // ✅ convert to number
               currency="INR"
               className="w-full mt-3"
+              disabled={loanData?.refLoanStatus !== "opened"}
               currencyDisplay="symbol"
               locale="en-IN"
               onChange={(e: any) => {
@@ -262,6 +263,7 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
                   inputId="bankModeType1"
                   name="Bank"
                   value="Bank"
+                  disabled={loanData?.refLoanStatus !== "opened"}
                   onChange={(e: RadioButtonChangeEvent) =>
                     setBankModeType(e.value)
                   }
@@ -274,6 +276,7 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
               <div className="flex align-items-center">
                 <RadioButton
                   inputId="bankModeType2"
+                  disabled={loanData?.refLoanStatus !== "opened"}
                   name="Cash"
                   value="Cash"
                   onChange={(e: RadioButtonChangeEvent) =>
@@ -305,6 +308,7 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
                   (bankModeType === "Cash" && item.refAccountType === 2)
               )}
               optionValue="value"
+              disabled={loanData?.refLoanStatus !== "opened"}
               optionLabel="name"
               placeholder="Select a Bank"
               className="w-full mt-3"
@@ -313,6 +317,7 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
             <button
               className="px-5 mt-3 submitButton w-full"
               onClick={loanUpdate}
+              disabled={loanData?.refLoanStatus !== "opened"}
             >
               Submit
             </button>
