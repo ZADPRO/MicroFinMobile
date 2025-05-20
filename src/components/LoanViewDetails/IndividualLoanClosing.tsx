@@ -1,4 +1,13 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import decrypt from "../../services/helper";
+import { IonCol, IonIcon, IonLabel, IonModal, IonRow } from "@ionic/react";
+import { informationCircleOutline } from "ionicons/icons";
+import { InputNumber } from "primereact/inputnumber";
+import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
+import { Message } from "primereact/message";
+import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
+import { useHistory } from "react-router";
 
 interface IndividualLoanAuditProps {
   loanData: {
@@ -19,13 +28,423 @@ interface IndividualLoanAuditProps {
   };
 }
 
+interface setUserLoanProps {
+  refLoanAmount: string;
+  refLoanId: number;
+  refProductDuration: string;
+  refProductInterest: string;
+}
+
+interface BankDetailsReponseProps {
+  refAccountType: number;
+  refAccountTypeName: string;
+  refBankAccountNo: string;
+  refBankId: number;
+  refBankName: string;
+  refIFSCsCode: string;
+}
+
+interface MatchedLoanDetailsProps {
+  isInterestFirst: boolean;
+  refBalanceAmt: string;
+  refInitialInterest: string;
+  refInterestMonthCount: number;
+  refLoanAmount: string;
+  refLoanDueDate: string;
+  refLoanId: number;
+  refLoanStartDate: string;
+  refLoanStatus: string;
+  refProductDuration: string;
+  refProductInterest: string;
+  refProductName: string;
+  refRepaymentStartDate: string;
+  refRepaymentTypeName: string;
+  totalInterest: string;
+  totalPrincipal: string;
+}
+
 const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
   loanData,
 }) => {
-  console.log("userData", loanData);
+  // NAVIGATION HANDLER
+  const history = useHistory();
+  // MODLA STATES HANDLED FOR AUDIT PAGE
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  // USE STATE FOR LOAN CLOSING AUDIT
+  const [userLoan, setUserLoan] = useState<setUserLoanProps[]>([]);
+  const [selectedLoan, setSelectedLoan] = useState<number | null>();
+  const [bankModeType, setBankModeType] = useState<string>("");
+  const [loanDetails, setLoanDetails] =
+    useState<MatchedLoanDetailsProps | null>(null);
+  const [showCard, setShowCard] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const [errorShow, setErrorShow] = useState(false);
+  const [loanAmt, setLoanAmt] = useState<number | null>();
+  const [bankDetailsResponse, setBankDetailsReponse] = useState<
+    BankDetailsReponseProps[] | []
+  >([]);
+  const [bankID, setBankid] = useState<number | null>();
+
+  // GET ALL LOAN DATA FROM DB BY PASSING THE LOAN ID
+  const getLoanDatas = async (LoanId: number) => {
+    console.log("LoanId", LoanId);
+    axios
+      .post(
+        import.meta.env.VITE_API_URL + "/rePayment/loanCloseData",
+        {
+          LoanId: LoanId,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        const data = decrypt(
+          response.data[1],
+          response.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        console.log("data line ------ 278", data);
+        localStorage.setItem("token", "Bearer " + data.token);
+
+        if (data.success) {
+          const matchedLoan = data.data.find(
+            (item) => item.refLoanId === LoanId
+          );
+          console.log("matchedLoan", matchedLoan);
+          setLoanDetails(matchedLoan);
+          const options = data.bank.map((d: any) => ({
+            name: `Name : ${d.refBankName} - A/C : ${d.refBankAccountNo} - IFSC's : ${d.refIFSCsCode}`,
+            value: d.refBankId,
+            refAccountType: d.refAccountType,
+          }));
+          console.log("options", options);
+          setBankDetailsReponse(options);
+          setShowCard(true);
+        }
+      });
+  };
+
+  // GET ALL USER LOAN DATA - FOR LOAN CLOSING
+  const getUserLoanData = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/adminRoutes/addLoanOption`,
+        { userId: loanData.refUserId },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = decrypt(
+        response.data[1],
+        response.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+      localStorage.setItem("token", "Bearer " + data.token);
+
+      console.log("data", data);
+      if (data.success) {
+        const options = data.data.map((d: any) => ({
+          name: `Loan Amt : ${d.refLoanAmount} - Interest : ${d.refProductInterest} - Duration : ${d.refProductDuration}`,
+          value: d.refLoanId,
+        }));
+        setUserLoan(options);
+      }
+    } catch (error) {
+      console.error("Error loading loan data", error);
+    }
+  };
+
+  // FORMAT DATE
+  function formatToFirstOfMonth(dateString: string): string {
+    const date = new Date(dateString);
+
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // months are 0-indexed
+    const day = "01";
+
+    return `${year}-${month}-${day}`;
+  }
+
+  // FORM SUBMIT TO CLOSE THE LOAN
+  const loanUpdate = () => {
+    console.log("selectedLoan", selectedLoan);
+    axios
+      .post(
+        import.meta.env.VITE_API_URL + "/rePayment/payPrincipalAmt",
+        {
+          LoanId: selectedLoan,
+          principalAmt: Number(loanAmt),
+          bankId: bankID,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        const data = decrypt(
+          response.data[1],
+          response.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        console.log("data line ------ 278", data);
+        localStorage.setItem("token", "Bearer " + data.token);
+
+        if (data.success) {
+          setSelectedLoan(null);
+          setLoanDetails(null);
+          setBankModeType("");
+          setBankid(null);
+          setLoanAmt(null);
+          history.goBack();
+        }
+      });
+  };
+
+  useEffect(() => {
+    setShowCard(true);
+    setErrorShow(false);
+    setSelectedLoan(loanData.refLoanId);
+    getLoanDatas(loanData.refLoanId);
+    getUserLoanData();
+  }, []);
+
   return (
     <div>
-      <div></div>
+      <div className="mt-3">
+        {showCard && (
+          <>
+            <div className="flex shadow-1 p-3 justify-content-between align-items-center">
+              <p>Product Name: {loanDetails?.refProductName}</p>
+              <IonIcon
+                icon={informationCircleOutline}
+                onClick={() => {
+                  setShowModal(true); // Open the modal
+                }}
+                style={{ fontSize: "22px" }}
+              />
+            </div>
+            <InputNumber
+              placeholder="Enter Balance Amount"
+              mode="currency"
+              value={loanAmt}
+              max={parseFloat(loanDetails?.refBalanceAmt ?? "0")} // ✅ convert to number
+              currency="INR"
+              className="w-full mt-3"
+              currencyDisplay="symbol"
+              locale="en-IN"
+              onChange={(e: any) => {
+                const enteredValue = e.value;
+                const maxValue = parseFloat(loanDetails?.refBalanceAmt ?? "0"); // ✅ safely parse
+
+                if (!isNaN(enteredValue) && enteredValue <= maxValue) {
+                  setLoanAmt(enteredValue);
+                } else {
+                  setLoanAmt(maxValue); // ✅ force value to max
+                }
+              }}
+            />
+
+            <div className="flex flex-wrap gap-3 mt-3">
+              <div className="flex align-items-center">
+                <RadioButton
+                  inputId="bankModeType1"
+                  name="Bank"
+                  value="Bank"
+                  onChange={(e: RadioButtonChangeEvent) =>
+                    setBankModeType(e.value)
+                  }
+                  checked={bankModeType === "Bank"}
+                />
+                <label htmlFor="bankModeType1" className="ml-2">
+                  Bank
+                </label>
+              </div>
+              <div className="flex align-items-center">
+                <RadioButton
+                  inputId="bankModeType2"
+                  name="Cash"
+                  value="Cash"
+                  onChange={(e: RadioButtonChangeEvent) =>
+                    setBankModeType(e.value)
+                  }
+                  checked={bankModeType === "Cash"}
+                />
+                <label htmlFor="bankModeType2" className="ml-2">
+                  Cash
+                </label>
+              </div>
+            </div>
+
+            {errorShow && (
+              <div className="flex mt-3 ">
+                <div className="flex-1">
+                  <Message text={errorMessage} />
+                </div>
+              </div>
+            )}
+
+            <Dropdown
+              value={bankID}
+              filter
+              onChange={(e: DropdownChangeEvent) => setBankid(e.value)}
+              options={bankDetailsResponse.filter(
+                (item) =>
+                  (bankModeType === "Bank" && item.refAccountType === 1) ||
+                  (bankModeType === "Cash" && item.refAccountType === 2)
+              )}
+              optionValue="value"
+              optionLabel="name"
+              placeholder="Select a Bank"
+              className="w-full mt-3"
+            />
+
+            <button
+              className="px-5 mt-3 submitButton w-full"
+              onClick={loanUpdate}
+            >
+              Submit
+            </button>
+          </>
+        )}
+      </div>
+
+      <IonModal
+        isOpen={showModal}
+        onDidDismiss={() => setShowModal(false)}
+        keepContentsMounted={true}
+        initialBreakpoint={0.75}
+        breakpoints={[0, 0.4, 0.75, 1]}
+      >
+        <div
+          className="p-3 flex flex-column overflow-auto"
+          style={{ marginBottom: "10px" }}
+        >
+          {loanDetails !== null && (
+            <>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Product Name</b>
+                </IonCol>
+                <IonCol>{loanDetails?.refProductName}</IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Loan Amount</b>
+                </IonCol>
+                <IonCol>{loanDetails?.refProductInterest}</IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Balance Amount</b>
+                </IonCol>
+                <IonCol>{loanDetails?.refBalanceAmt}</IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Loan Duration</b>
+                </IonCol>
+                <IonCol>{loanDetails?.refProductDuration} Month</IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Loan Interest</b>
+                </IonCol>
+                <IonCol>{loanDetails?.refProductInterest} %</IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Re-Payment Type</b>
+                </IonCol>
+                <IonCol>{loanDetails?.refRepaymentTypeName}</IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Interest Paid First</b>
+                </IonCol>
+                <IonCol>
+                  {loanDetails?.isInterestFirst === true ? "Yes" : "No"}
+                </IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>No of Month Paid First</b>
+                </IonCol>
+                <IonCol>
+                  {" "}
+                  {loanDetails?.refInterestMonthCount === null
+                    ? 0
+                    : loanDetails?.refInterestMonthCount}{" "}
+                  %
+                </IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Initial Interest</b>
+                </IonCol>
+                <IonCol>
+                  {" "}
+                  {loanDetails?.refInitialInterest === null
+                    ? 0
+                    : loanDetails?.refInitialInterest}{" "}
+                </IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Loan Get Date</b>
+                </IonCol>
+                <IonCol>{loanDetails?.refLoanStartDate}</IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Loan Start Month</b>
+                </IonCol>
+                <IonCol>
+                  {" "}
+                  {loanDetails?.refRepaymentStartDate
+                    ? formatToFirstOfMonth(loanDetails?.refRepaymentStartDate)
+                    : " -"}
+                </IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Loan End Month</b>
+                </IonCol>
+                <IonCol>{loanDetails?.refLoanDueDate}</IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Total Interest Paid</b>
+                </IonCol>
+                <IonCol>{loanDetails?.totalInterest}</IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Total Principal Paid</b>
+                </IonCol>
+                <IonCol>{loanDetails?.totalPrincipal}</IonCol>
+              </IonRow>
+              <IonRow className="mt-2">
+                <IonCol>
+                  <b>Loan Status</b>
+                </IonCol>
+                <IonCol>{loanDetails?.refLoanStatus}</IonCol>
+              </IonRow>
+            </>
+          )}
+        </div>
+      </IonModal>
     </div>
   );
 };

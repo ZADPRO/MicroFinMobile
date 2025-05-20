@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import axios from "axios";
-import decrypt from "../../services/helper";
+import decrypt, { getDateAfterMonths } from "../../services/helper";
 import { Divider } from "primereact/divider";
 import { InputNumber } from "primereact/inputnumber";
 import {
@@ -26,6 +26,7 @@ import {
 import { Calendar } from "primereact/calendar";
 import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
 import { InputTextarea } from "primereact/inputtextarea";
+import { useHistory } from "react-router";
 
 interface LoanType {
   name: string;
@@ -107,6 +108,9 @@ const LoanNewCreation: React.FC = () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
   }, []);
+
+  // HANDLE NAVIGATION
+  const history = useHistory();
 
   // USER LOAN CREATION - STATES
   const today = new Date();
@@ -350,6 +354,68 @@ const LoanNewCreation: React.FC = () => {
       setShowForm(false);
       setShowLoanInfo(false);
     }
+  };
+
+  // HANDLE LOAN SUBMIT
+  const handelSubmit = () => {
+    console.log("selectedLoan", selectedLoan);
+    console.log("rePaymentDate", rePaymentDate);
+    axios
+      .post(
+        import.meta.env.VITE_API_URL + "/newLoan/CreateNewLoan",
+        {
+          refUserId: customerId,
+          refProductId: productId?.refProductId,
+          refLoanAmount: FinalLoanAmt.toFixed(2),
+          refLoanDueDate: getDateAfterMonths(
+            String(rePaymentDate),
+            parseInt(productId?.refProductDuration)
+          ),
+          refPayementType: "bank",
+          refRepaymentStartDate: rePaymentDate.toLocaleDateString("en-CA"),
+          refBankId: bankId?.refBankId,
+          refLoanBalance: FinalLoanAmt.toFixed(2),
+          isInterestFirst: interestFirst,
+          refExLoanId: selectedLoan,
+          refLoanExt: selectedLoanType,
+          refLoanStatus: 1,
+          refInterestMonthCount: monthCount,
+          refInitialInterest: initialInterestAmt.toFixed(2),
+          refRepaymentType: selectedRepaymentType,
+          refTotalInterest: (
+            (initialInterestAmt ?? 0) + (interestFirstAmt ?? 0)
+          ).toFixed(2),
+          refToUseAmt: parseFloat(
+            (
+              (newLoanAmt ?? 0) -
+              (initialInterestAmt ?? 0) -
+              (interestFirstAmt ?? 0)
+            ).toFixed(2)
+          ),
+          oldBalanceAmt: oldBalanceAmt ?? 0,
+          refDocFee: docFee,
+          refSecurity: security,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("response", response);
+        const data = decrypt(
+          response.data[1],
+          response.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        console.log("data line ----------- 269", data);
+        localStorage.setItem("token", "Bearer " + data.token);
+        if (data.success) {
+          history.goBack();
+        }
+      });
   };
 
   return (
@@ -770,7 +836,7 @@ const LoanNewCreation: React.FC = () => {
           {step >= 6 && (
             <button
               className="px-5 mt-3 submitButton w-full"
-              // onClick={handleNewUser}
+              onClick={handelSubmit}
             >
               Submit
             </button>
