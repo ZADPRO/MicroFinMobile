@@ -9,3 +9,31 @@
   font-weight: bold;
   text-transform: capitalize;
 }
+
+.loan-status-opened {
+  color: green;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.loan-status-closed {
+  color: red;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.loan-status-top-up {
+  color: #0000ff;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.loan-status-extend {
+  color: orange;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
