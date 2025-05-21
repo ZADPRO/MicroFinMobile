@@ -10,7 +10,11 @@ interface AuditDataProps {
   updatedBy: string;
 }
 
-const UserAudit: React.FC = ({ refUserId }) => {
+interface UserAuditProps {
+  refUserId: number;
+}
+
+const UserAudit: React.FC<UserAuditProps> = ({ refUserId }) => {
   console.log("refUserId", refUserId);
   const [audit, setAudit] = useState<AuditDataProps[] | []>([]);
 

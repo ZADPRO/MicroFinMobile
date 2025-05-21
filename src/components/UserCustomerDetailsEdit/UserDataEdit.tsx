@@ -1,11 +1,15 @@
-import React from 'react';
+import React from "react";
 
-const UserDataEdit: React.FC = () => {
-    return (
-        <div>
+interface UserAuditProps {
+  refUserId: number;
+}
 
-        </div>
-    );
+const UserDataEdit: React.FC<UserAuditProps> = ({ refUserId }) => {
+  return (
+    <div>
+      <div>{refUserId}</div>
+    </div>
+  );
 };
 
 export default UserDataEdit;

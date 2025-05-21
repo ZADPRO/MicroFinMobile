@@ -125,7 +125,10 @@ const UsersCustomerDetails: React.FC = () => {
       <IonContent>
         {filteredUsers.length > 0 ? (
           filteredUsers.map((data) => (
-            <UserCustomerDetailsCard key={data.refComId} {...data} />
+            <UserCustomerDetailsCard
+              key={data.refComId}
+              {...{ ...data, refPanPath: String(data.refPanPath) }}
+            />
           ))
         ) : (
           <p className="ion-text-center mt-4">No results found</p>

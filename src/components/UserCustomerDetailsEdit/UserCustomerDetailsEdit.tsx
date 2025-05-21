@@ -65,8 +65,12 @@ const UserCustomerDetailsEdit: React.FC = () => {
       </IonHeader>
       <IonContent>
         <div className="dashboardContentsTabSplit">
-          {selectedSegment === "userData" && <UserDataEdit />}
-          {selectedSegment === "reference" && <UserReferenceEdit />}
+          {selectedSegment === "userData" && (
+            <UserDataEdit refUserId={refUserId} />
+          )}
+          {selectedSegment === "reference" && (
+            <UserReferenceEdit refUserId={refUserId} />
+          )}
           {selectedSegment === "audit" && <UserAudit refUserId={refUserId} />}
         </div>
       </IonContent>
