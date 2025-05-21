@@ -1,6 +1,7 @@
 import { IonList } from "@ionic/react";
 import React from "react";
 import userImg from "../../assets/users/userImg.png";
+import { useHistory } from "react-router";
 
 interface UserAgentCardsProps {
   refUserFname: string;
@@ -8,6 +9,7 @@ interface UserAgentCardsProps {
   refActiveStatus: string;
   refCustId: string;
   refUserMobileNo: string;
+  refUserId: number;
 }
 
 const UserAgentCards: React.FC<UserAgentCardsProps> = ({
@@ -16,13 +18,18 @@ const UserAgentCards: React.FC<UserAgentCardsProps> = ({
   refActiveStatus,
   refCustId,
   refUserMobileNo,
+  refUserId,
 }) => {
+  const history = useHistory();
+  const handleCardClick = () => {
+    history.push("/editAgent", { refCustId, refUserId });
+  };
   return (
     <div>
       <IonList
         inset={true}
         className="bg-white p-3 rounded shadow-1"
-        // onClick={handleCardClick}
+        onClick={handleCardClick}
       >
         <div className="flex w-full">
           <img src={userImg} alt="User" width={70} />
