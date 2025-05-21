@@ -135,13 +135,15 @@ const UserReferenceEdit: React.FC<UserAuditProps> = ({ refUserId }) => {
             }
 
             setShowModal(false);
+            getAllReferenceData();
           }
         });
     } catch (e) {
       console.error("Error adding reference:", e);
     }
   };
-  useEffect(() => {
+
+  const getAllReferenceData = () => {
     try {
       axios
         .post(
@@ -174,6 +176,9 @@ const UserReferenceEdit: React.FC<UserAuditProps> = ({ refUserId }) => {
     } catch (e) {
       console.log(e);
     }
+  };
+  useEffect(() => {
+    getAllReferenceData();
   }, []);
 
   return (
