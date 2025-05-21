@@ -71,7 +71,7 @@ const Login: React.FC = () => {
         console.log("data", data);
         const profile = data.profile;
 
-        localStorage.setItem("JWTtoken", "Bearer " + data.token);
+        localStorage.setItem("token", "Bearer " + data.token);
         localStorage.setItem("loginStatus", "true");
         localStorage.setItem("profile", JSON.stringify(profile));
 
