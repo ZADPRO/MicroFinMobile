@@ -98,7 +98,9 @@ const UserListVendor: React.FC = () => {
                 <div
                   key={`${index}`}
                   onClick={() =>
-                    history.push("/editExistingVendor", { vendorData: item })
+                    history.push("/editExistingVendor", {
+                      vendorData: vendorList[index],
+                    })
                   }
                   className="flex p-2 shadow-3 p-3 my-2 border-round-md align-items-center"
                 >

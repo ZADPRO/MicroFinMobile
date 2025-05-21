@@ -26,6 +26,14 @@ const vendorTypeOptions = [
 ];
 
 const UserViewVendor: React.FC = () => {
+  const [vendorId, setVendorId] = useState<number | null>(null);
+  const [name, setName] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [vendorType, setVendorType] = useState<number | null>(null);
+  const [description, setDescription] = useState("");
+
   //   GET THE DATA FROM STATE
   const location = useLocation();
   const { vendorData } = location.state || {};
@@ -33,15 +41,17 @@ const UserViewVendor: React.FC = () => {
 
   // STATUS BAR
   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
-    StatusBar.setStyle({ style: Style.Dark });
+    if (vendorData) {
+      StatusBar.setOverlaysWebView({ overlay: false });
+      StatusBar.setStyle({ style: Style.Dark });
 
-    setVendorData();
+      setVendorData(); // This sets all input field states correctly
+    }
 
     return () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
-  }, [vendorData]);
+  }, [vendorData]); // Trigger only when vendorData is available
 
   //   HISTORY
   const history = useHistory();
@@ -80,14 +90,6 @@ const UserViewVendor: React.FC = () => {
     updated[index][field as keyof (typeof updated)[number]] = value;
     setAccountDetails(updated);
   };
-
-  const [vendorId, setVendorId] = useState<number | null>();
-  const [name, setName] = useState("");
-  const [contactNumber, setContactNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [vendorType, setVendorType] = useState<number | null>(null);
-  const [description, setDescription] = useState("");
 
   //   HANDLE UPDATE VENDOR
   const handleUpdate = async () => {
@@ -143,6 +145,7 @@ const UserViewVendor: React.FC = () => {
 
       console.log("data line ----- 195", data);
       if (data.success) {
+        history.goBack();
         console.log("data", data);
       }
     } catch (error) {
@@ -151,36 +154,56 @@ const UserViewVendor: React.FC = () => {
   };
 
   const setVendorData = () => {
-    console.log("vendorData", vendorData);
-    if (vendorData) {
-      setVendorId(vendorData.vendorId);
-      setName(vendorData.vendorName || "");
-      setContactNumber(vendorData.mobileNo || "");
-      setEmail(vendorData.emailId || "");
-      setAddress(vendorData.address || "");
-      setDescription(vendorData.description || "");
-      setVendorType(vendorData.vendorType || 1);
+    axios
+      .post(
+        import.meta.env.VITE_API_URL + "/adminLoan/vendor/details",
+        {
+          refVendorId: vendorData.refVendorId,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        const data = decrypt(
+          response.data[1],
+          response.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        localStorage.setItem("token", "Bearer " + data.token);
 
-      setAccountDetails(
-        vendorData.vendorBank && vendorData.vendorBank.length > 0
-          ? vendorData.vendorBank.map((detail: any) => ({
-              refAccountNo: detail.refAccountNo || "",
-              refIFSCCode: detail.refIFSCCode || "",
-              refBankName: detail.refBankName || "",
-              upiCode: detail.refUPICode || "",
-              refBankId: String(detail.refBankId) || "",
-            }))
-          : [
-              {
-                refAccountNo: "",
-                refIFSCCode: "",
-                refBankName: "",
-                upiCode: "",
-                refBankId: "",
-              },
-            ]
-      );
-    }
+        if (data.success) {
+          console.log("line ------- 87", data);
+          setVendorId(data.data.vendorId);
+          setName(data.data.vendorName);
+          setContactNumber(data.data.mobileNo || "");
+          setEmail(data.data.emailId || "");
+          setAddress(data.data.address || "");
+          setDescription(data.data.description || "");
+          setVendorType(data.data.vendorType || 1);
+
+          const accounts = data.data.vendorBank?.map((detail: any) => ({
+            refAccountNo: detail.refAccountNo || "",
+            refIFSCCode: detail.refIFSCCode || "",
+            refBankName: detail.refBankName || "",
+            upiCode: detail.refUPICode || "",
+            refBankId: String(detail.refBankId) || "",
+          })) || [
+            {
+              refAccountNo: "",
+              refIFSCCode: "",
+              refBankName: "",
+              upiCode: "",
+              refBankId: "",
+            },
+          ];
+
+          setAccountDetails(accounts);
+        }
+      });
   };
 
   return (
@@ -298,7 +321,7 @@ const UserViewVendor: React.FC = () => {
             </div>
           ))}
           <button className="px-5 submitButton w-full" onClick={handleUpdate}>
-            Submit
+            Update
           </button>
         </div>
       </IonContent>
