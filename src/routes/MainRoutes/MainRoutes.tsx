@@ -52,6 +52,7 @@ import LoanViewAdminDetails from "../../components/LoanViewAdminDetails/LoanView
 import AddNewFunds from "../../components/BankMgntFunds/AddNewFunds";
 import UserLoanRepaymentDetails from "../../components/LoanUserRepayment/UserLoanRepaymentDetails";
 import IndividualUserLoan from "../../components/LoanViewDetails/IndividualUserLoan";
+import UserAddAgent from "../../components/UserAddAgent/UserAddAgent";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
@@ -113,6 +114,9 @@ const MainRoutes: React.FC = () => {
           </PrivateRoute>
           <PrivateRoute path="/addAgentDetails">
             <UsersAgentDetails />
+          </PrivateRoute>
+          <PrivateRoute path="/addAgent">
+            <UserAddAgent />
           </PrivateRoute>
 
           {/* BANK ROUTES */}

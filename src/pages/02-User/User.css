@@ -8,3 +8,13 @@
   padding-bottom: 13px;
   border-radius: 6px;
 }
+
+.inputTypeStyles {
+  width: 100%;
+  padding: 10px 15px;
+  margin-top: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  outline: none; /* remove default browser outline */
+  transition: border-color 0.3s, box-shadow 0.3s;
+}

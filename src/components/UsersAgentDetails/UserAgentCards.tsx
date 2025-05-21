@@ -1,52 +1,28 @@
 import { IonList } from "@ionic/react";
 import React from "react";
 import userImg from "../../assets/users/userImg.png";
-import { useHistory } from "react-router";
 
-interface UserCustomerDetailsCardProps {
-  refCustId: string;
+interface UserAgentCardsProps {
   refUserFname: string;
   refUserLname: string;
+  refActiveStatus: string;
+  refCustId: string;
   refUserMobileNo: string;
-  refActiveStatus: string; // "Active" or "Inactive"
-  createdAt: string;
-  createdBy: string;
-  refAadharNo: string;
-  refAadharPath: string;
-  refComId: number;
-  refPanNo: string;
-  refPanPath: string;
-  refUserAddress: string;
-  refUserDOB: string;
-  refUserDistrict: string;
-  refUserEmail: string;
-  refUserId: number;
-  refUserPincode: string;
-  refUserProfile: string;
-  refUserRole: string;
-  refUserState: string;
 }
 
-const UserCustomerDetailsCard: React.FC<UserCustomerDetailsCardProps> = ({
-  refCustId,
+const UserAgentCards: React.FC<UserAgentCardsProps> = ({
   refUserFname,
   refUserLname,
-  refUserMobileNo,
   refActiveStatus,
-  refUserId,
+  refCustId,
+  refUserMobileNo,
 }) => {
-  const history = useHistory();
-
-  const handleCardClick = () => {
-    history.push("/viewUserDetails", { refCustId, refUserId });
-  };
-
   return (
     <div>
       <IonList
         inset={true}
         className="bg-white p-3 rounded shadow-1"
-        onClick={handleCardClick}
+        // onClick={handleCardClick}
       >
         <div className="flex w-full">
           <img src={userImg} alt="User" width={70} />
@@ -85,4 +61,4 @@ const UserCustomerDetailsCard: React.FC<UserCustomerDetailsCardProps> = ({
   );
 };
 
-export default UserCustomerDetailsCard;
+export default UserAgentCards;

@@ -15,9 +15,9 @@ import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
 import decrypt from "../../services/helper";
-import UserCustomerDetailsCard from "../UserCustomerDetailsCard/UserCustomerDetailsCard";
 import { add } from "ionicons/icons";
 import { useHistory } from "react-router";
+import UserAgentCards from "./UserAgentCards";
 
 interface UserListProps {
   createdAt: string;
@@ -72,7 +72,7 @@ const UsersAgentDetails: React.FC = () => {
             },
           }
         )
-        .then((response: any) => {
+        .then((response) => {
           const data = decrypt(
             response.data[1],
             response.data[0],
@@ -87,7 +87,7 @@ const UsersAgentDetails: React.FC = () => {
             console.log(data.data);
           }
         });
-    } catch (e: any) {
+    } catch (e) {
       console.log(e);
     }
   };
@@ -124,14 +124,14 @@ const UsersAgentDetails: React.FC = () => {
       <IonContent>
         {filteredUsers.length > 0 ? (
           filteredUsers.map((data) => (
-            <UserCustomerDetailsCard key={data.refComId} {...data} />
+            <UserAgentCards key={data.refComId} {...data} />
           ))
         ) : (
           <p className="ion-text-center mt-4">No results found</p>
         )}
 
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton onClick={() => history.push("/addUserDetails")}>
+          <IonFabButton onClick={() => history.push("/addAgent")}>
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonFab>
