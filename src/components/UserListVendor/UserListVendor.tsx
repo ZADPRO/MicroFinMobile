@@ -2,7 +2,10 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
+  IonFab,
+  IonFabButton,
   IonHeader,
+  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -12,6 +15,8 @@ import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
 import decrypt from "../../services/helper";
+import { add } from "ionicons/icons";
+import { useHistory } from "react-router";
 
 interface Vendor {
   refVendorId: number;
@@ -41,6 +46,9 @@ const UserListVendor: React.FC = () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
   }, []);
+
+  //   HISTORY PUSH
+  const history = useHistory();
 
   //   USE STATE TO GET THE VENDOR LISTS
   const [vendorList, setVendorList] = useState<Vendor[]>([]);
@@ -143,6 +151,12 @@ const UserListVendor: React.FC = () => {
             <div className="flex">No Data Found</div>
           )}
         </div>
+
+        <IonFab slot="fixed" vertical="bottom" horizontal="end">
+          <IonFabButton onClick={() => history.push("/addNewVendor")}>
+            <IonIcon icon={add}></IonIcon>
+          </IonFabButton>
+        </IonFab>
       </IonContent>
     </IonPage>
   );
