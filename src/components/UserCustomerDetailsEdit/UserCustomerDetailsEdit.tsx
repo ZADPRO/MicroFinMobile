@@ -29,7 +29,7 @@ const UserCustomerDetailsEdit: React.FC = () => {
 
   //   GET THE REF CUST ID FROM URL
   const location = useLocation();
-  const { refCustId } = location.state || {};
+  const { refCustId, refUserId } = location.state || {};
 
   //   SEGMENT VIEW HANDLER
   const [selectedSegment, setSelectedSegment] = useState<string>("userData");
@@ -43,9 +43,7 @@ const UserCustomerDetailsEdit: React.FC = () => {
           </IonButtons>
           <IonTitle>{refCustId || "Customer ID"}</IonTitle>
         </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <div className="dashboardContentsTabSplit">
+        <IonToolbar>
           <IonSegment
             value={selectedSegment}
             onIonChange={(e) => {
@@ -63,10 +61,13 @@ const UserCustomerDetailsEdit: React.FC = () => {
               <IonLabel style={{ fontSize: "14px" }}>Audit</IonLabel>
             </IonSegmentButton>
           </IonSegment>
-
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <div className="dashboardContentsTabSplit">
           {selectedSegment === "userData" && <UserDataEdit />}
           {selectedSegment === "reference" && <UserReferenceEdit />}
-          {selectedSegment === "audit" && <UserAudit />}
+          {selectedSegment === "audit" && <UserAudit refUserId={refUserId} />}
         </div>
       </IonContent>
     </IonPage>

@@ -72,7 +72,7 @@ const UsersCustomerDetails: React.FC = () => {
             },
           }
         )
-        .then((response: any) => {
+        .then((response) => {
           const data = decrypt(
             response.data[1],
             response.data[0],
@@ -85,7 +85,7 @@ const UsersCustomerDetails: React.FC = () => {
             setUserLists(data.data);
           }
         });
-    } catch (e: any) {
+    } catch (e) {
       console.log(e);
     }
   };
@@ -96,6 +96,7 @@ const UsersCustomerDetails: React.FC = () => {
 
   // Filtered user list based on searchTerm
   const filteredUsers = userLists.filter((user) => {
+    console.log("userLists", userLists);
     const fullName = `${user.refUserFname} ${user.refUserLname}`.toLowerCase();
     return (
       fullName.includes(searchTerm.toLowerCase()) ||

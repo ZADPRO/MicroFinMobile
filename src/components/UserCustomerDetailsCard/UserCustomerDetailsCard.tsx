@@ -1,7 +1,6 @@
 import { IonList } from "@ionic/react";
 import React from "react";
 import userImg from "../../assets/users/userImg.png";
-import { Divider } from "primereact/divider";
 import { useHistory } from "react-router";
 
 interface UserCustomerDetailsCardProps {
@@ -10,6 +9,22 @@ interface UserCustomerDetailsCardProps {
   refUserLname: string;
   refUserMobileNo: string;
   refActiveStatus: string; // "Active" or "Inactive"
+  createdAt: string;
+  createdBy: string;
+  refAadharNo: string;
+  refAadharPath: string;
+  refComId: number;
+  refPanNo: string;
+  refPanPath: string;
+  refUserAddress: string;
+  refUserDOB: string;
+  refUserDistrict: string;
+  refUserEmail: string;
+  refUserId: number;
+  refUserPincode: string;
+  refUserProfile: string;
+  refUserRole: string;
+  refUserState: string;
 }
 
 const UserCustomerDetailsCard: React.FC<UserCustomerDetailsCardProps> = ({
@@ -18,11 +33,27 @@ const UserCustomerDetailsCard: React.FC<UserCustomerDetailsCardProps> = ({
   refUserLname,
   refUserMobileNo,
   refActiveStatus,
+  createdAt,
+  createdBy,
+  refAadharNo,
+  refAadharPath,
+  refComId,
+  refPanNo,
+  refPanPath,
+  refUserAddress,
+  refUserDOB,
+  refUserDistrict,
+  refUserEmail,
+  refUserId,
+  refUserPincode,
+  refUserProfile,
+  refUserRole,
+  refUserState,
 }) => {
   const history = useHistory();
 
   const handleCardClick = () => {
-    history.push("/viewUserDetails", { refCustId });
+    history.push("/viewUserDetails", { refCustId, refUserId });
   };
 
   return (
@@ -54,7 +85,7 @@ const UserCustomerDetailsCard: React.FC<UserCustomerDetailsCardProps> = ({
             </div>
             <div className="flex w-full pl-3 pt-1">
               <p>
-                <b>Customer ID:</b> {refCustId}
+                <b>ID:</b> {refCustId}
               </p>
             </div>
             <div className="flex w-full pl-3 pt-1">
@@ -65,7 +96,6 @@ const UserCustomerDetailsCard: React.FC<UserCustomerDetailsCardProps> = ({
           </div>
         </div>
       </IonList>
-      <Divider />
     </div>
   );
 };

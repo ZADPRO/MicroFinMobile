@@ -27,7 +27,7 @@ const LoanAdminRepayment: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/user" mode="md"></IonBackButton>
           </IonButtons>
-          <IonTitle>Admin Loan Creation</IonTitle>
+          <IonTitle>Admin Repayment</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent></IonContent>
