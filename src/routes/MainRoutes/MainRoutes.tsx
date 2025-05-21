@@ -54,6 +54,7 @@ import UserLoanRepaymentDetails from "../../components/LoanUserRepayment/UserLoa
 import IndividualUserLoan from "../../components/LoanViewDetails/IndividualUserLoan";
 import UserAddAgent from "../../components/UserAddAgent/UserAddAgent";
 import UserAgentEdit from "../../components/UserAddAgent/UserAgentEdit";
+import UserListVendor from "../../components/UserListVendor/UserListVendor";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
@@ -107,6 +108,14 @@ const MainRoutes: React.FC = () => {
           </PrivateRoute>
           <PrivateRoute path="/viewUserDetails">
             <UserCustomerDetailsEdit />
+          </PrivateRoute>
+
+          {/* VENDOR ROUTES */}
+          <PrivateRoute path="/vendorLists">
+            <UserListVendor />
+          </PrivateRoute>
+          <PrivateRoute path="/vendorLists">
+            <UserListVendor />
           </PrivateRoute>
 
           {/* AGENT ROUTES */}

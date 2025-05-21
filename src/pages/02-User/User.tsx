@@ -31,7 +31,7 @@ const User: React.FC = () => {
   const reportData = [
     { imgSrc: userIcon, text: "Users", route: "/userList" },
     { imgSrc: agentIcon, text: "Agents", route: "/agentList" },
-    { imgSrc: userIcon, text: "Vendor", route: "/vendorList" },
+    { imgSrc: userIcon, text: "Vendor", route: "/vendorLists" },
   ];
 
   const handleNavigation = (route: string) => {
