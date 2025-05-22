@@ -214,6 +214,7 @@ const LoanNewCreation: React.FC = () => {
       localStorage.setItem("token", "Bearer " + data.token);
 
       if (data.success) {
+        console.log("data", data);
         const options = data.data.map((d: any) => ({
           name: `${d.refLoanAmount} - ${d.refProductInterest} - ${d.refProductDuration}`,
           value: d.refLoanId,

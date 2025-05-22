@@ -223,7 +223,10 @@ const Repayment: React.FC<{ userData: UserDataProps }> = ({ userData }) => {
         required
         className="w-full mt-3"
         inputId="percent"
-        value={rePaymentForm.BalanceAmount + rePaymentForm.interestAmt}
+        value={
+          rePaymentForm.BalanceAmount +
+          (rePaymentForm.interestStatus ? 0 : rePaymentForm.interestAmt)
+        }
         disabled
         prefix="&#8377; "
       />

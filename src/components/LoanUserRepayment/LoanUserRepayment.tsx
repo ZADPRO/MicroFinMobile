@@ -165,14 +165,15 @@ const LoanUserRepayment: React.FC = () => {
                 {item.refUserFname.charAt(0).toUpperCase()}
               </div>
               <div className="pl-3 flex flex-row w-full align-items-center justify-content-between">
-                <div className="contents">
-                  <p>{item.refCustId}</p>
-                  <p>
+                <div className="contents w-full">
+                  <div className="flex justify-content-between w-full">
+                    <p>{item.refCustId}</p>
+                    <p>{formatToYearMonth(item.refPaymentDate)}</p>
+                  </div>
+                  <p className="mt-2">
                     {item.refUserFname} {item.refUserLname}
                   </p>
-                </div>
-                <div className="monthDetails">
-                  <p>{formatToYearMonth(item.refPaymentDate)}</p>
+                  <p className="mt-2">₹{item.refLoanAmount}</p>
                 </div>
               </div>
             </div>

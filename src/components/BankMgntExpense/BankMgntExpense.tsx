@@ -27,7 +27,7 @@ const BankMgntExpense: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/bank" mode="md"></IonBackButton>
           </IonButtons>
-          <IonTitle>Bank Management</IonTitle>
+          <IonTitle>Expense Management</IonTitle>
         </IonToolbar>
       </IonHeader>
 
