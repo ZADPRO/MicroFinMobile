@@ -256,6 +256,58 @@ const UserAddCustomer: React.FC = () => {
 
   // ADD NEW CUSTOMER HANDLER
   const handleNewUser = async () => {
+    const {
+      fname,
+      lname,
+      dob,
+      status,
+      mobileno,
+      email,
+      aadharno,
+      panno,
+      address,
+      state,
+      district,
+      pincode,
+      password,
+    } = inputs;
+
+    // Add any field that must be filled before submitting
+    if (
+      !fname ||
+      !lname ||
+      !dob ||
+      !status ||
+      !mobileno ||
+      !email ||
+      !aadharno ||
+      !panno ||
+      !address ||
+      !state ||
+      !district ||
+      !pincode ||
+      !password
+    ) {
+      setToastMessage("Upload failed. Please fill all required fields.");
+      setShowToast(true);
+      return; // Stop execution here
+    }
+
+    // Optionally check references as well
+    for (const ref of references) {
+      if (
+        !ref.refRName ||
+        !ref.refRPhoneNumber ||
+        !ref.refRAddress ||
+        !ref.refAadharNumber ||
+        !ref.refPanNumber
+      ) {
+        setToastMessage("Upload failed. Please fill all reference fields.");
+        setShowToast(true);
+        return;
+      }
+    }
+
     try {
       axios
         .post(

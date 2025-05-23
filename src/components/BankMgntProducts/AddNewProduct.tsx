@@ -81,7 +81,7 @@ const AddNewProduct: React.FC = () => {
 
       if (data.success) {
         console.log("data", data);
-        history.goBack();
+        history.replace("/productDetails", { shouldReload: true });
       }
     } catch (e: any) {
       console.log(e);

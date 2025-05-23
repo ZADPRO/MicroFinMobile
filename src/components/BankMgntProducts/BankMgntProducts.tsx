@@ -16,7 +16,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { add } from "ionicons/icons";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 interface ProductDetailsProps {
   createdAt: string;
@@ -50,6 +50,20 @@ const BankMgntProducts: React.FC = () => {
 
   //   PRODUCTS GET DATA FROM BACKEND
   const [userLists, setUserLists] = useState<ProductDetailsProps[] | []>([]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    if (location.state?.shouldReload) {
+      loadData();
+      // Clear the state to avoid unnecessary reload on further navigations
+      history.replace("/productDetails", {});
+    }
+  }, [location.state]);
 
   const loadData = () => {
     try {
@@ -90,6 +104,12 @@ const BankMgntProducts: React.FC = () => {
     localStorage.setItem("editProductDetails", JSON.stringify(item));
   };
 
+  const filteredProducts = userLists.filter((item) =>
+    `${item.refProductName} ${item.refProductStatus} ${item.refProductInterest}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
     <IonPage>
       <IonHeader>
@@ -110,7 +130,7 @@ const BankMgntProducts: React.FC = () => {
 
       <IonContent>
         <div className="productsDisplayCards m-3">
-          {userLists.map((item: ProductDetailsProps, idx: number) => (
+          {filteredProducts.map((item: ProductDetailsProps, idx: number) => (
             <div
               key={idx}
               onClick={() => handleProductEdit(item)}
