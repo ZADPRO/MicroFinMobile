@@ -5,6 +5,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import axios from "axios";
 import { Nullable } from "vitest";
 import decrypt from "../../services/helper";
+import { IonSkeletonText } from "@ionic/react";
 
 interface dashboardCount {
   total_loans?: string;
@@ -29,6 +30,7 @@ interface dashboardCount {
 const UserLoanDashboard: React.FC = () => {
   const [dashboardCount, setDashboardCount] = useState<dashboardCount>();
   const [date, setDate] = useState<Nullable<Date>>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const formatDate = (data: any) => {
     const date = new Date(data);
@@ -39,7 +41,9 @@ const UserLoanDashboard: React.FC = () => {
   };
 
   const DashBoardData = () => {
-    date === null ? setDate(new Date()) : date;
+    if (date === null) setDate(new Date());
+
+    setLoading(true);
     axios
       .post(
         import.meta.env.VITE_API_URL + "/refDashboard/Count",
@@ -93,12 +97,20 @@ const UserLoanDashboard: React.FC = () => {
               data.adminLoanCountData[0].Total_initial_interest,
           });
         }
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
     DashBoardData();
   }, [date]);
+
+  const renderText = (text?: string) =>
+    loading ? (
+      <IonSkeletonText animated style={{ width: "60%" }} />
+    ) : (
+      <p>{text}</p>
+    );
 
   return (
     <div>
@@ -119,16 +131,16 @@ const UserLoanDashboard: React.FC = () => {
               <div className="flex w-full h-full">
                 <div className="flex-1 flex flex-column shadow-1 bg-white border-round-xl m-1 align-items-center justify-content-center">
                   <p>Total Loan Count</p>
-                  <p>{dashboardCount?.total_loans}</p>
+                  <p>{renderText(dashboardCount?.total_loans)}</p>
                 </div>
                 <div className="flex flex-1 flex-column">
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Total Amount</p>
-                    <p>{dashboardCount?.total_loan_amount}</p>
+                    <p>{renderText(dashboardCount?.total_loan_amount)}</p>
                   </div>
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Initial Interst</p>
-                    <p>{dashboardCount?.Total_initial_interest}</p>
+                    <p>{renderText(dashboardCount?.Total_initial_interest)}</p>
                   </div>
                 </div>
               </div>
@@ -139,16 +151,16 @@ const UserLoanDashboard: React.FC = () => {
               <div className="flex w-full h-full">
                 <div className="flex-1 flex flex-column shadow-1 bg-white border-round-xl m-1 align-items-center justify-content-center">
                   <p>Loan Paid</p>
-                  <p>{dashboardCount?.paid_count}</p>
+                  <p>{renderText(dashboardCount?.paid_count)}</p>
                 </div>
                 <div className="flex flex-1 flex-column">
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Total Amount</p>
-                    <p>{dashboardCount?.total_paid_interest}</p>
+                    <p>{renderText(dashboardCount?.total_paid_interest)}</p>
                   </div>
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Initial Interst</p>
-                    <p>{dashboardCount?.total_paid_principal}</p>
+                    <p>{renderText(dashboardCount?.total_paid_principal)}</p>
                   </div>
                 </div>
               </div>
@@ -159,16 +171,18 @@ const UserLoanDashboard: React.FC = () => {
               <div className="flex w-full h-full">
                 <div className="flex-1 flex flex-column shadow-1 bg-white border-round-xl m-1 align-items-center justify-content-center">
                   <p>Loan Not Paid</p>
-                  <p>{dashboardCount?.not_paid_count}</p>
+                  <p>{renderText(dashboardCount?.not_paid_count)}</p>
                 </div>
                 <div className="flex flex-1 flex-column">
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Interest Amt</p>
-                    <p>{dashboardCount?.total_not_paid_interest}</p>
+                    <p>{renderText(dashboardCount?.total_not_paid_interest)}</p>
                   </div>
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Principal Amt</p>
-                    <p>{dashboardCount?.total_not_paid_principal}</p>
+                    <p>
+                      {renderText(dashboardCount?.total_not_paid_principal)}
+                    </p>
                   </div>
                 </div>
               </div>

@@ -59,6 +59,11 @@ import UserAddVendor from "../../components/UserAddVendor/UserAddVendor";
 import UserViewVendor from "../../components/UserListVendor/UserViewVendor";
 import IndividualAdminLoanDetails from "../../components/LoanViewAdminDetails/IndividualAdminLoanDetails";
 import RepaymentDetails from "../../components/LoanAdminRepayment/RepaymentDetails";
+import AddNewExpense from "../../components/BankMgntExpense/AddNewExpense";
+import ReportOverall from "../../components/ReportOverall/ReportOverall";
+import ReportMonthly from "../../components/ReportMonthly/ReportMonthly";
+import ReportExpense from "../../components/ReportExpense/ReportExpense";
+import EditExpense from "../../components/BankMgntExpense/EditExpense";
 
 const MainRoutes: React.FC = () => {
   const location = useLocation();
@@ -153,9 +158,18 @@ const MainRoutes: React.FC = () => {
           <PrivateRoute path="/fundDetails">
             <BankMgntFunds />
           </PrivateRoute>
+
+          {/* NEW EXPENSE */}
           <PrivateRoute path="/expenseDetails">
             <BankMgntExpense />
           </PrivateRoute>
+          <PrivateRoute path="/addNewExpense">
+            <AddNewExpense />
+          </PrivateRoute>
+          <PrivateRoute path="/editExpense">
+            <EditExpense />
+          </PrivateRoute>
+
           <PrivateRoute path="/addNewFunds">
             <AddNewFunds />
           </PrivateRoute>
@@ -202,6 +216,17 @@ const MainRoutes: React.FC = () => {
           </PrivateRoute>
           <PrivateRoute path="/repaymentDetails">
             <RepaymentDetails />
+          </PrivateRoute>
+
+          {/* REPORT ROUTES */}
+          <PrivateRoute path="/overallReport">
+            <ReportOverall />
+          </PrivateRoute>
+          <PrivateRoute path="/montlyReport">
+            <ReportMonthly />
+          </PrivateRoute>
+          <PrivateRoute path="/expenseReport">
+            <ReportExpense />
           </PrivateRoute>
 
           <PrivateRoute exact path="/">

@@ -55,3 +55,14 @@
   width: 100% !important;
   box-sizing: border-box;
 }
+
+.p-icon-field.p-icon-field-right {
+  width: 100%;
+}
+
+.p-inputtext:enabled:focus {
+  outline: none;
+  outline-offset: 0;
+  box-shadow: none;
+  border-color: none;
+}
