@@ -11,9 +11,10 @@ const Splash: React.FC = () => {
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setStyle({ style: Style.Dark });
+    StatusBar.setBackgroundColor({ color: "#0478df" });
 
     const timer = setTimeout(() => {
-      const userDetails = localStorage.getItem("userDetails");
+      const userDetails = localStorage.getItem("profile");
       if (userDetails) {
         history.push("/home");
       } else {
@@ -30,8 +31,13 @@ const Splash: React.FC = () => {
   return (
     <IonPage>
       <IonContent>
-        <div className="splashScreenImg">
-          <img src={splashImage} alt="splash" />
+        <div className="splashScreenWrapper">
+          <div className="splashScreenImg">
+            <img src={splashImage} alt="splash" />
+          </div>
+          <div className="splashQuote">
+            <p>"Your journey to health starts here."</p>
+          </div>
         </div>
       </IonContent>
     </IonPage>

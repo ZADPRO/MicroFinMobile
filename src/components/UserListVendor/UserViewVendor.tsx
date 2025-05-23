@@ -44,6 +44,7 @@ const UserViewVendor: React.FC = () => {
     if (vendorData) {
       StatusBar.setOverlaysWebView({ overlay: false });
       StatusBar.setStyle({ style: Style.Dark });
+    StatusBar.setBackgroundColor({ color: "#0478df" });
 
       setVendorData(); // This sets all input field states correctly
     }

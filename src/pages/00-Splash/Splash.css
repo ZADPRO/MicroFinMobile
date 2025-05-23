@@ -1,14 +1,30 @@
-.splashScreenImg {
-  height: 100%;
+.splashScreenWrapper {
+  height: 100vh; /* Full height */
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  padding: 2rem 1rem; /* Some padding for breathing space */
+}
+
+.splashScreenImg {
+  display: flex;
   justify-content: center;
+  align-items: center;
+  flex: 1;
 }
 
 .splashScreenImg img {
-  width: 50%;
+  width: 65%;
   margin-top: -40%;
+}
+
+.splashQuote {
+  font-size: 1rem;
+  text-align: center;
+  color: #555;
+  /* font-style: italic; */
+  margin-bottom: 1rem;
 }
 
 .loginScreen img {

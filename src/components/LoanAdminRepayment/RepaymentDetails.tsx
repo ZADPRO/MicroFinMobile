@@ -43,6 +43,7 @@ const RepaymentDetails: React.FC = () => {
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setStyle({ style: Style.Dark });
+    StatusBar.setBackgroundColor({ color: "#0478df" });
 
     return () => {
       StatusBar.setOverlaysWebView({ overlay: true });
