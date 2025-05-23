@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./AdminLoanDashboard.css";
 import { Carousel } from "react-responsive-carousel";
-
 import { useHistory } from "react-router";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Nullable } from "vitest";
 import axios from "axios";
 import decrypt from "../../services/helper";
+import { IonSkeletonText } from "@ionic/react";
 
 interface dashboardCount {
   total_loans?: string;
@@ -35,6 +35,7 @@ const AdminLoanDashboard: React.FC = () => {
 
   const [dashboardCount, setDashboardCount] = useState<dashboardCount>();
   const [date, setDate] = useState<Nullable<Date>>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const formatDate = (data: any) => {
     const date = new Date(data);
@@ -45,7 +46,9 @@ const AdminLoanDashboard: React.FC = () => {
   };
 
   const DashBoardData = () => {
-    date === null ? setDate(new Date()) : date;
+    if (date === null) setDate(new Date());
+    setLoading(true);
+
     axios
       .post(
         import.meta.env.VITE_API_URL + "/refDashboard/Count",
@@ -99,7 +102,8 @@ const AdminLoanDashboard: React.FC = () => {
               data.adminLoanCountData[0].Total_initial_interest,
           });
         }
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -118,105 +122,112 @@ const AdminLoanDashboard: React.FC = () => {
   return (
     <div>
       <div className="home-carousel">
-        <Carousel
-          autoPlay
-          infiniteLoop
-          showThumbs={false}
-          showArrows={false}
-          showStatus={false}
-          stopOnHover={false}
-          interval={3000}
-          preventMovementUntilSwipeScrollTolerance
-          swipeScrollTolerance={50}
-        >
-          <div className="carouselDiv">
-            <div className="cardsForCarousel">
-              <div className="flex w-full h-full">
-                <div className="flex-1 flex flex-column shadow-1 bg-white border-round-xl m-1 align-items-center justify-content-center">
-                  <p>Total Loan Count</p>
-                  <p>{dashboardCount?.admin_total_loans}</p>
-                </div>
-                <div className="flex flex-1 flex-column">
-                  <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
-                    <p>Total Amount</p>
-                    <p>
-                      {formatCurrencyINR(
-                        dashboardCount?.admin_total_loan_amount
-                      )}
-                    </p>
+        {loading ? (
+          <IonSkeletonText
+            animated
+            style={{ width: "100%", height: "150px", borderRadius: "10px" }}
+          />
+        ) : (
+          <Carousel
+            autoPlay
+            infiniteLoop
+            showThumbs={false}
+            showArrows={false}
+            showStatus={false}
+            stopOnHover={false}
+            interval={3000}
+            preventMovementUntilSwipeScrollTolerance
+            swipeScrollTolerance={50}
+          >
+            <div className="carouselDiv">
+              <div className="cardsForCarousel">
+                <div className="flex w-full h-full">
+                  <div className="flex-1 flex flex-column shadow-1 bg-white border-round-xl m-1 align-items-center justify-content-center">
+                    <p>Total Loan Count</p>
+                    <p>{dashboardCount?.admin_total_loans}</p>
                   </div>
-                  <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
-                    <p>Initial Interst</p>
-                    <p>
-                      {formatCurrencyINR(
-                        dashboardCount?.admin_Total_initial_interest
-                      )}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>{" "}
-          </div>
-          <div className="carouselDiv">
-            <div className="cardsForCarousel">
-              <div className="flex w-full h-full">
-                <div className="flex-1 flex flex-column shadow-1 bg-white border-round-xl m-1 align-items-center justify-content-center">
-                  <p>Loan Paid</p>
-                  <p>{dashboardCount?.admin_paid_count}</p>
-                </div>
-                <div className="flex flex-1 flex-column">
-                  <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
-                    <p>Total Amount</p>
-                    <p>
-                      {formatCurrencyINR(
-                        dashboardCount?.admin_total_paid_interest
-                      )}
-                    </p>
-                  </div>
-                  <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
-                    <p>Initial Interst</p>
-                    <p>
-                      {" "}
-                      {formatCurrencyINR(
-                        dashboardCount?.admin_total_paid_principal
-                      )}
-                    </p>
+                  <div className="flex flex-1 flex-column">
+                    <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
+                      <p>Total Amount</p>
+                      <p>
+                        {formatCurrencyINR(
+                          dashboardCount?.admin_total_loan_amount
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
+                      <p>Initial Interst</p>
+                      <p>
+                        {formatCurrencyINR(
+                          dashboardCount?.admin_Total_initial_interest
+                        )}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>{" "}
-          </div>
-          <div className="carouselDiv">
-            <div className="cardsForCarousel">
-              <div className="flex w-full h-full">
-                <div className="flex-1 flex flex-column shadow-1 bg-white border-round-xl m-1 align-items-center justify-content-center">
-                  <p>Loan Not Paid</p>
-                  <p>{dashboardCount?.admin_not_paid_count}</p>
-                </div>
-                <div className="flex flex-1 flex-column">
-                  <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
-                    <p>Interest Amt</p>
-                    <p>
-                      {" "}
-                      {formatCurrencyINR(
-                        dashboardCount?.admin_total_not_paid_interest
-                      )}
-                    </p>
+              </div>{" "}
+            </div>
+            <div className="carouselDiv">
+              <div className="cardsForCarousel">
+                <div className="flex w-full h-full">
+                  <div className="flex-1 flex flex-column shadow-1 bg-white border-round-xl m-1 align-items-center justify-content-center">
+                    <p>Loan Paid</p>
+                    <p>{dashboardCount?.admin_paid_count}</p>
                   </div>
-                  <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
-                    <p>Principal Amt</p>
-                    <p>
-                      {" "}
-                      {formatCurrencyINR(
-                        dashboardCount?.admin_total_not_paid_principal
-                      )}
-                    </p>
+                  <div className="flex flex-1 flex-column">
+                    <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
+                      <p>Total Amount</p>
+                      <p>
+                        {formatCurrencyINR(
+                          dashboardCount?.admin_total_paid_interest
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
+                      <p>Initial Interst</p>
+                      <p>
+                        {" "}
+                        {formatCurrencyINR(
+                          dashboardCount?.admin_total_paid_principal
+                        )}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>{" "}
-          </div>
-        </Carousel>
+              </div>{" "}
+            </div>
+            <div className="carouselDiv">
+              <div className="cardsForCarousel">
+                <div className="flex w-full h-full">
+                  <div className="flex-1 flex flex-column shadow-1 bg-white border-round-xl m-1 align-items-center justify-content-center">
+                    <p>Loan Not Paid</p>
+                    <p>{dashboardCount?.admin_not_paid_count}</p>
+                  </div>
+                  <div className="flex flex-1 flex-column">
+                    <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
+                      <p>Interest Amt</p>
+                      <p>
+                        {" "}
+                        {formatCurrencyINR(
+                          dashboardCount?.admin_total_not_paid_interest
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
+                      <p>Principal Amt</p>
+                      <p>
+                        {" "}
+                        {formatCurrencyINR(
+                          dashboardCount?.admin_total_not_paid_principal
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>{" "}
+            </div>
+          </Carousel>
+        )}
       </div>
     </div>
   );
