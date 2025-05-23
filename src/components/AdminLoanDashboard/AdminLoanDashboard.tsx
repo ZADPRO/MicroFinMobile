@@ -106,6 +106,15 @@ const AdminLoanDashboard: React.FC = () => {
     DashBoardData();
   }, [date]);
 
+  const formatCurrencyINR = (amount: number | string | undefined | null) => {
+    if (!amount || isNaN(Number(amount))) return "₹0";
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0, // or 2 if you want paisa
+    }).format(Number(amount));
+  };
+
   return (
     <div>
       <div className="home-carousel">
@@ -130,11 +139,19 @@ const AdminLoanDashboard: React.FC = () => {
                 <div className="flex flex-1 flex-column">
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Total Amount</p>
-                    <p>{dashboardCount?.admin_total_loan_amount}</p>
+                    <p>
+                      {formatCurrencyINR(
+                        dashboardCount?.admin_total_loan_amount
+                      )}
+                    </p>
                   </div>
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Initial Interst</p>
-                    <p>{dashboardCount?.admin_Total_initial_interest}</p>
+                    <p>
+                      {formatCurrencyINR(
+                        dashboardCount?.admin_Total_initial_interest
+                      )}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -150,11 +167,20 @@ const AdminLoanDashboard: React.FC = () => {
                 <div className="flex flex-1 flex-column">
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Total Amount</p>
-                    <p>{dashboardCount?.admin_total_paid_interest}</p>
+                    <p>
+                      {formatCurrencyINR(
+                        dashboardCount?.admin_total_paid_interest
+                      )}
+                    </p>
                   </div>
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Initial Interst</p>
-                    <p>{dashboardCount?.admin_total_paid_principal}</p>
+                    <p>
+                      {" "}
+                      {formatCurrencyINR(
+                        dashboardCount?.admin_total_paid_principal
+                      )}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -170,11 +196,21 @@ const AdminLoanDashboard: React.FC = () => {
                 <div className="flex flex-1 flex-column">
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Interest Amt</p>
-                    <p>{dashboardCount?.admin_total_not_paid_interest}</p>
+                    <p>
+                      {" "}
+                      {formatCurrencyINR(
+                        dashboardCount?.admin_total_not_paid_interest
+                      )}
+                    </p>
                   </div>
                   <div className="flex-1 p-3 flex flex-column bg-white align-items-center shadow-1 border-round-xl m-1 justify-content-center">
                     <p>Principal Amt</p>
-                    <p>{dashboardCount?.admin_total_not_paid_principal}</p>
+                    <p>
+                      {" "}
+                      {formatCurrencyINR(
+                        dashboardCount?.admin_total_not_paid_principal
+                      )}
+                    </p>
                   </div>
                 </div>
               </div>
