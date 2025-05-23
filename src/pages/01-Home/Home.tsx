@@ -7,7 +7,7 @@ import {
   IonSegment,
   IonSegmentButton,
 } from "@ionic/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import Header from "../../components/Header/Header";
 import "./Home.css";
@@ -36,6 +36,20 @@ const Home: React.FC = () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 100);
+  }, [selectedSegment, showModal]);
+
+  const chartRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (chartRef.current) {
+      chartRef.current.chart?.update();
+    }
+  }, [selectedSegment, date]);
 
   const formatDate = (date: Date | null): string => {
     if (!date) return "Select Date";
@@ -117,7 +131,9 @@ const Home: React.FC = () => {
           <p>Expense Analysis</p>
           <Chart
             type="doughnut"
+            key={selectedSegment}
             data={chartData}
+            ref={chartRef}
             options={chartOptions}
             className="w-full md:w-30rem"
           />

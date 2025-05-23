@@ -98,6 +98,15 @@ const BankMgntProducts: React.FC = () => {
     loadData();
   }, []);
 
+  useEffect(() => {
+    if (location.state?.shouldReload) {
+      loadData();
+
+      // Clear the state so it doesn't reload unnecessarily on further navigations
+      history.replace("/productDetails", {});
+    }
+  }, [location.state]);
+
   // HANDLE EDIT PRODUCT
   const handleProductEdit = (item: ProductDetailsProps) => {
     history.push("/editProductDetails", { item });

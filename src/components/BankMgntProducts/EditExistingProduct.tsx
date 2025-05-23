@@ -89,8 +89,7 @@ const EditExistingProduct: React.FC = () => {
 
       if (data.success) {
         console.log("data", data);
-        // localStorage.removeItem("editProductDetails");
-        history.goBack();
+        history.replace("/productDetails", { shouldReload: true });
       }
     } catch (e) {
       console.log(e);
