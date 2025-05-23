@@ -4,6 +4,10 @@ import React from "react";
 
 import { useIonRouter } from "@ionic/react";
 
+import repayment from "../../assets/loan/repayment.png";
+import newLoan from "../../assets/loan/newLoan.png";
+import viewLoan from "../../assets/loan/viewLoan.png";
+
 type LoanMenuModalProps = {
   onClose: () => void;
 };
@@ -27,89 +31,54 @@ const LoanMenuModal: React.FC<LoanMenuModalProps> = ({ onClose }) => {
         }}
       >
         <IonLabel>User</IonLabel>
-        <div className="flex flex-wrap loanChips">
-          <IonChip
-            outline={true}
+        <div className="flex mt-3 gap-2">
+          <div
+            className="flex-1 flex flex-column align-items-center justify-content-center shadow-2 py-3 border-round-lg"
             onClick={() => handleNavigation("/userLoanRepayment")}
           >
-            {" "}
-            <IonAvatar>
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonAvatar>
-            <IonLabel>Repayment</IonLabel>
-          </IonChip>
-          <IonChip
-            outline={true}
+            <img src={repayment} className="modalImg" alt="" />
+            <p className="text-sm">Repayment</p>
+          </div>
+          <div
+            className="flex-1 flex flex-column align-items-center justify-content-center shadow-2 py-3 border-round-lg"
             onClick={() => handleNavigation("/userNewLoan")}
           >
-            {" "}
-            <IonAvatar>
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonAvatar>
-            <IonLabel>New Loan</IonLabel>
-          </IonChip>
-          <IonChip
-            outline={true}
+            <img src={newLoan} alt="" className="modalImg" />
+            <p>New Loan</p>
+          </div>
+          <div
+            className="flex-1 flex flex-column align-items-center justify-content-center shadow-2 py-3 border-round-lg"
             onClick={() => handleNavigation("/userViewLoan")}
           >
-            {" "}
-            <IonAvatar>
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonAvatar>
-            <IonLabel>View Loan</IonLabel>
-          </IonChip>
+            <img src={viewLoan} alt="" className="modalImg" />
+            <p>View Loan</p>
+          </div>
         </div>
+
         <Divider />
         <IonLabel>Admin</IonLabel>
-        <div className="flex flex-wrap loanChips">
-          <IonChip
-            outline={true}
+        <div className="flex mt-3 gap-2">
+          <div
+            className="flex-1 flex flex-column align-items-center justify-content-center shadow-2 py-3 border-round-lg"
             onClick={() => handleNavigation("/adminLoanRepayment")}
           >
-            {" "}
-            <IonAvatar>
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonAvatar>
-            <IonLabel>Repayment</IonLabel>
-          </IonChip>
-          <IonChip
-            outline={true}
+            <img src={repayment} className="modalImg" alt="" />
+            <p className="text-sm">Repayment</p>
+          </div>
+          <div
+            className="flex-1 flex flex-column align-items-center justify-content-center shadow-2 py-3 border-round-lg"
             onClick={() => handleNavigation("/adminNewLoan")}
           >
-            {" "}
-            <IonAvatar>
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonAvatar>
-            <IonLabel>New Loan</IonLabel>
-          </IonChip>
-          <IonChip
-            outline={true}
+            <img src={newLoan} alt="" className="modalImg" />
+            <p>New Loan</p>
+          </div>
+          <div
+            className="flex-1 flex flex-column align-items-center justify-content-center shadow-2 py-3 border-round-lg"
             onClick={() => handleNavigation("/adminViewLoan")}
           >
-            {" "}
-            <IonAvatar>
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonAvatar>
-            <IonLabel>View Loan</IonLabel>
-          </IonChip>
+            <img src={viewLoan} alt="" className="modalImg" />
+            <p>View Loan</p>
+          </div>
         </div>
       </div>
     </div>

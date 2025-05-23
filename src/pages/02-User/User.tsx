@@ -16,6 +16,7 @@ import { useHistory } from "react-router";
 import "./User.css";
 import agentIcon from "../../assets/users/agentImg.png";
 import userIcon from "../../assets/users/userImg.png";
+import vendorIcon from "../../assets/users/vendor.png";
 
 const User: React.FC = () => {
   useEffect(() => {
@@ -32,7 +33,7 @@ const User: React.FC = () => {
   const reportData = [
     { imgSrc: userIcon, text: "Users", route: "/userList" },
     { imgSrc: agentIcon, text: "Agents", route: "/agentList" },
-    { imgSrc: userIcon, text: "Vendor", route: "/vendorLists" },
+    { imgSrc: vendorIcon, text: "Vendor", route: "/vendorLists" },
   ];
 
   const handleNavigation = (route: string) => {

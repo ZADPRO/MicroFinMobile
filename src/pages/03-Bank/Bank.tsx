@@ -14,8 +14,10 @@ import React, { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { useHistory } from "react-router";
 
-import agentIcon from "../../assets/users/agentImg.png";
-import userIcon from "../../assets/users/userImg.png";
+import bank from "../../assets/bank/bank.png";
+import funds from "../../assets/bank/funds.png";
+import expense from "../../assets/bank/expense.png";
+import product from "../../assets/bank/products.png";
 
 import "./Bank.css"; // CSS for styling
 
@@ -33,10 +35,10 @@ const Bank: React.FC = () => {
   const history = useHistory();
 
   const reportData = [
-    { imgSrc: userIcon, text: "Bank", route: "/bankDetails" },
-    { imgSrc: agentIcon, text: "Funds", route: "/fundDetails" },
-    { imgSrc: agentIcon, text: "Expense", route: "/expenseDetails" },
-    { imgSrc: userIcon, text: "Product", route: "/productDetails" },
+    { imgSrc: bank, text: "Bank", route: "/bankDetails" },
+    { imgSrc: funds, text: "Funds", route: "/fundDetails" },
+    { imgSrc: expense, text: "Expense", route: "/expenseDetails" },
+    { imgSrc: product, text: "Product", route: "/productDetails" },
   ];
 
   const handleNavigation = (route: string) => {

@@ -14,8 +14,9 @@ import React, { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { useHistory } from "react-router";
 
-import agentIcon from "../../assets/users/agentImg.png";
-import userIcon from "../../assets/users/userImg.png";
+import overallReport from "../../assets/report/overallReport.png";
+import montlyReport from "../../assets/report/montlyReport.png";
+import expenseReport from "../../assets/report/ExpenseReport.png";
 
 const Report: React.FC = () => {
   useEffect(() => {
@@ -31,9 +32,9 @@ const Report: React.FC = () => {
   // HANDLE NAV
   const history = useHistory();
   const reportData = [
-    { imgSrc: userIcon, text: "Overall Report", route: "/overallReport" },
-    { imgSrc: agentIcon, text: "Montly Report", route: "/montlyReport" },
-    { imgSrc: userIcon, text: "Expense Report", route: "/expenseReport" },
+    { imgSrc: overallReport, text: "Overall Report", route: "/overallReport" },
+    { imgSrc: montlyReport, text: "Montly Report", route: "/montlyReport" },
+    { imgSrc: expenseReport, text: "Expense Report", route: "/expenseReport" },
   ];
 
   const handleNavigation = (route: string) => {
