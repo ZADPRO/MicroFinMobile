@@ -30,11 +30,6 @@ const User: React.FC = () => {
   }, []);
 
   const history = useHistory();
-  const reportData = [
-    { imgSrc: userIcon, text: "Users", route: "/userList" },
-    { imgSrc: agentIcon, text: "Agents", route: "/agentList" },
-    { imgSrc: vendorIcon, text: "Vendor", route: "/vendorLists" },
-  ];
 
   const handleNavigation = (route: string) => {
     history.push(route);
@@ -52,24 +47,59 @@ const User: React.FC = () => {
       <IonContent>
         <IonGrid>
           <IonRow className="ion-justify-content-center">
-            {reportData.map((item, index) => (
-              <IonCol
-                size="5"
-                key={index}
-                className="ion-text-center bg-white shadow-1 gap-2 m-2"
-                style={{ borderRadius: "7px" }}
-                onClick={() => handleNavigation(item.route)}
-              >
-                <div className="rounded">
-                  <img
-                    src={item.imgSrc}
-                    alt={item.text}
-                    style={{ width: "80px", height: "auto", margin: "0 auto" }}
-                  />
-                  <p className="pt-2">{item.text}</p>
-                </div>
-              </IonCol>
-            ))}
+            <IonCol
+              size="5"
+              className="ion-text-center bg-white shadow-1 gap-2 m-2"
+              style={{ borderRadius: "7px" }}
+              onClick={() => handleNavigation("/userList")}
+            >
+              <div className="rounded">
+                <img
+                  src={userIcon}
+                  alt="Users"
+                  style={{ width: "80px", height: "auto", margin: "0 auto" }}
+                />
+                <p className="pt-2">Users</p>
+              </div>
+            </IonCol>
+            <IonCol
+              size="5"
+              className="ion-text-center bg-white shadow-1 gap-2 m-2"
+              style={{ borderRadius: "7px" }}
+              onClick={() => handleNavigation("/agentList")}
+            >
+              <div className="rounded">
+                <img
+                  src={agentIcon}
+                  alt="Users"
+                  style={{ width: "80px", height: "auto", margin: "0 auto" }}
+                />
+                <p className="pt-2">Agents</p>
+              </div>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+        <IonGrid>
+          <IonRow className="ion-justify-content-center">
+            <IonCol
+              size="5"
+              className="ion-text-center bg-white shadow-1 gap-2 mx-2"
+              style={{ borderRadius: "7px" }}
+              onClick={() => handleNavigation("/vendorLists")}
+            >
+              <div className="rounded">
+                <img
+                  src={vendorIcon}
+                  alt="Users"
+                  style={{ width: "80px", height: "auto", margin: "0 auto" }}
+                />
+                <p className="pt-2">Vendors</p>
+              </div>
+            </IonCol>
+            <IonCol
+              size="5"
+              className="ion-text-center bg-white gap-2 m-2"
+            ></IonCol>
           </IonRow>
         </IonGrid>
       </IonContent>

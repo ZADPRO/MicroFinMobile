@@ -104,9 +104,12 @@ const Login: React.FC = () => {
             />
             {error && <p className="text-red-500">{error}</p>}
 
-            <p className="m-0 mt-3 w-full align-items-end flex justify-content-end">
+            {/* <p
+              className="m-0 mt-3 w-full align-items-end flex justify-content-end"
+              onClick={() => history.push("/forgotPassword")}
+            >
               Forgot Password ?
-            </p>
+            </p> */}
 
             <button
               className="px-5 w-full mt-4"

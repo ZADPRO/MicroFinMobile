@@ -66,6 +66,7 @@ import ReportExpense from "../../components/ReportExpense/ReportExpense";
 import EditExpense from "../../components/BankMgntExpense/EditExpense";
 import { Capacitor } from "@capacitor/core";
 import { StatusBar, Style } from "@capacitor/status-bar";
+import ForgotPassword from "../../pages/00-Splash/ForgotPassword";
 
 const MainRoutes: React.FC = () => {
   // STATUS BAR CONFIG
@@ -108,6 +109,9 @@ const MainRoutes: React.FC = () => {
           </PrivateRoute>
           <PrivateRoute path="/login">
             <Login />
+          </PrivateRoute>
+          <PrivateRoute path="/forgotPassword">
+            <ForgotPassword />
           </PrivateRoute>
           <PrivateRoute path="/home">
             <Home />
