@@ -150,7 +150,7 @@ const BankMgntProducts: React.FC = () => {
                   width: "40px",
                   height: "35px",
                   borderRadius: "50%",
-                  background: "#3a3a3e",
+                  background: "#0478df",
                   color: "white",
                   display: "flex",
                   alignItems: "center",

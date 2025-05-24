@@ -10,3 +10,13 @@ p {
   border-radius: 30px;
   padding: 15px 20px;
 } */
+
+/* TOOLBAR STYLING */
+:root {
+  --ion-toolbar-background: #0478df;
+  --ion-toolbar-color: white;
+}
+
+.searchbar-input.sc-ion-searchbar-ios {
+  background: white;
+}

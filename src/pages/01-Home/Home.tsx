@@ -108,6 +108,7 @@ const Home: React.FC = () => {
         {/* Tabs */}
         <div className="dashboardContentsTabSplit mx-2 pt-2 px-2 border-round-xl">
           <IonSegment
+            color="primary"
             value={selectedSegment}
             onIonChange={(e) => {
               const value = e.detail.value;

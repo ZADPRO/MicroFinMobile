@@ -359,7 +359,7 @@ const MainRoutes: React.FC = () => {
         onDidDismiss={() => setShowModal(false)}
         keepContentsMounted={true}
         initialBreakpoint={0.6}
-        breakpoints={[0, 0.6]}
+        breakpoints={[0, 0.4, 0.6, 1]}
         className="calendar-modal"
       >
         <LoanMenuModal onClose={() => setShowModal(false)} />
