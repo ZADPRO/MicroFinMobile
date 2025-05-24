@@ -1,5 +1,6 @@
-package io.ionic.starter;
+package io.zadroit.microfin;
 
 import com.getcapacitor.BridgeActivity;
 
-public class MainActivity extends BridgeActivity {}
+public class MainActivity extends BridgeActivity {
+}

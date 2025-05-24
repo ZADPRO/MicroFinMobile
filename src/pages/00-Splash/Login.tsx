@@ -2,35 +2,23 @@ import { IonContent, IonPage } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
 import { StatusBar, Style } from "@capacitor/status-bar";
-
-import loginImg from "../../assets/login/login.png";
+import loginImg from "../../assets/login/loginImg.png";
 import { InputText } from "primereact/inputtext";
 import { useHistory } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
 import { Password } from "primereact/password";
 import axios from "axios";
 import decrypt from "../../services/helper";
+import { ProgressSpinner } from "primereact/progressspinner"; // 🔹 Add this
 
 const Login: React.FC = () => {
-  // STATUS BAR
-  useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
-    StatusBar.setStyle({ style: Style.Dark });
-    StatusBar.setBackgroundColor({ color: "#0478df" });
-
-    return () => {
-      StatusBar.setOverlaysWebView({ overlay: true });
-    };
-  }, []);
-
-  // USER LOGIN
   const history = useHistory();
   const { login, isAuthenticated } = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // 🔹 Loading state
 
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: false });
@@ -47,9 +35,14 @@ const Login: React.FC = () => {
   }, [isAuthenticated, history]);
 
   const handleLogin = async () => {
+    setLoading(true); // 🔹 Start loading
+    setError("");
+
     if (username === "admin" && password === "123456") {
       login({ username });
       history.replace("/home");
+      setLoading(false);
+      return;
     }
 
     try {
@@ -70,12 +63,9 @@ const Login: React.FC = () => {
       );
 
       if (data.success) {
-        console.log("data", data);
-        const profile = data.profile;
-
         localStorage.setItem("token", "Bearer " + data.token);
         localStorage.setItem("loginStatus", "true");
-        localStorage.setItem("profile", JSON.stringify(profile));
+        localStorage.setItem("profile", JSON.stringify(data.profile));
 
         history.push("/home");
       } else {
@@ -84,6 +74,8 @@ const Login: React.FC = () => {
     } catch (err) {
       console.error("Login error", err);
       setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false); // 🔹 Stop loading
     }
   };
 
@@ -99,6 +91,7 @@ const Login: React.FC = () => {
               className="mt-3 w-full form-input"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              disabled={loading} // 🔹 Disable input while loading
             />
             <Password
               placeholder="Enter Password"
@@ -107,14 +100,30 @@ const Login: React.FC = () => {
               toggleMask
               feedback={false}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={loading} // 🔹 Disable input while loading
             />
-            <p>{error}</p>
+            {error && <p className="text-red-500">{error}</p>}
+
             <p className="m-0 mt-3 w-full align-items-end flex justify-content-end">
               Forgot Password ?
             </p>
-            <button className="px-5 w-full mt-4" onClick={handleLogin}>
-              Login
+
+            <button
+              className="px-5 w-full mt-4"
+              onClick={handleLogin}
+              disabled={loading} // 🔹 Disable button while loading
+            >
+              {loading ? "Logging in..." : "Login"}
             </button>
+
+            {loading && (
+              <div className="mt-4">
+                <ProgressSpinner
+                  style={{ width: "40px", height: "40px" }}
+                  strokeWidth="4"
+                />
+              </div>
+            )}
           </div>
         </div>
       </IonContent>

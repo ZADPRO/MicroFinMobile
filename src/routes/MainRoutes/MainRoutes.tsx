@@ -8,7 +8,7 @@ import {
   IonTabs,
 } from "@ionic/react";
 import "../../pages/04-Loan/Loan.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 import {
   card,
@@ -64,8 +64,25 @@ import ReportOverall from "../../components/ReportOverall/ReportOverall";
 import ReportMonthly from "../../components/ReportMonthly/ReportMonthly";
 import ReportExpense from "../../components/ReportExpense/ReportExpense";
 import EditExpense from "../../components/BankMgntExpense/EditExpense";
+import { Capacitor } from "@capacitor/core";
+import { StatusBar, Style } from "@capacitor/status-bar";
 
 const MainRoutes: React.FC = () => {
+  // STATUS BAR CONFIG
+  useEffect(() => {
+    const configureStatusBar = async () => {
+      if (Capacitor.isNativePlatform()) {
+        const bgcolor = "#0478df";
+
+        await StatusBar.setOverlaysWebView({ overlay: false });
+        await StatusBar.setBackgroundColor({ color: bgcolor });
+        await StatusBar.setStyle({ style: Style.Light });
+      }
+    };
+
+    configureStatusBar();
+  }, []);
+
   const location = useLocation();
 
   // HIDE ROUTES BASED ON CONDITIONS
