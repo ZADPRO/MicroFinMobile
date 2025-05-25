@@ -6,6 +6,7 @@ import {
   IonFabButton,
   IonHeader,
   IonIcon,
+  IonModal,
   IonPage,
   IonSearchbar,
   IonTitle,
@@ -16,8 +17,9 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
 import decrypt, { formatRupees } from "../../services/helper";
 import { Nullable } from "vitest";
-import { add } from "ionicons/icons";
+import { add, funnel } from "ionicons/icons";
 import { useHistory, useLocation } from "react-router";
+import { Calendar } from "primereact/calendar";
 
 interface expense {
   refExpenseDate: string;
@@ -44,6 +46,9 @@ const BankMgntExpense: React.FC = () => {
   }, []);
 
   const location = useLocation<{ shouldReload?: boolean }>();
+
+  // MODAL HANDLER
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   // HANDLE NAV
   const history = useHistory();
@@ -130,6 +135,12 @@ const BankMgntExpense: React.FC = () => {
       .includes(searchTerm.toLowerCase())
   );
 
+  useEffect(() => {
+    if (date) {
+      expenseData(date);
+    }
+  }, [date]);
+
   return (
     <IonPage>
       <IonHeader>
@@ -138,6 +149,13 @@ const BankMgntExpense: React.FC = () => {
             <IonBackButton defaultHref="/bank" mode="md"></IonBackButton>
           </IonButtons>
           <IonTitle>Expense Management</IonTitle>
+          <IonButtons slot="end">
+            <IonIcon
+              icon={funnel}
+              onClick={() => setShowModal(true)}
+              style={{ fontSize: "20px", paddingRight: "10px" }}
+            />
+          </IonButtons>
         </IonToolbar>
         <IonToolbar>
           <IonSearchbar
@@ -198,6 +216,29 @@ const BankMgntExpense: React.FC = () => {
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonFab>
+
+        <IonModal
+          isOpen={showModal}
+          onDidDismiss={() => setShowModal(false)}
+          keepContentsMounted={true}
+          initialBreakpoint={0.4}
+          breakpoints={[0, 0.4, 0.75]}
+          className="calendar-modal"
+        >
+          <div className="p-3 flex justify-content-center">
+            <Calendar
+              value={date}
+              onChange={(e) => {
+                setDate(e.value);
+                setShowModal(false); // Close on date select
+              }}
+              inline
+              showWeek
+              view="month"
+              maxDate={new Date()}
+            />
+          </div>
+        </IonModal>
       </IonContent>
     </IonPage>
   );

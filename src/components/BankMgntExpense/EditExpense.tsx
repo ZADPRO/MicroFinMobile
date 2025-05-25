@@ -195,7 +195,7 @@ const EditExpense: React.FC = () => {
 
             if (data.success) {
               console.log("data", data);
-              history.goBack();
+              history.replace("/expenseDetails", { shouldReload: true });
             }
           });
       } catch (error) {
