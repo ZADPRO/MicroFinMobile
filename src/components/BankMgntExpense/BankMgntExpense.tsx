@@ -9,6 +9,7 @@ import {
   IonModal,
   IonPage,
   IonSearchbar,
+  IonSkeletonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -47,6 +48,9 @@ const BankMgntExpense: React.FC = () => {
 
   const location = useLocation<{ shouldReload?: boolean }>();
 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [noDataFound, setNoDataFound] = useState<boolean>(false);
+
   // MODAL HANDLER
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -70,37 +74,40 @@ const BankMgntExpense: React.FC = () => {
 
   const expenseData = (month) => {
     const date = formatDate(month);
-    try {
-      axios
-        .post(
-          import.meta.env.VITE_API_URL + "/expense/expenseData",
-          {
-            month: date,
+    setLoading(true);
+    setNoDataFound(false);
+
+    axios
+      .post(
+        import.meta.env.VITE_API_URL + "/expense/expenseData",
+        { month: date },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              Authorization: localStorage.getItem("token"),
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          const data = decrypt(
-            response.data[1],
-            response.data[0],
-            import.meta.env.VITE_ENCRYPTION_KEY
-          );
-          console.log("data line ------- 72", data);
+        }
+      )
+      .then((response) => {
+        const data = decrypt(
+          response.data[1],
+          response.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        localStorage.setItem("token", "Bearer " + data.token);
 
-          localStorage.setItem("token", "Bearer " + data.token);
-
-          if (data.success) {
-            setExpense(data.data);
-          }
-        });
-    } catch (error) {
-      console.log("error", error);
-    }
+        if (data.success) {
+          setExpense(data.data);
+          setNoDataFound(data.data.length === 0);
+        }
+      })
+      .catch((error) => {
+        console.error("error", error);
+        setNoDataFound(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleProductEdit = (item: expense) => {
@@ -168,47 +175,70 @@ const BankMgntExpense: React.FC = () => {
 
       <IonContent>
         <div className="productsDisplayCards m-3">
-          {filteredProducts.map((item: expense, idx: number) => (
-            <div
-              key={idx}
-              onClick={() => handleProductEdit(item)}
-              className="flex p-2 shadow-3 p-3 my-2 border-round-md align-items-center"
-            >
+          {loading ? (
+            [...Array(4)].map((_, idx) => (
               <div
-                style={{
-                  width: "40px",
-                  height: "35px",
-                  borderRadius: "50%",
-                  background: "#0478df",
-                  color: "white",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                }}
+                key={idx}
+                className="flex p-2 shadow-3 p-3 my-2 border-round-md"
               >
-                {item.refExpenseCategory?.charAt(0).toUpperCase() || "N"}
-              </div>
-              <div className="pl-3 flex flex-column w-full align-items-center justify-content-between">
-                <div className="flex flex-row justify-content-between w-full">
-                  <p>{item.refExpenseCategory || "No data"}</p>
-                </div>
-                <div className="flex flex-row justify-content-between w-full">
-                  <p>{item.refBankName || "No data"}</p>
-                  <p>
-                    {formatRupees(
-                      item.refAmount != null ? item.refAmount : "No data"
-                    )}
-                  </p>
-                </div>
-                <div className="flex flex-row justify-content-between w-full mt-1">
-                  <p>{item.refSubCategory || "No data"}</p>
-                  <p>{item.refExpenseDate || "No data"}</p>
+                <IonSkeletonText
+                  animated
+                  style={{
+                    width: "40px",
+                    height: "35px",
+                    borderRadius: "50%",
+                  }}
+                />
+                <div className="pl-3 flex flex-column w-full">
+                  <IonSkeletonText animated style={{ width: "60%" }} />
+                  <IonSkeletonText
+                    animated
+                    style={{ width: "40%", marginTop: "6px" }}
+                  />
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : noDataFound ? (
+            <div className="text-center text-gray-500 p-4">No data found</div>
+          ) : (
+            filteredProducts.map((item: expense, idx: number) => (
+              <div
+                key={idx}
+                onClick={() => handleProductEdit(item)}
+                className="flex p-2 shadow-3 p-3 my-2 border-round-md align-items-center"
+              >
+                <div
+                  style={{
+                    width: "40px",
+                    height: "35px",
+                    borderRadius: "50%",
+                    background: "#0478df",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                  }}
+                >
+                  {item.refExpenseCategory?.charAt(0).toUpperCase() || "N"}
+                </div>
+                <div className="pl-3 flex flex-column w-full align-items-center justify-content-between">
+                  <div className="flex flex-row justify-content-between w-full">
+                    <p>{item.refExpenseCategory || "No data"}</p>
+                  </div>
+                  <div className="flex flex-row justify-content-between w-full">
+                    <p>{item.refBankName || "No data"}</p>
+                    <p>{formatRupees(item.refAmount ?? "No data")}</p>
+                  </div>
+                  <div className="flex flex-row justify-content-between w-full mt-1">
+                    <p>{item.refSubCategory || "No data"}</p>
+                    <p>{item.refExpenseDate || "No data"}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
