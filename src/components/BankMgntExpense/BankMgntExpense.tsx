@@ -93,35 +93,6 @@ const BankMgntExpense: React.FC = () => {
     }
   };
 
-  // LOAD DATA FUNC
-  const loadData = () => {
-    console.log("line --------- 25");
-    try {
-      axios
-        .get(import.meta.env.VITE_API_URL + "/adminRoutes/getBankFundList", {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          const data = decrypt(
-            response.data[1],
-            response.data[0],
-            import.meta.env.VITE_ENCRYPTION_KEY
-          );
-
-          localStorage.setItem("token", "Bearer " + data.token);
-
-          if (data.success) {
-            console.log("data", data);
-          }
-        });
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const handleProductEdit = (item: expense) => {
     history.push("/editExpense", { item });
     localStorage.setItem("editExpense", JSON.stringify(item));
@@ -129,7 +100,6 @@ const BankMgntExpense: React.FC = () => {
 
   useEffect(() => {
     setDate(new Date());
-    loadData();
     expenseData(new Date());
   }, []);
 
@@ -166,25 +136,25 @@ const BankMgntExpense: React.FC = () => {
                   fontSize: "16px",
                 }}
               >
-                {item.refExpenseCategory.charAt(0).toUpperCase()}
+                {item.refExpenseCategory?.charAt(0).toUpperCase() || "N"}
               </div>
               <div className="pl-3 flex flex-column w-full align-items-center justify-content-between">
                 <div className="flex flex-row justify-content-between w-full">
-                  <p>{item.refExpenseCategory}</p>
-                  {/* <p>{item.refExpenseDate}</p> */}
+                  <p>{item.refExpenseCategory || "No data"}</p>
                 </div>
                 <div className="flex flex-row justify-content-between w-full">
-                  <p>{item.refBankName}</p>
-                  <p>₹{item.refAmount}</p>
+                  <p>{item.refBankName || "No data"}</p>
+                  <p>₹{item.refAmount != null ? item.refAmount : "No data"}</p>
                 </div>
                 <div className="flex flex-row justify-content-between w-full mt-1">
-                  <p>{item.refSubCategory}</p>
-                  <p>{item.refExpenseDate}</p>
+                  <p>{item.refSubCategory || "No data"}</p>
+                  <p>{item.refExpenseDate || "No data"}</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
+
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
           <IonFabButton onClick={() => history.push("/addNewExpense")}>
             <IonIcon icon={add}></IonIcon>

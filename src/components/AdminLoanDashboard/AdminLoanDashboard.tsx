@@ -3,7 +3,7 @@ import "./AdminLoanDashboard.css";
 import { Carousel } from "react-responsive-carousel";
 import { useHistory } from "react-router";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Nullable } from "vitest";
+// import { Nullable } from "vitest";
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { IonSkeletonText } from "@ionic/react";
@@ -29,12 +29,16 @@ interface dashboardCount {
   admin_Total_initial_interest?: string;
 }
 
-const AdminLoanDashboard: React.FC = () => {
+interface UserLoanDashboardProps {
+  date: Date | null;
+}
+
+const AdminLoanDashboard: React.FC<UserLoanDashboardProps> = ({ date }) => {
   const history = useHistory();
   console.log("history", history);
 
   const [dashboardCount, setDashboardCount] = useState<dashboardCount>();
-  const [date, setDate] = useState<Nullable<Date>>(null);
+  // const [date, setDate] = useState<Nullable<Date>>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const formatDate = (data: any) => {
@@ -46,14 +50,14 @@ const AdminLoanDashboard: React.FC = () => {
   };
 
   const DashBoardData = () => {
-    if (date === null) setDate(new Date());
+    const selectedDate = date ?? new Date();
     setLoading(true);
 
     axios
       .post(
         import.meta.env.VITE_API_URL + "/refDashboard/Count",
         {
-          month: formatDate(date),
+          month: formatDate(selectedDate),
         },
         {
           headers: {

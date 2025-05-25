@@ -14,14 +14,14 @@ import "./Home.css";
 import UserLoanDashboard from "../../components/UserLoanDashboard/UserLoanDashboard";
 import AdminLoanDashboard from "../../components/AdminLoanDashboard/AdminLoanDashboard";
 import { Calendar } from "primereact/calendar";
-import { Nullable } from "primereact/ts-helpers";
+// import { Nullable } from "primereact/ts-helpers";
 import { calendarOutline } from "ionicons/icons";
 
 import { Chart } from "primereact/chart";
 
 const Home: React.FC = () => {
   const [selectedSegment, setSelectedSegment] = useState<string>("user");
-  const [date, setDate] = useState<Nullable<Date>>(null);
+  const [date, setDate] = useState<Date | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
@@ -123,8 +123,8 @@ const Home: React.FC = () => {
             </IonSegmentButton>
           </IonSegment>
 
-          {selectedSegment === "user" && <UserLoanDashboard />}
-          {selectedSegment === "admin" && <AdminLoanDashboard />}
+          {selectedSegment === "user" && <UserLoanDashboard date={date} />}
+          {selectedSegment === "admin" && <AdminLoanDashboard date={date} />}
         </div>
 
         {/* Chart Analysis for Profilt & Loss */}
