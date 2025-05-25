@@ -7,6 +7,7 @@ import {
   IonHeader,
   IonIcon,
   IonPage,
+  IonSearchbar,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -44,6 +45,8 @@ const BankMgntExpense: React.FC = () => {
 
   // HANDLE NAV
   const history = useHistory();
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   // SET DATE - FOR BACKEND API TRIGGER
   const [date, setDate] = useState<Nullable<Date>>(null);
@@ -103,6 +106,13 @@ const BankMgntExpense: React.FC = () => {
     expenseData(new Date());
   }, []);
 
+  const filteredProducts = expense.filter((item) =>
+    Object.values(item)
+      .join(" ")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
     <IonPage>
       <IonHeader>
@@ -112,11 +122,18 @@ const BankMgntExpense: React.FC = () => {
           </IonButtons>
           <IonTitle>Expense Management</IonTitle>
         </IonToolbar>
+        <IonToolbar>
+          <IonSearchbar
+            value={searchTerm}
+            onIonInput={(e) => setSearchTerm(e.detail.value!)}
+            placeholder="Search by Product Name, Status, Interest..."
+          ></IonSearchbar>
+        </IonToolbar>
       </IonHeader>
 
       <IonContent>
         <div className="productsDisplayCards m-3">
-          {expense.map((item: expense, idx: number) => (
+          {filteredProducts.map((item: expense, idx: number) => (
             <div
               key={idx}
               onClick={() => handleProductEdit(item)}

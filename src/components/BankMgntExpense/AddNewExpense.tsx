@@ -233,7 +233,7 @@ const AddNewExpense: React.FC = () => {
               setToastMessage("Expense added successfully!");
               setToastColor("success");
               setShowToast(true);
-              history.goBack();
+              history.replace("/expenseDetails", { shouldReload: true });
             }
           });
       } catch (error) {

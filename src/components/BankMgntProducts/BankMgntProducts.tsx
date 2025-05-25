@@ -114,7 +114,11 @@ const BankMgntProducts: React.FC = () => {
   };
 
   const filteredProducts = userLists.filter((item) =>
-    `${item.refProductName} ${item.refProductStatus} ${item.refProductInterest}`
+    Object.values(item)
+      .map((val) =>
+        typeof val === "string" || typeof val === "number" ? val : ""
+      )
+      .join(" ")
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
