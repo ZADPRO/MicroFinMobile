@@ -7,6 +7,7 @@ import {
   IonHeader,
   IonIcon,
   IonPage,
+  IonSearchbar,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -48,6 +49,8 @@ const UserListVendor: React.FC = () => {
     };
   }, []);
 
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   //   HISTORY PUSH
   const history = useHistory();
 
@@ -81,6 +84,27 @@ const UserListVendor: React.FC = () => {
     getVendorList();
   }, []);
 
+  useEffect(() => {
+    // Call API on load or reload
+    if (location.state?.shouldReload) {
+      getVendorList();
+      // Clear the reload flag so it doesn’t trigger again unnecessarily
+      history.replace({ ...location, state: {} });
+    } else {
+      getVendorList();
+    }
+  }, [location.state?.shouldReload]);
+
+  const filteredProducts = vendorList.filter((item) =>
+    Object.values(item)
+      .map((val) =>
+        typeof val === "string" || typeof val === "number" ? val : ""
+      )
+      .join(" ")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
     <IonPage>
       <IonHeader>
@@ -90,17 +114,24 @@ const UserListVendor: React.FC = () => {
           </IonButtons>
           <IonTitle>Vendor Details</IonTitle>
         </IonToolbar>
+        <IonToolbar>
+          <IonSearchbar
+            value={searchTerm}
+            onIonInput={(e) => setSearchTerm(e.detail.value!)}
+            placeholder="Search here..."
+          ></IonSearchbar>
+        </IonToolbar>
       </IonHeader>
       <IonContent>
         <div className="m-3">
-          {vendorList.length > 0 ? (
-            vendorList.map((item, index) => {
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((item, index) => {
               return (
                 <div
                   key={`${index}`}
                   onClick={() =>
                     history.push("/editExistingVendor", {
-                      vendorData: vendorList[index],
+                      vendorData: filteredProducts[index],
                     })
                   }
                   className="flex p-2 shadow-3 p-3 my-2 border-round-md align-items-center"

@@ -7,6 +7,7 @@ import {
   IonIcon,
   IonPage,
   IonTitle,
+  IonToast,
   IonToolbar,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
@@ -39,6 +40,14 @@ const UserAddVendor: React.FC = () => {
 
   //   HISTORY
   const history = useHistory();
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const triggerToast = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+  };
 
   //   STATES FOR HANDLE INPUT DETAILS
   const [accountDetails, setAccountDetails] = useState([
@@ -83,17 +92,50 @@ const UserAddVendor: React.FC = () => {
   const [description, setDescription] = useState("");
 
   const handleSubmit = async () => {
-    if (!name || !contactNumber || !email || !address || !vendorType) {
+    if (!name.trim()) {
+      triggerToast("Please enter the name");
       return;
     }
 
-    const hasEmptyBankField = accountDetails.some(
-      (item) =>
-        !item.refAccountNo ||
-        !item.refIFSCCode ||
-        !item.refBankName ||
-        !item.upiCode
-    );
+    if (!contactNumber.trim()) {
+      triggerToast("Please enter the contact number");
+      return;
+    }
+
+    if (!email.trim()) {
+      triggerToast("Please enter the email");
+      return;
+    }
+
+    if (!address.trim()) {
+      triggerToast("Please enter the address");
+      return;
+    }
+
+    if (!vendorType) {
+      triggerToast("Please select vendor type");
+      return;
+    }
+
+    const hasEmptyBankField = accountDetails.some((item, index) => {
+      if (!item.refAccountNo.trim()) {
+        triggerToast(`Please enter account number for bank ${index + 1}`);
+        return true;
+      }
+      if (!item.refIFSCCode.trim()) {
+        triggerToast(`Please enter IFSC code for bank ${index + 1}`);
+        return true;
+      }
+      if (!item.refBankName.trim()) {
+        triggerToast(`Please enter bank name for bank ${index + 1}`);
+        return true;
+      }
+      if (!item.upiCode.trim()) {
+        triggerToast(`Please enter UPI code for bank ${index + 1}`);
+        return true;
+      }
+      return false;
+    });
 
     if (hasEmptyBankField) {
       return;
@@ -127,13 +169,13 @@ const UserAddVendor: React.FC = () => {
       localStorage.setItem("token", "Bearer " + data.token);
 
       if (data.success) {
-        history.goBack();
-        // closeSidebarNew()
+        history.replace("/vendorLists", { shouldReload: true });
       } else {
-        console.log("Error");
+        triggerToast("Error adding vendor.");
       }
     } catch (error) {
       console.error(error);
+      triggerToast("Something went wrong. Please try again.");
     }
   };
 
@@ -255,6 +297,15 @@ const UserAddVendor: React.FC = () => {
             Submit
           </button>
         </div>
+
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={toastMessage}
+          duration={2000}
+          // color="danger"
+          className="custom-toast"
+        />
       </IonContent>
     </IonPage>
   );

@@ -28,3 +28,13 @@ p {
   border-radius: 10px;
   font-weight: bold;
 }
+
+ion-segment-button.segment-button-checked {
+  color: #0478df;
+  font-weight: bold;
+}
+
+ion-segment-button.segment-button-checked ion-label {
+  color: #0478df;
+  font-weight: bold;
+}
