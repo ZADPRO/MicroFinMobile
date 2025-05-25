@@ -17,7 +17,7 @@ import axios from "axios";
 import decrypt, { formatRupees } from "../../services/helper";
 import { Nullable } from "vitest";
 import { add } from "ionicons/icons";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 interface expense {
   refExpenseDate: string;
@@ -42,6 +42,8 @@ const BankMgntExpense: React.FC = () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
   }, []);
+
+  const location = useLocation<{ shouldReload?: boolean }>();
 
   // HANDLE NAV
   const history = useHistory();
@@ -105,6 +107,21 @@ const BankMgntExpense: React.FC = () => {
     setDate(new Date());
     expenseData(new Date());
   }, []);
+
+  useEffect(() => {
+    const currentDate = new Date();
+    setDate(currentDate);
+
+    // Call API on load or reload
+    if (location.state?.shouldReload) {
+      expenseData(currentDate);
+
+      // Clear the reload flag so it doesn’t trigger again unnecessarily
+      history.replace({ ...location, state: {} });
+    } else {
+      expenseData(currentDate);
+    }
+  }, [location.state?.shouldReload]);
 
   const filteredProducts = expense.filter((item) =>
     Object.values(item)
