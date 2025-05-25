@@ -8,6 +8,7 @@ import {
   IonIcon,
   IonModal,
   IonPage,
+  IonSkeletonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -50,6 +51,8 @@ const BankMgntFunds: React.FC = () => {
   // HISTORY NAV
   const history = useHistory();
 
+  const [loading, setLoading] = useState<boolean>(true);
+
   // USER DATA HANDLER
   const [userLists, setUserLists] = useState<FundDetailsProps[]>([]);
   const [monthlyData, setMonthlyData] = useState<any>({});
@@ -62,6 +65,8 @@ const BankMgntFunds: React.FC = () => {
   // GET DATA FROM DATABASE
 
   const loadData = () => {
+    setLoading(true);
+
     try {
       axios
         .get(import.meta.env.VITE_API_URL + "/adminRoutes/getBankFundList", {
@@ -83,9 +88,11 @@ const BankMgntFunds: React.FC = () => {
             setUserLists(data.BankFund);
             groupByMonth(data.BankFund);
           }
+          setLoading(false);
         });
     } catch (e: any) {
       console.log(e);
+      setLoading(false);
     }
   };
 
@@ -232,89 +239,120 @@ const BankMgntFunds: React.FC = () => {
       </IonHeader>
 
       <IonContent>
-        <div className="recyclerContent p-2">
-          {/* Top Monthly Summary */}
-          {Object.entries(monthlyData)
-            .sort((a, b) => {
-              const dateA = new Date(a[0]);
-              const dateB = new Date(b[0]);
-              return dateB.getTime() - dateA.getTime();
-            })
-            .map(([month, data]: any) => (
-              <div key={month} className="mb-4">
-                {/* Month Header */}
-                <div className="flex justify-content-between align-items-center mb-2">
-                  <div className="flex flex-column">
-                    <p className="text-base font-medium">
-                      {month.split(" ")[0]}
-                    </p>{" "}
-                    <p className="text-sm text-secondary">
-                      {month.split(" ")[1]}
-                    </p>{" "}
-                  </div>
-                  <div
-                    className="text-lg"
-                    style={{ color: data.netAmount >= 0 ? "green" : "red" }}
-                  >
-                    {data.netAmount >= 0 ? "+ " : " "}₹{" "}
-                    {data.netAmount.toFixed(2)}
-                  </div>
+        <div className="recyclerContent p-3">
+          {loading ? (
+            // Show 4 skeletons as placeholders
+            [...Array(4)].map((_, idx) => (
+              <div
+                key={idx}
+                className="flex p-2 shadow-3 p-3 my-2 border-round-md"
+              >
+                <IonSkeletonText
+                  animated
+                  style={{
+                    width: "40px",
+                    height: "35px",
+                    borderRadius: "50%",
+                  }}
+                />
+                <div className="pl-3 flex flex-column w-full">
+                  <IonSkeletonText animated style={{ width: "60%" }} />
+                  <IonSkeletonText
+                    animated
+                    style={{ width: "40%", marginTop: "6px" }}
+                  />
                 </div>
-
-                {/* Transactions for the month */}
-                {data.transactions.map(
-                  (item: FundDetailsProps, idx: number) => (
-                    <div
-                      key={idx}
-                      className="flex p-2 shadow-3 p-3 my-2 border-round-md"
-                    >
-                      <div
-                        style={{
-                          width: "40px",
-                          height: "35px",
-                          borderRadius: "50%",
-                          background: "#3a3a3e",
-                          color: "white",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontWeight: "bold",
-                          fontSize: "16px",
-                        }}
-                      >
-                        {item.refFundType.charAt(0).toUpperCase()}
+              </div>
+            ))
+          ) : (
+            <>
+              {/* Top Monthly Summary */}
+              {Object.entries(monthlyData)
+                .sort((a, b) => {
+                  const dateA = new Date(a[0]);
+                  const dateB = new Date(b[0]);
+                  return dateB.getTime() - dateA.getTime();
+                })
+                .map(([month, data]: any) => (
+                  <div key={month} className="mb-4">
+                    {/* Month Header */}
+                    <div className="flex justify-content-between align-items-center mb-2">
+                      <div className="flex flex-column">
+                        <p className="text-base font-medium">
+                          {month.split(" ")[0]}
+                        </p>{" "}
+                        <p className="text-sm text-secondary">
+                          {month.split(" ")[1]}
+                        </p>{" "}
                       </div>
-                      <div className="pl-3 flex w-full align-items-center justify-content-between">
-                        <div className="flex flex-column">
-                          <p>{item.refFundType}</p>
-                          <p style={{ fontSize: "13px" }}>{item.createdAt}</p>
-                        </div>
-                        <div className="amount">
-                          <p
+                      <div
+                        className="text-lg"
+                        style={{ color: data.netAmount >= 0 ? "green" : "red" }}
+                      >
+                        {data.netAmount >= 0 ? "+ " : " "}₹{" "}
+                        {data.netAmount.toFixed(2)}
+                      </div>
+                    </div>
+
+                    {/* Transactions for the month */}
+                    {data.transactions.map(
+                      (item: FundDetailsProps, idx: number) => (
+                        <div
+                          key={idx}
+                          className="flex p-2 shadow-3 p-4 my-2 border-round-md"
+                        >
+                          <div
                             style={{
-                              color:
-                                item.refbfTrasactionType.toLowerCase() ===
-                                "debit"
-                                  ? "red"
-                                  : "green",
+                              width: "40px",
+                              height: "35px",
+                              borderRadius: "50%",
+                              background: "#0478df",
+                              color: "white",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontWeight: "bold",
                               fontSize: "16px",
                             }}
                           >
-                            {item.refbfTrasactionType.toLowerCase() === "debit"
-                              ? `- ₹${Number(
-                                  item.refbfTransactionAmount
-                                ).toFixed(2)}`
-                              : `+ ₹${Number(
-                                  item.refbfTransactionAmount
-                                ).toFixed(2)}`}
-                          </p>
+                            {item.refFundType.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="pl-3 flex w-full align-items-center justify-content-between">
+                            <div className="flex flex-column">
+                              <p>{item.refFundType}</p>
+                              <p style={{ fontSize: "13px" }}>
+                                {item.createdAt}
+                              </p>
+                            </div>
+                            <div className="amount">
+                              <p
+                                style={{
+                                  color:
+                                    item.refbfTrasactionType.toLowerCase() ===
+                                    "debit"
+                                      ? "red"
+                                      : "green",
+                                  fontSize: "16px",
+                                }}
+                              >
+                                {item.refbfTrasactionType.toLowerCase() ===
+                                "debit"
+                                  ? `- ₹${Number(
+                                      item.refbfTransactionAmount
+                                    ).toFixed(2)}`
+                                  : `+ ₹${Number(
+                                      item.refbfTransactionAmount
+                                    ).toFixed(2)}`}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-            ))}
+                      )
+                    )}
+                  </div>
+                ))}
+            </>
+          )}
         </div>
 
         {/* ADD NEW FUNDS */}
