@@ -6,6 +6,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonToast,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
@@ -16,6 +17,7 @@ import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
+import { warningOutline } from "ionicons/icons";
 
 interface option {
   label: string;
@@ -34,6 +36,13 @@ const AddNewExpense: React.FC = () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
   }, []);
+
+  // Toast state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastColor, setToastColor] = useState<
+    "danger" | "success" | "warning"
+  >("danger");
 
   // HANDLE NAV
   const history = useHistory();
@@ -103,9 +112,80 @@ const AddNewExpense: React.FC = () => {
     }
   };
 
+  const validateForm = (): boolean => {
+    if (!date) {
+      setToastMessage("Please select a date.");
+      setToastColor("danger");
+      setShowToast(true);
+      return false;
+    }
+
+    if (!vocherId || vocherId.trim() === "") {
+      setToastMessage("Please enter Voucher ID.");
+      setToastColor("danger");
+      setShowToast(true);
+      return false;
+    }
+
+    if (category === undefined || category === null) {
+      setToastMessage("Please select an Expense Category.");
+      setToastColor("danger");
+      setShowToast(true);
+      return false;
+    }
+
+    // If category is "Others" (value 0), categoryName must be entered
+    if (category === 0 && (!categoryName || categoryName.trim() === "")) {
+      setToastMessage("Please enter the new Category Name.");
+      setToastColor("danger");
+      setShowToast(true);
+      return false;
+    }
+
+    if (!subCategory || subCategory.trim() === "") {
+      setToastMessage("Please enter Sub-Category.");
+      setToastColor("danger");
+      setShowToast(true);
+      return false;
+    }
+
+    if (amount === null || amount === undefined || amount <= 0) {
+      setToastMessage("Please enter a valid Amount.");
+      setToastColor("danger");
+      setShowToast(true);
+      return false;
+    }
+
+    if (!bank) {
+      setToastMessage("Please select Amount Source.");
+      setToastColor("danger");
+      setShowToast(true);
+      return false;
+    }
+
+    // Check if amount is less than bank balance
+    let bankBalance = 0;
+    bankOption.forEach((data) => {
+      if (data.value === bank) {
+        bankBalance = Number(data.amount || 0);
+      }
+    });
+
+    if (amount > bankBalance) {
+      setToastMessage("Amount cannot be greater than bank balance.");
+      setToastColor("danger");
+      setShowToast(true);
+      return false;
+    }
+
+    return true;
+  };
+
   //   SUBMIT PAYLOAD TO BACKEND
 
   const handelSubmit = () => {
+    if (!validateForm()) return; // If validation fails, exit early
+
     let bankBalance;
     bankOption.map((data) => {
       if (data.value === bank) {
@@ -150,11 +230,17 @@ const AddNewExpense: React.FC = () => {
 
             if (data.success) {
               console.log("data", data);
+              setToastMessage("Expense added successfully!");
+              setToastColor("success");
+              setShowToast(true);
               history.goBack();
             }
           });
       } catch (error) {
         console.log("error", error);
+        setToastMessage("An error occurred while submitting the expense.");
+        setToastColor("danger");
+        setShowToast(true);
       }
     }
   };
@@ -269,6 +355,15 @@ const AddNewExpense: React.FC = () => {
             Submit
           </button>
         </div>
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={toastMessage}
+          duration={2000}
+          icon={warningOutline}
+          className="custom-toast"
+          // color={toastColor}
+        />
       </IonContent>
     </IonPage>
   );

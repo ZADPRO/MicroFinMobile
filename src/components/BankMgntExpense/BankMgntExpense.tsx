@@ -120,14 +120,14 @@ const BankMgntExpense: React.FC = () => {
             <div
               key={idx}
               onClick={() => handleProductEdit(item)}
-              className="flex p-2 shadow-3 p-3 my-2 border-round-md"
+              className="flex p-2 shadow-3 p-3 my-2 border-round-md align-items-center"
             >
               <div
                 style={{
                   width: "40px",
                   height: "35px",
                   borderRadius: "50%",
-                  background: "#3a3a3e",
+                  background: "#0478df",
                   color: "white",
                   display: "flex",
                   alignItems: "center",
