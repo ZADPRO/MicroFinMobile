@@ -60,3 +60,14 @@ const decrypt = (
 };
 
 export default decrypt;
+
+export const formatRupees = (amount: number | string): string => {
+  const numericAmount = Number(amount);
+  if (isNaN(numericAmount)) return "₹0.00";
+
+  return numericAmount.toLocaleString("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 2,
+  });
+};

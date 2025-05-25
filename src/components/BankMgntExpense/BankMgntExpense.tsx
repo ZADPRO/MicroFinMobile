@@ -13,7 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
-import decrypt from "../../services/helper";
+import decrypt, { formatRupees } from "../../services/helper";
 import { Nullable } from "vitest";
 import { add } from "ionicons/icons";
 import { useHistory } from "react-router";
@@ -144,7 +144,11 @@ const BankMgntExpense: React.FC = () => {
                 </div>
                 <div className="flex flex-row justify-content-between w-full">
                   <p>{item.refBankName || "No data"}</p>
-                  <p>₹{item.refAmount != null ? item.refAmount : "No data"}</p>
+                  <p>
+                    {formatRupees(
+                      item.refAmount != null ? item.refAmount : "No data"
+                    )}
+                  </p>
                 </div>
                 <div className="flex flex-row justify-content-between w-full mt-1">
                   <p>{item.refSubCategory || "No data"}</p>
