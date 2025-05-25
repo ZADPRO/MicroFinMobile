@@ -6,6 +6,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonToast,
 } from "@ionic/react";
 
 import React, { useEffect, useState } from "react";
@@ -15,19 +16,6 @@ import { InputText } from "primereact/inputtext";
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { useHistory, useLocation } from "react-router";
-
-interface BankItemProps {
-  createdAt: string;
-  createdBy: string;
-  refAccountType: number;
-  refAccountTypeName: string;
-  refBalance: string;
-  refBankAccountNo: string;
-  refBankAddress: string;
-  refBankId: number;
-  refBankName: string;
-  refIFSCsCode: string;
-}
 
 interface BankFormState {
   refBankId: number;
@@ -50,6 +38,9 @@ const EditExistingBank: React.FC = () => {
       StatusBar.setOverlaysWebView({ overlay: true });
     };
   }, []);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   //   CAPTURE EXISTING BANK DATA STATE
   const location = useLocation();
@@ -97,43 +88,77 @@ const EditExistingBank: React.FC = () => {
 
   // CALL TO BACKEND TO UPDATE THE BANK CREATION
   const handleNewUser = async () => {
-    try {
-      axios
-        .post(
-          import.meta.env.VITE_API_URL + "/adminRoutes/updateBankAccount",
-          {
-            refBankId: bankItem.refBankId,
-            refBankName: inputs.refBankName,
-            refBankAccountNo: inputs.refBankAccountNo,
-            refBankAddress: inputs.refBankAddress,
-            refBalance: inputs.refBalance,
-            refAccountType: inputs.refAccountType,
-            refAccountTypeName: inputs.refAccountTypeName,
-            refIFSCsCode: inputs.refIFSCsCode,
-          },
-          {
-            headers: {
-              Authorization: localStorage.getItem("token"),
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response: any) => {
-          const data = decrypt(
-            response.data[1],
-            response.data[0],
-            import.meta.env.VITE_ENCRYPTION_KEY
-          );
-          console.log("data", data);
+    const {
+      refBankName,
+      refBankAccountNo,
+      refBankAddress,
+      refBalance,
+      refIFSCsCode,
+    } = inputs;
 
-          if (data.success) {
-            localStorage.setItem("token", "Bearer " + data.token);
-            localStorage.removeItem("editBankItem");
-            history.replace("/bankDetails", { reload: true });
-          }
-        });
-    } catch (e: any) {
+    // Basic Validation
+    if (!refBankName) {
+      setToastMessage("Please enter Bank Name");
+      setShowToast(true);
+      return;
+    }
+    if (bankType === "Bank" && !refBankAccountNo) {
+      setToastMessage("Please enter Bank A/C Number");
+      setShowToast(true);
+      return;
+    }
+    if (bankType === "Bank" && !refBankAddress) {
+      setToastMessage("Please enter Bank Address");
+      setShowToast(true);
+      return;
+    }
+    if (!refBalance) {
+      setToastMessage("Please enter Balance");
+      setShowToast(true);
+      return;
+    }
+    if (bankType === "Bank" && !refIFSCsCode) {
+      setToastMessage("Please enter IFSC Code");
+      setShowToast(true);
+      return;
+    }
+
+    // Proceed to call API if validation passes
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_API_URL + "/adminRoutes/updateBankAccount",
+        {
+          refBankId: bankItem.refBankId,
+          refBankName: inputs.refBankName,
+          refBankAccountNo: inputs.refBankAccountNo,
+          refBankAddress: inputs.refBankAddress,
+          refBalance: inputs.refBalance,
+          refAccountType: inputs.refAccountType,
+          refAccountTypeName: inputs.refAccountTypeName,
+          refIFSCsCode: inputs.refIFSCsCode,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = decrypt(
+        response.data[1],
+        response.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+
+      if (data.success) {
+        localStorage.setItem("token", "Bearer " + data.token);
+        history.replace("/bankDetails", { reload: true });
+      }
+    } catch (e) {
       console.log(e);
+      setToastMessage("Something went wrong. Please try again.");
+      setShowToast(true);
     }
   };
 
@@ -247,6 +272,16 @@ const EditExistingBank: React.FC = () => {
             Update
           </button>
         </div>
+
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={toastMessage}
+          duration={2000}
+          position="bottom"
+          // color="danger"
+          className="custom-toast"
+        />
       </IonContent>
     </IonPage>
   );

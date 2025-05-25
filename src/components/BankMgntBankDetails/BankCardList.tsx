@@ -41,18 +41,23 @@ const BankCardList: React.FC<Props> = ({ userLists }) => {
               onClick={() => handleEditBankData(item)}
             >
               <div
-                className="flex align-items-center justify-content-center bg-primary text-black font-bold"
                 style={{
                   width: "40px",
-                  height: "40px",
+                  height: "35px",
                   borderRadius: "50%",
-                  backgroundColor: "#4caf50",
+                  background: "#0478df",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "bold",
+                  fontSize: "16px",
                 }}
               >
-                {index + 1}
+                {item.refBankName?.charAt(0).toUpperCase() || "N"}
               </div>
 
-              <div className="flex w-full align-items-center justify-content-between pl-2">
+              <div className="flex w-full pl-2 align-items-center justify-content-between pl-2">
                 <div className="bankDetails">
                   <p className="m-0 text-lg font-medium">
                     {item.refBankName?.trim() || "-"}

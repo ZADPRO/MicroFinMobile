@@ -6,6 +6,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonToast,
 } from "@ionic/react";
 
 import React, { useEffect, useState } from "react";
@@ -30,6 +31,12 @@ const AddNewBank: React.FC = () => {
   // USE HISTORY
   const history = useHistory();
 
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    color: "danger", // use 'success' for success messages
+  });
+
   // SET BANK DETAILS
   const [bankType, setBankType] = useState<string>("");
 
@@ -53,40 +60,105 @@ const AddNewBank: React.FC = () => {
 
   // CALL TO BACKEND TO UPDATE THE BANK CREATION
   const handleNewUser = async () => {
-    try {
-      axios
-        .post(
-          import.meta.env.VITE_API_URL + "/adminRoutes/addBankAccount",
-          {
-            refBankName: inputs.refBankName,
-            refBankAccountNo: inputs.refBankAccountNo,
-            refBankAddress: inputs.refBankAddress,
-            refBalance: inputs.refBalance,
-            refIFSCsCode: inputs.refBankIFSCCode,
-            refAccountType: bankType === "Cash" ? 2 : 1,
-          },
-          {
-            headers: {
-              Authorization: localStorage.getItem("token"),
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response: any) => {
-          const data = decrypt(
-            response.data[1],
-            response.data[0],
-            import.meta.env.VITE_ENCRYPTION_KEY
-          );
-          console.log("data", data);
+    const {
+      refBankName,
+      refBankAccountNo,
+      refBankAddress,
+      refBalance,
+      refBankIFSCCode,
+    } = inputs;
 
-          if (data.success) {
-            localStorage.setItem("token", "Bearer " + data.token);
-            history.replace("/bankDetails", { reload: true });
-          }
+    if (!bankType) {
+      return setToast({
+        show: true,
+        message: "Please select a bank type",
+        color: "danger",
+      });
+    }
+
+    if (!refBankName.trim()) {
+      return setToast({
+        show: true,
+        message: "Bank name is required",
+        color: "danger",
+      });
+    }
+
+    if (bankType === "Bank") {
+      if (!refBankAccountNo.trim()) {
+        return setToast({
+          show: true,
+          message: "Account number is required",
+          color: "danger",
         });
-    } catch (e: any) {
-      console.log(e);
+      }
+
+      if (!refBankAddress.trim()) {
+        return setToast({
+          show: true,
+          message: "Bank address is required",
+          color: "danger",
+        });
+      }
+
+      if (!refBankIFSCCode.trim()) {
+        return setToast({
+          show: true,
+          message: "IFSC code is required",
+          color: "danger",
+        });
+      }
+    }
+
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_API_URL + "/adminRoutes/addBankAccount",
+        {
+          refBankName,
+          refBankAccountNo,
+          refBankAddress,
+          refBalance,
+          refIFSCsCode: refBankIFSCCode,
+          refAccountType: bankType === "Cash" ? 2 : 1,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = decrypt(
+        response.data[1],
+        response.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+
+      if (data.success) {
+        localStorage.setItem("token", "Bearer " + data.token);
+        setToast({
+          show: true,
+          message: "Bank added successfully",
+          color: "success",
+        });
+        setTimeout(() => {
+          history.replace("/bankDetails", { reload: true });
+        }, 1000);
+      } else {
+        setToast({
+          show: true,
+          message: "Failed to add bank",
+          color: "danger",
+        });
+      }
+    } catch (error) {
+      setToast({
+        show: true,
+        message: "Something went wrong!",
+        color: "danger",
+      });
+      console.error(error);
     }
   };
 
@@ -195,6 +267,14 @@ const AddNewBank: React.FC = () => {
             Submit
           </button>
         </div>
+        <IonToast
+          isOpen={toast.show}
+          onDidDismiss={() => setToast({ ...toast, show: false })}
+          message={toast.message}
+          duration={2000}
+          // color={toast.color}
+          className="custom-toast"
+        />
       </IonContent>
     </IonPage>
   );

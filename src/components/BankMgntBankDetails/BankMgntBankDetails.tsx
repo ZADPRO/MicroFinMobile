@@ -98,6 +98,13 @@ const BankMgntBankDetails: React.FC = () => {
 
   const history = useHistory();
 
+  const filteredProducts = userLists.filter((item) =>
+    Object.values(item)
+      .join(" ")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
     <IonPage>
       <IonHeader>
@@ -116,7 +123,7 @@ const BankMgntBankDetails: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <BankCardList userLists={userLists} />
+        <BankCardList userLists={filteredProducts} />
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
           <IonFabButton onClick={() => history.push("/addNewBank")}>
             <IonIcon icon={add}></IonIcon>
