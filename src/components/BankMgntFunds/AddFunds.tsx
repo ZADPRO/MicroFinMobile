@@ -4,6 +4,7 @@ import { InputNumber } from "primereact/inputnumber";
 import React, { useEffect, useState } from "react";
 import decrypt from "../../services/helper";
 import { useHistory } from "react-router";
+import { IonToast } from "@ionic/react";
 
 // interface for mode of payment
 interface MoneyType {
@@ -29,6 +30,15 @@ const AddFunds: React.FC = () => {
     { name: "Bank", id: 1 },
     { name: "Cash", id: 2 },
   ];
+
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [showToast, setShowToast] = useState<boolean>(false);
+
+  const showErrorToast = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+  };
+
   // Handle the from and to account with validation
   const [bankOptions, setBankOptions] = useState<BankOptions[] | []>([]);
 
@@ -64,6 +74,22 @@ const AddFunds: React.FC = () => {
 
   //   ADD NEW FUNDS
   const handleNewUser = async () => {
+    // Form Validation
+    if (!moneyType) {
+      showErrorToast("Please select the money type.");
+      return;
+    }
+    if (!inputs.refBankId) {
+      showErrorToast("Please select a bank.");
+      return;
+    }
+    if (
+      !inputs.refbfTransactionAmount ||
+      Number(inputs.refbfTransactionAmount) <= 0
+    ) {
+      showErrorToast("Please enter a valid transaction amount.");
+      return;
+    }
     try {
       axios
         .post(
@@ -83,7 +109,7 @@ const AddFunds: React.FC = () => {
             },
           }
         )
-        .then((response: any) => {
+        .then((response) => {
           const data = decrypt(
             response.data[1],
             response.data[0],
@@ -94,11 +120,12 @@ const AddFunds: React.FC = () => {
 
           if (data.success) {
             console.log(data);
-            history.goBack();
+            history.replace("/fundDetails", { shouldReload: true });
           }
         });
-    } catch (e: any) {
+    } catch (e) {
       console.log(e);
+      showErrorToast("Something went wrong. Please try again.");
     }
   };
 
@@ -193,6 +220,14 @@ const AddFunds: React.FC = () => {
           Submit
         </button>
       </div>
+      <IonToast
+        isOpen={showToast}
+        message={toastMessage}
+        duration={2000}
+        onDidDismiss={() => setShowToast(false)}
+        // color="danger"
+        className="custom-toast"
+      />
     </div>
   );
 };

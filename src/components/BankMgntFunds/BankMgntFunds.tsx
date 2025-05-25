@@ -15,9 +15,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
-import decrypt from "../../services/helper";
+import decrypt, { formatRupees } from "../../services/helper";
 import { add, funnel } from "ionicons/icons";
 import { useHistory } from "react-router";
+import { Checkbox } from "primereact/checkbox";
+import { Calendar } from "primereact/calendar";
+import { useLocation } from "react-router"; // import useLocation
 
 interface FundDetailsProps {
   createdAt: string;
@@ -50,6 +53,12 @@ const BankMgntFunds: React.FC = () => {
 
   // HISTORY NAV
   const history = useHistory();
+  const location = useLocation(); // get location object
+
+  useEffect(() => {
+    console.log("location", location);
+    // If the page was redirected with shouldReload = true
+  }, []);
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -57,6 +66,7 @@ const BankMgntFunds: React.FC = () => {
   const [userLists, setUserLists] = useState<FundDetailsProps[]>([]);
   const [monthlyData, setMonthlyData] = useState<any>({});
   console.log("monthlyData", monthlyData);
+
   const [currentMonthSummary, setCurrentMonthSummary] = useState({
     label: "",
     netAmount: 0,
@@ -146,6 +156,17 @@ const BankMgntFunds: React.FC = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    // Call API on load or reload
+    if (location.state?.shouldReload) {
+      loadData();
+      // Clear the reload flag so it doesn’t trigger again unnecessarily
+      history.replace({ ...location, state: {} });
+    } else {
+      loadData();
+    }
+  }, [location.state?.shouldReload]);
 
   // MODAL HANDLER
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -289,8 +310,8 @@ const BankMgntFunds: React.FC = () => {
                         className="text-lg"
                         style={{ color: data.netAmount >= 0 ? "green" : "red" }}
                       >
-                        {data.netAmount >= 0 ? "+ " : " "}₹{" "}
-                        {data.netAmount.toFixed(2)}
+                        {data.netAmount >= 0 ? "+ " : " "}
+                        {formatRupees(data.netAmount.toFixed(2))}
                       </div>
                     </div>
 
@@ -337,12 +358,12 @@ const BankMgntFunds: React.FC = () => {
                               >
                                 {item.refbfTrasactionType.toLowerCase() ===
                                 "debit"
-                                  ? `- ₹${Number(
+                                  ? `- ${formatRupees(
                                       item.refbfTransactionAmount
-                                    ).toFixed(2)}`
-                                  : `+ ₹${Number(
+                                    )}`
+                                  : `+ ${formatRupees(
                                       item.refbfTransactionAmount
-                                    ).toFixed(2)}`}
+                                    )}`}
                               </p>
                             </div>
                           </div>
@@ -366,14 +387,14 @@ const BankMgntFunds: React.FC = () => {
           isOpen={showModal}
           onDidDismiss={() => setShowModal(false)}
           keepContentsMounted={true}
-          initialBreakpoint={0.4}
-          breakpoints={[0, 0.4, 0.75]}
+          initialBreakpoint={0.6}
+          breakpoints={[0, 0.4, 0.6, 1]}
           className="calendar-modal"
         >
-          <div className="p-3">
-            <div className="flex">
+          <div className="py-4">
+            <div className="flex flex-col md:flex-row gap-4">
               {/* LEFT SIDE: Filter Types */}
-              <div className="w-4 border-right-1 pr-3">
+              <div className="w-full md:w-1/3 bg-gray-100 rounded-lg p-3 shadow-sm">
                 {[
                   "Bank Name",
                   "Fund Type",
@@ -384,8 +405,10 @@ const BankMgntFunds: React.FC = () => {
                 ].map((item, idx) => (
                   <p
                     key={idx}
-                    className={`mb-3 cursor-pointer ${
-                      activeFilter === item ? "font-bold" : ""
+                    className={`py-2 px-3 mb-2 rounded cursor-pointer transition-all text-black ${
+                      activeFilter === item
+                        ? "bg-gray-300 font-semibold"
+                        : "hover:bg-gray-200"
                     }`}
                     onClick={() => setActiveFilter(item)}
                   >
@@ -394,20 +417,23 @@ const BankMgntFunds: React.FC = () => {
                 ))}
               </div>
 
-              {/* RIGHT SIDE: Dynamic Filter Values */}
-              <div className="w-8 pl-3">
+              {/* RIGHT SIDE: Filter Values */}
+              <div className="w-full md:w-2/3 bg-white rounded-lg p-3 shadow-md max-h-[50vh] overflow-y-auto text-black">
                 {activeFilter === "Bank Name" &&
                   Array.from(new Set(userLists.map((i) => i.refBankName))).map(
                     (name, idx) => (
-                      <div key={idx} className="mb-2">
-                        <input
-                          type="checkbox"
+                      <div key={idx} className="flex items-center mb-2">
+                        <Checkbox
+                          inputId={`bank-${idx}`}
                           checked={selectedBankNames.includes(name)}
                           onChange={(e) =>
-                            handleCheckChange(name, e.target.checked, "bank")
+                            handleCheckChange(name, e.checked, "bank")
                           }
-                        />{" "}
-                        {name}
+                          className="mr-2"
+                        />
+                        <label htmlFor={`bank-${idx}`} className="text-sm">
+                          {name}
+                        </label>
                       </div>
                     )
                   )}
@@ -415,15 +441,18 @@ const BankMgntFunds: React.FC = () => {
                 {activeFilter === "Fund Type" &&
                   Array.from(new Set(userLists.map((i) => i.refFundType))).map(
                     (type, idx) => (
-                      <div key={idx} className="mb-2">
-                        <input
-                          type="checkbox"
+                      <div key={idx} className="flex items-center mb-2">
+                        <Checkbox
+                          inputId={`fund-${idx}`}
                           checked={selectedFundTypes.includes(type)}
                           onChange={(e) =>
-                            handleCheckChange(type, e.target.checked, "fund")
+                            handleCheckChange(type, e.checked, "fund")
                           }
-                        />{" "}
-                        {type}
+                          className="mr-2"
+                        />
+                        <label htmlFor={`fund-${idx}`} className="text-sm">
+                          {type}
+                        </label>
                       </div>
                     )
                   )}
@@ -432,53 +461,71 @@ const BankMgntFunds: React.FC = () => {
                   Array.from(
                     new Set(userLists.map((i) => i.refPaymentType))
                   ).map((type, idx) => (
-                    <div key={idx} className="mb-2">
-                      <input
-                        type="checkbox"
+                    <div key={idx} className="flex items-center mb-2">
+                      <Checkbox
+                        inputId={`payment-${idx}`}
                         checked={selectedPaymentTypes.includes(type)}
                         onChange={(e) =>
-                          handleCheckChange(type, e.target.checked, "payment")
+                          handleCheckChange(type, e.checked, "payment")
                         }
-                      />{" "}
-                      {type}
+                        className="mr-2"
+                      />
+                      <label htmlFor={`payment-${idx}`} className="text-sm">
+                        {type}
+                      </label>
                     </div>
                   ))}
 
                 {activeFilter === "Action" &&
                   ["credit", "debit"].map((type, idx) => (
-                    <div key={idx} className="mb-2">
-                      <input
-                        type="checkbox"
+                    <div key={idx} className="flex items-center mb-2">
+                      <Checkbox
+                        inputId={`action-${idx}`}
                         checked={selectedActions.includes(type)}
                         onChange={(e) =>
-                          handleCheckChange(type, e.target.checked, "action")
+                          handleCheckChange(type, e.checked, "action")
                         }
-                      />{" "}
-                      {type}
+                        className="mr-2"
+                      />
+                      <label
+                        htmlFor={`action-${idx}`}
+                        className="text-sm capitalize"
+                      >
+                        {type}
+                      </label>
                     </div>
                   ))}
 
                 {activeFilter === "From Date" && (
-                  <input
-                    type="date"
+                  <Calendar
                     value={fromDate}
-                    onChange={(e) => setFromDate(e.target.value)}
+                    onChange={(e) => setFromDate(e.value)}
+                    showIcon
+                    dateFormat="yy-mm-dd"
+                    className="w-full"
                   />
                 )}
 
                 {activeFilter === "To Date" && (
-                  <input
-                    type="date"
+                  <Calendar
                     value={toDate}
-                    onChange={(e) => setToDate(e.target.value)}
+                    onChange={(e) => setToDate(e.value)}
+                    showIcon
+                    dateFormat="yy-mm-dd"
+                    className="w-full"
                   />
                 )}
               </div>
             </div>
 
             {/* Apply Button */}
-            <div className="mt-3 text-center">
-              <button onClick={applyFilters}>Apply Filters</button>
+            <div className="mt-6 text-center">
+              <button
+                onClick={applyFilters}
+                className="bg-gray-800 text-black px-6 py-2 rounded-md hover:bg-black transition font-semibold"
+              >
+                Apply Filters
+              </button>
             </div>
           </div>
         </IonModal>
