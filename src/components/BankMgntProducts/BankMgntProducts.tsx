@@ -8,6 +8,7 @@ import {
   IonIcon,
   IonPage,
   IonSearchbar,
+  IonSkeletonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -45,6 +46,8 @@ const BankMgntProducts: React.FC = () => {
   //   HISTORY NAVIGATION
   const history = useHistory();
 
+  const [loading, setLoading] = useState<boolean>(true);
+
   //   SEARCH TERMS HANDLER
   const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -66,6 +69,8 @@ const BankMgntProducts: React.FC = () => {
   }, [location.state]);
 
   const loadData = () => {
+    setLoading(true);
+
     try {
       axios
         .get(import.meta.env.VITE_API_URL + "/adminRoutes/productList", {
@@ -88,9 +93,11 @@ const BankMgntProducts: React.FC = () => {
           if (data.success) {
             setUserLists(data.products);
           }
+          setLoading(false);
         });
     } catch (e) {
       console.log(e);
+      setLoading(false);
     }
   };
 
@@ -143,53 +150,75 @@ const BankMgntProducts: React.FC = () => {
 
       <IonContent>
         <div className="productsDisplayCards m-3">
-          {filteredProducts.map((item: ProductDetailsProps, idx: number) => (
-            <div
-              key={idx}
-              onClick={() => handleProductEdit(item)}
-              className="flex p-2 shadow-3 p-3 my-2 border-round-md"
-            >
-              <div
-                style={{
-                  width: "40px",
-                  height: "35px",
-                  borderRadius: "50%",
-                  background: "#0478df",
-                  color: "white",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                }}
-              >
-                {item.refProductName.charAt(0).toUpperCase()}
-              </div>
-              <div className="pl-3 flex w-full align-items-center justify-content-between">
-                <div className="flex flex-column">
-                  <p>{item.refProductName}</p>
-                  <p>{item.createdAt}</p>
-                </div>
-                <div className="amount">
-                  <p
+          {loading
+            ? // Show 4 skeletons as placeholders
+              [...Array(4)].map((_, idx) => (
+                <div
+                  key={idx}
+                  className="flex p-2 shadow-3 p-3 my-2 border-round-md"
+                >
+                  <IonSkeletonText
+                    animated
                     style={{
-                      color:
-                        item.refProductStatus.toLowerCase() === "active"
-                          ? "green"
-                          : "red",
-                      textTransform: "uppercase",
-                      fontSize: "12px",
+                      width: "40px",
+                      height: "35px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <div className="pl-3 flex flex-column w-full">
+                    <IonSkeletonText animated style={{ width: "60%" }} />
+                    <IonSkeletonText
+                      animated
+                      style={{ width: "40%", marginTop: "6px" }}
+                    />
+                  </div>
+                </div>
+              ))
+            : filteredProducts.map((item: ProductDetailsProps, idx: number) => (
+                <div
+                  key={idx}
+                  onClick={() => handleProductEdit(item)}
+                  className="flex p-2 shadow-3 p-3 my-2 border-round-md"
+                >
+                  <div
+                    style={{
+                      width: "40px",
+                      height: "35px",
+                      borderRadius: "50%",
+                      background: "#0478df",
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       fontWeight: "bold",
+                      fontSize: "16px",
                     }}
                   >
-                    {item.refProductStatus.toLowerCase() === "active"
-                      ? `${item.refProductStatus}`
-                      : `${item.refProductStatus}`}
-                  </p>
+                    {item.refProductName.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="pl-3 flex w-full align-items-center justify-content-between">
+                    <div className="flex flex-column">
+                      <p>{item.refProductName}</p>
+                      <p>{item.createdAt}</p>
+                    </div>
+                    <div className="amount">
+                      <p
+                        style={{
+                          color:
+                            item.refProductStatus.toLowerCase() === "active"
+                              ? "green"
+                              : "red",
+                          textTransform: "uppercase",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {item.refProductStatus}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              ))}
         </div>
 
         {/* FAB BUTTON TO ADD NEW PRODUCTS */}
