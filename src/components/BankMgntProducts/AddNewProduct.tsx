@@ -6,6 +6,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonToast,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
@@ -14,6 +15,7 @@ import decrypt from "../../services/helper";
 import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
 import { useHistory } from "react-router";
+import { warningOutline } from "ionicons/icons";
 
 const AddNewProduct: React.FC = () => {
   useEffect(() => {
@@ -26,10 +28,8 @@ const AddNewProduct: React.FC = () => {
     };
   }, []);
 
-  //   HISTORY
   const history = useHistory();
 
-  //   NEW PRODUCT HANDLER - PRE-REQ
   const status = [
     { name: "Active", code: "active" },
     { name: "Inactive", code: "inactive" },
@@ -43,9 +43,16 @@ const AddNewProduct: React.FC = () => {
     refProductDescription: "",
   });
 
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+
+  const showValidationToast = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+  };
+
   const handleInput = (e: any) => {
     const { name, value } = e.target;
-
     setInputs((prevState) => ({
       ...prevState,
       [name]: value,
@@ -53,6 +60,23 @@ const AddNewProduct: React.FC = () => {
   };
 
   const handleNewProductDB = async () => {
+    // Step-by-step validation
+    if (!inputs.refProductName.trim()) {
+      return showValidationToast("Please enter Product Name");
+    }
+    if (!inputs.refProductDuration.trim()) {
+      return showValidationToast("Please enter Product Duration");
+    }
+    if (!inputs.refProductInterest.trim()) {
+      return showValidationToast("Please enter Interest (%)");
+    }
+    if (!inputs.refProductDescription.trim()) {
+      return showValidationToast("Please enter Product Description");
+    }
+    if (!inputs.refProductStatus) {
+      return showValidationToast("Please select Product Status");
+    }
+
     try {
       const response = await axios.post(
         import.meta.env.VITE_API_URL + "/adminRoutes/addProduct",
@@ -80,7 +104,6 @@ const AddNewProduct: React.FC = () => {
       localStorage.setItem("token", "Bearer " + data.token);
 
       if (data.success) {
-        console.log("data", data);
         history.replace("/productDetails", { shouldReload: true });
       }
     } catch (e: any) {
@@ -93,10 +116,7 @@ const AddNewProduct: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton
-              defaultHref="/productDetails"
-              mode="md"
-            ></IonBackButton>
+            <IonBackButton defaultHref="/productDetails" mode="md" />
           </IonButtons>
           <IonTitle>Add New Product</IonTitle>
         </IonToolbar>
@@ -110,20 +130,16 @@ const AddNewProduct: React.FC = () => {
             className="w-full"
             placeholder="Enter Product Name"
             value={inputs.refProductName}
-            onChange={(e: any) => {
-              handleInput(e);
-            }}
+            onChange={handleInput}
             required
-          />{" "}
+          />
           <InputText
             id="refProductDuration"
             name="refProductDuration"
             placeholder="Enter Product Duration (Months)"
             className="w-full mt-3"
             value={inputs.refProductDuration}
-            onChange={(e: any) => {
-              handleInput(e);
-            }}
+            onChange={handleInput}
             required
           />
           <InputText
@@ -132,9 +148,7 @@ const AddNewProduct: React.FC = () => {
             className="w-full mt-3"
             placeholder="Enter Interest (%)"
             value={inputs.refProductInterest}
-            onChange={(e: any) => {
-              handleInput(e);
-            }}
+            onChange={handleInput}
             required
           />
           <InputText
@@ -143,9 +157,7 @@ const AddNewProduct: React.FC = () => {
             className="w-full mt-3"
             placeholder="Enter Description"
             value={inputs.refProductDescription}
-            onChange={(e: any) => {
-              handleInput(e);
-            }}
+            onChange={handleInput}
             required
           />
           <Dropdown
@@ -156,9 +168,7 @@ const AddNewProduct: React.FC = () => {
             optionLabel="name"
             placeholder="Select Active Status"
             optionValue="code"
-            onChange={(e: any) => {
-              handleInput(e);
-            }}
+            onChange={handleInput}
             required
           />
           <button
@@ -168,6 +178,18 @@ const AddNewProduct: React.FC = () => {
             Submit
           </button>
         </div>
+
+        {/* Toast Component */}
+        <IonToast
+          isOpen={showToast}
+          message={toastMessage}
+          duration={15000}
+          className="custom-toast"
+          icon={warningOutline}
+          onDidDismiss={() => setShowToast(false)}
+          position="bottom"
+          // color="danger"
+        />
       </IonContent>
     </IonPage>
   );
