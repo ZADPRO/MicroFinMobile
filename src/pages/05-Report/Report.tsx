@@ -31,11 +31,6 @@ const Report: React.FC = () => {
 
   // HANDLE NAV
   const history = useHistory();
-  const reportData = [
-    { imgSrc: overallReport, text: "Overall Report", route: "/overallReport" },
-    { imgSrc: montlyReport, text: "Montly Report", route: "/montlyReport" },
-    { imgSrc: expenseReport, text: "Expense Report", route: "/expenseReport" },
-  ];
 
   const handleNavigation = (route: string) => {
     history.push(route);
@@ -53,24 +48,58 @@ const Report: React.FC = () => {
       <IonContent>
         <IonGrid>
           <IonRow className="ion-justify-content-center">
-            {reportData.map((item, index) => (
-              <IonCol
-                size="5"
-                key={index}
-                className="ion-text-center bg-white shadow-1 gap-2 m-2"
-                style={{ borderRadius: "7px" }}
-                onClick={() => handleNavigation(item.route)}
-              >
-                <div className="rounded">
-                  <img
-                    src={item.imgSrc}
-                    alt={item.text}
-                    style={{ width: "80px", height: "auto", margin: "0 auto" }}
-                  />
-                  <p className="pt-2">{item.text}</p>
-                </div>
-              </IonCol>
-            ))}
+            <IonCol
+              size="5"
+              className="ion-text-center bg-white shadow-1 gap-2 m-2"
+              style={{ borderRadius: "7px" }}
+              onClick={() => handleNavigation("/overallReport")}
+            >
+              <div className="rounded">
+                <img
+                  src={overallReport}
+                  alt="Users"
+                  style={{ width: "80px", height: "auto", margin: "0 auto" }}
+                />
+                <p className="pt-2">Overall Report</p>
+              </div>
+            </IonCol>
+            <IonCol
+              size="5"
+              className="ion-text-center bg-white shadow-1 gap-2 m-2"
+              style={{ borderRadius: "7px" }}
+              onClick={() => handleNavigation("/montlyReport")}
+            >
+              <div className="rounded">
+                <img
+                  src={montlyReport}
+                  alt="Users"
+                  style={{ width: "80px", height: "auto", margin: "0 auto" }}
+                />
+                <p className="pt-2">Montly Report</p>
+              </div>
+            </IonCol>
+          </IonRow>
+          <IonRow className="ion-justify-content-center">
+            <IonCol
+              size="5"
+              className="ion-text-center bg-white shadow-1 gap-2 m-2"
+              style={{ borderRadius: "7px" }}
+              onClick={() => handleNavigation("/expenseReport")}
+            >
+              <div className="rounded">
+                <img
+                  src={expenseReport}
+                  alt="Users"
+                  style={{ width: "80px", height: "auto", margin: "0 auto" }}
+                />
+                <p className="pt-2">Expense Report</p>
+              </div>
+            </IonCol>
+            <IonCol
+              size="5"
+              className="ion-text-center bg-white gap-2 m-2"
+              style={{ borderRadius: "7px" }}
+            ></IonCol>
           </IonRow>
         </IonGrid>
       </IonContent>
