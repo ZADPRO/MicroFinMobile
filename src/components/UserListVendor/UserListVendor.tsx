@@ -81,11 +81,8 @@ const UserListVendor: React.FC = () => {
   };
 
   useEffect(() => {
-    getVendorList();
-  }, []);
-
-  useEffect(() => {
     // Call API on load or reload
+    console.log("location", location.state);
     if (location.state?.shouldReload) {
       getVendorList();
       // Clear the reload flag so it doesn’t trigger again unnecessarily

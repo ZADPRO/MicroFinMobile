@@ -96,6 +96,7 @@ const BankMgntExpense: React.FC = () => {
         );
         localStorage.setItem("token", "Bearer " + data.token);
 
+        console.log("data", data);
         if (data.success) {
           setExpense(data.data);
           setNoDataFound(data.data.length === 0);

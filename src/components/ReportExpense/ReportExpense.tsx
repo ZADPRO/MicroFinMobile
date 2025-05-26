@@ -21,6 +21,9 @@ import axios from "axios";
 import { Calendar } from "primereact/calendar";
 import { funnel } from "ionicons/icons";
 
+import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
+import { Capacitor } from "@capacitor/core";
+
 interface expense {
   refExpenseDate: string;
   refVoucherNo: string;
@@ -112,7 +115,7 @@ const ReportExpense: React.FC = () => {
     return `${year}-${month}`;
   }
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     const headers = [
       "S.No",
       "Date",
@@ -138,19 +141,23 @@ const ReportExpense: React.FC = () => {
       ...rows.map((row) => row.map((value) => `"${value}"`).join(",")), // data rows
     ].join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `Monthly Expense Report for (${formatToYearMonth(
-        date || new Date()
-      )}).csv`
-    );
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const fileName = `Monthly_Expense_Report_${formatToYearMonth(
+      date || new Date()
+    )}.csv`;
+
+    try {
+      await Filesystem.writeFile({
+        path: fileName,
+        data: csvContent,
+        directory: Directory.Documents, // Use Directory.External or Directory.Documents
+        encoding: Encoding.UTF8,
+      });
+
+      alert(`CSV exported successfully to Documents folder as ${fileName}`);
+    } catch (e) {
+      console.error("Unable to save file", e);
+      alert("Failed to export CSV.");
+    }
   };
 
   useEffect(() => {

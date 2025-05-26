@@ -18,11 +18,13 @@ import { Calendar } from "primereact/calendar";
 import { calendarOutline } from "ionicons/icons";
 
 import { Chart } from "primereact/chart";
+import { Skeleton } from "primereact/skeleton";
 
 const Home: React.FC = () => {
   const [selectedSegment, setSelectedSegment] = useState<string>("user");
   const [date, setDate] = useState<Date | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [isChartLoading, setIsChartLoading] = useState(true);
 
   useEffect(() => {
     StatusBar.setOverlaysWebView({ overlay: false });
@@ -65,30 +67,37 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const documentStyle = getComputedStyle(document.documentElement);
-    const data = {
-      labels: ["Salary", "Rent", "Travel"],
-      datasets: [
-        {
-          data: [300, 50, 100],
-          backgroundColor: [
-            documentStyle.getPropertyValue("--blue-500"),
-            documentStyle.getPropertyValue("--yellow-500"),
-            documentStyle.getPropertyValue("--green-500"),
-          ],
-          hoverBackgroundColor: [
-            documentStyle.getPropertyValue("--blue-400"),
-            documentStyle.getPropertyValue("--yellow-400"),
-            documentStyle.getPropertyValue("--green-400"),
-          ],
-        },
-      ],
-    };
-    const options = {
-      cutout: "70%",
-    };
 
-    setChartData(data);
-    setChartOptions(options);
+    // Simulate data fetch delay
+    const timer = setTimeout(() => {
+      const data = {
+        labels: ["Salary", "Rent", "Travel"],
+        datasets: [
+          {
+            data: [300, 50, 100],
+            backgroundColor: [
+              documentStyle.getPropertyValue("--blue-500"),
+              documentStyle.getPropertyValue("--yellow-500"),
+              documentStyle.getPropertyValue("--green-500"),
+            ],
+            hoverBackgroundColor: [
+              documentStyle.getPropertyValue("--blue-400"),
+              documentStyle.getPropertyValue("--yellow-400"),
+              documentStyle.getPropertyValue("--green-400"),
+            ],
+          },
+        ],
+      };
+      const options = {
+        cutout: "70%",
+      };
+
+      setChartData(data);
+      setChartOptions(options);
+      setIsChartLoading(false);
+    }, 1000); // simulate delay
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -130,14 +139,20 @@ const Home: React.FC = () => {
         {/* Chart Analysis for Profilt & Loss */}
         <div className="profiltAnalysis mt-5">
           <p>Expense Analysis</p>
-          <Chart
-            type="doughnut"
-            key={selectedSegment}
-            data={chartData}
-            ref={chartRef}
-            options={chartOptions}
-            className="w-full md:w-30rem"
-          />
+          {isChartLoading ? (
+            <div className="w-full md:w-30rem">
+              <Skeleton width="100%" height="300px" />
+            </div>
+          ) : (
+            <Chart
+              type="doughnut"
+              key={selectedSegment}
+              data={chartData}
+              ref={chartRef}
+              options={chartOptions}
+              className="w-full md:w-30rem"
+            />
+          )}
         </div>
 
         {/* Modal with Calendar */}

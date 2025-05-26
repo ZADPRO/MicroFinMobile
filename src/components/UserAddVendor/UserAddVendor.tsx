@@ -169,6 +169,7 @@ const UserAddVendor: React.FC = () => {
       localStorage.setItem("token", "Bearer " + data.token);
 
       if (data.success) {
+        console.log("data", data);
         history.replace("/vendorLists", { shouldReload: true });
       } else {
         triggerToast("Error adding vendor.");

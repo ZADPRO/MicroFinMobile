@@ -11,8 +11,8 @@ const Header: React.FC = () => {
   const userDetails = storedProfile ? JSON.parse(storedProfile) : null;
 
   const handleProfileClick = () => {
-    localStorage.clear();
-    history.push("/");
+    // localStorage.clear();
+    history.push("/profile");
   };
 
   return (
