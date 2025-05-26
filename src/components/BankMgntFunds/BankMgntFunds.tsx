@@ -21,6 +21,7 @@ import { useHistory } from "react-router";
 import { Checkbox } from "primereact/checkbox";
 import { Calendar } from "primereact/calendar";
 import { useLocation } from "react-router"; // import useLocation
+import { Nullable } from "vitest";
 
 interface FundDetailsProps {
   createdAt: string;
@@ -95,6 +96,7 @@ const BankMgntFunds: React.FC = () => {
           localStorage.setItem("token", "Bearer " + data.token);
 
           if (data.success) {
+            console.log("data", data);
             setUserLists(data.BankFund);
             groupByMonth(data.BankFund);
           }
@@ -180,8 +182,8 @@ const BankMgntFunds: React.FC = () => {
     []
   );
   const [selectedActions, setSelectedActions] = useState<string[]>([]);
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [fromDate, setFromDate] = useState<Nullable<Date>>(null);
+  const [toDate, setToDate] = useState<Nullable<Date>>(null);
 
   const handleCheckChange = (value: string, checked: boolean, type: string) => {
     const setterMap: any = {
@@ -392,13 +394,13 @@ const BankMgntFunds: React.FC = () => {
           className="calendar-modal"
         >
           <div className="py-4">
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:flex-row">
               {/* LEFT SIDE: Filter Types */}
               <div className="w-full md:w-1/3 bg-gray-100 rounded-lg p-3 shadow-sm">
                 {[
                   "Bank Name",
                   "Fund Type",
-                  "Payment Type",
+                  // "Payment Type",
                   "Action",
                   "From Date",
                   "To Date",
@@ -418,11 +420,11 @@ const BankMgntFunds: React.FC = () => {
               </div>
 
               {/* RIGHT SIDE: Filter Values */}
-              <div className="w-full md:w-2/3 bg-white rounded-lg p-3 shadow-md max-h-[50vh] overflow-y-auto text-black">
+              <div className="w-full md:w-2/3 bg-white rounded-lg px-3 py-4 shadow-md max-h-[50vh] overflow-y-auto text-black">
                 {activeFilter === "Bank Name" &&
                   Array.from(new Set(userLists.map((i) => i.refBankName))).map(
                     (name, idx) => (
-                      <div key={idx} className="flex items-center mb-2">
+                      <div key={idx} className="flex align-items-center mb-2">
                         <Checkbox
                           inputId={`bank-${idx}`}
                           checked={selectedBankNames.includes(name)}
@@ -441,7 +443,7 @@ const BankMgntFunds: React.FC = () => {
                 {activeFilter === "Fund Type" &&
                   Array.from(new Set(userLists.map((i) => i.refFundType))).map(
                     (type, idx) => (
-                      <div key={idx} className="flex items-center mb-2">
+                      <div key={idx} className="flex align-items-center mb-2">
                         <Checkbox
                           inputId={`fund-${idx}`}
                           checked={selectedFundTypes.includes(type)}
@@ -457,11 +459,11 @@ const BankMgntFunds: React.FC = () => {
                     )
                   )}
 
-                {activeFilter === "Payment Type" &&
+                {/* {activeFilter === "Payment Type" &&
                   Array.from(
                     new Set(userLists.map((i) => i.refPaymentType))
                   ).map((type, idx) => (
-                    <div key={idx} className="flex items-center mb-2">
+                    <div key={idx} className="flex align-items-center mb-2">
                       <Checkbox
                         inputId={`payment-${idx}`}
                         checked={selectedPaymentTypes.includes(type)}
@@ -474,11 +476,11 @@ const BankMgntFunds: React.FC = () => {
                         {type}
                       </label>
                     </div>
-                  ))}
+                  ))} */}
 
                 {activeFilter === "Action" &&
                   ["credit", "debit"].map((type, idx) => (
-                    <div key={idx} className="flex items-center mb-2">
+                    <div key={idx} className="flex align-items-center mb-2">
                       <Checkbox
                         inputId={`action-${idx}`}
                         checked={selectedActions.includes(type)}
@@ -500,8 +502,8 @@ const BankMgntFunds: React.FC = () => {
                   <Calendar
                     value={fromDate}
                     onChange={(e) => setFromDate(e.value)}
-                    showIcon
                     dateFormat="yy-mm-dd"
+                    placeholder="Choose From Date"
                     className="w-full"
                   />
                 )}
@@ -510,8 +512,8 @@ const BankMgntFunds: React.FC = () => {
                   <Calendar
                     value={toDate}
                     onChange={(e) => setToDate(e.value)}
-                    showIcon
                     dateFormat="yy-mm-dd"
+                    placeholder="Choose To Date"
                     className="w-full"
                   />
                 )}
@@ -519,10 +521,10 @@ const BankMgntFunds: React.FC = () => {
             </div>
 
             {/* Apply Button */}
-            <div className="mt-6 text-center">
+            <div className="mx-3 text-center">
               <button
                 onClick={applyFilters}
-                className="bg-gray-800 text-black px-6 py-2 rounded-md hover:bg-black transition font-semibold"
+                className="px-5 mt-2 submitButton w-full"
               >
                 Apply Filters
               </button>

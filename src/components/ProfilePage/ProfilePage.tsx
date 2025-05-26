@@ -14,7 +14,7 @@ import {
 } from "@ionic/react";
 import React, { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import agentIcon from "../../assets/users/agentImg.png";
+import agentIcon from "../../assets/users/superAdmin.png";
 import { useHistory } from "react-router";
 import axios from "axios";
 import decrypt from "../../services/helper";
