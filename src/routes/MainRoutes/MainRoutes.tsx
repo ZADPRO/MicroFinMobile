@@ -68,6 +68,7 @@ import { Capacitor } from "@capacitor/core";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import ForgotPassword from "../../pages/00-Splash/ForgotPassword";
 import ProfilePage from "../../components/ProfilePage/ProfilePage";
+import AboutUs from "../../components/ProfilePage/AboutUs";
 
 const MainRoutes: React.FC = () => {
   // STATUS BAR CONFIG
@@ -132,6 +133,9 @@ const MainRoutes: React.FC = () => {
 
           <PrivateRoute path="/profile">
             <ProfilePage />
+          </PrivateRoute>
+          <PrivateRoute path="/aboutUs">
+            <AboutUs />
           </PrivateRoute>
 
           {/* USER ROUTES */}
