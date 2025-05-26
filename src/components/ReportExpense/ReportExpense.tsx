@@ -5,11 +5,34 @@ import {
   IonHeader,
   IonPage,
   IonTitle,
+  IonSkeletonText,
   IonToolbar,
+  IonModal,
+  IonIcon,
+  IonFooter,
+  IonButton,
 } from "@ionic/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { useHistory } from "react-router";
+import { Nullable } from "vitest";
+import decrypt, { formatRupees } from "../../services/helper";
+import axios from "axios";
+import { Calendar } from "primereact/calendar";
+import { funnel } from "ionicons/icons";
+
+interface expense {
+  refExpenseDate: string;
+  refVoucherNo: string;
+  refExpenseCategory: string;
+  refSubCategory: string;
+  refAmount: string;
+  refBankName: string;
+  refAccountTypeName: string;
+  refExpenseId: number;
+  refCategoryId: number;
+  refBankId: number;
+}
 
 const ReportExpense: React.FC = () => {
   useEffect(() => {
@@ -24,6 +47,123 @@ const ReportExpense: React.FC = () => {
 
   // HANDLE NAV
   const history = useHistory();
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [noDataFound, setNoDataFound] = useState<boolean>(false);
+
+  // MODAL HANDLER
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  // SET DATE - FOR BACKEND API TRIGGER
+  const [date, setDate] = useState<Nullable<Date>>(null);
+  const [expense, setExpense] = useState<expense[]>([]);
+
+  // FOR THE DATE FUNC - HANDLER
+  const formatDate = (data) => {
+    const date = new Date(data);
+    const formatted = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}`;
+    return formatted;
+  };
+
+  const expenseData = (month) => {
+    const date = formatDate(month);
+    setLoading(true);
+    setNoDataFound(false);
+
+    axios
+      .post(
+        import.meta.env.VITE_API_URL + "/expense/expenseData",
+        { month: date },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        const data = decrypt(
+          response.data[1],
+          response.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        localStorage.setItem("token", "Bearer " + data.token);
+
+        if (data.success) {
+          setExpense(data.data);
+          setNoDataFound(data.data.length === 0);
+        }
+      })
+      .catch((error) => {
+        console.error("error", error);
+        setNoDataFound(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  function formatToYearMonth(dateInput: string | Date): string {
+    const date = new Date(dateInput);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    return `${year}-${month}`;
+  }
+
+  const handleExportCSV = () => {
+    const headers = [
+      "S.No",
+      "Date",
+      "Expense",
+      "Category",
+      "Amount",
+      "Amount Source",
+      "Type",
+    ];
+
+    const rows = expense.map((row, index) => [
+      index + 1,
+      row.refExpenseDate,
+      row.refExpenseCategory,
+      row.refSubCategory,
+      `INR ${row.refAmount}`,
+      row.refBankName,
+      row.refAccountTypeName,
+    ]);
+
+    const csvContent = [
+      headers.join(","), // header row
+      ...rows.map((row) => row.map((value) => `"${value}"`).join(",")), // data rows
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `Monthly Expense Report for (${formatToYearMonth(
+        date || new Date()
+      )}).csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    setDate(new Date());
+    expenseData(new Date());
+  }, []);
+
+  useEffect(() => {
+    if (date) {
+      expenseData(date);
+    }
+  }, [date]);
+
   return (
     <IonPage>
       <IonHeader>
@@ -32,11 +172,110 @@ const ReportExpense: React.FC = () => {
             <IonBackButton defaultHref="/report" mode="md"></IonBackButton>
           </IonButtons>
           <IonTitle>Expense Report</IonTitle>
+          <IonButtons slot="end">
+            <IonIcon
+              icon={funnel}
+              onClick={() => setShowModal(true)}
+              style={{ fontSize: "20px", paddingRight: "10px" }}
+            />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        
-      </IonContent>
+        <div className="productsDisplayCards m-3">
+          {loading ? (
+            [...Array(4)].map((_, idx) => (
+              <div
+                key={idx}
+                className="flex p-2 shadow-3 p-3 my-2 border-round-md"
+              >
+                <IonSkeletonText
+                  animated
+                  style={{
+                    width: "40px",
+                    height: "35px",
+                    borderRadius: "50%",
+                  }}
+                />
+                <div className="pl-3 flex flex-column w-full">
+                  <IonSkeletonText animated style={{ width: "60%" }} />
+                  <IonSkeletonText
+                    animated
+                    style={{ width: "40%", marginTop: "6px" }}
+                  />
+                </div>
+              </div>
+            ))
+          ) : noDataFound ? (
+            <div className="text-center text-gray-500 p-4">No data found</div>
+          ) : (
+            expense.map((item: expense, idx: number) => (
+              <div
+                key={idx}
+                className="flex p-2 shadow-3 p-3 my-2 border-round-md align-items-center"
+              >
+                <div
+                  style={{
+                    width: "40px",
+                    height: "35px",
+                    borderRadius: "50%",
+                    background: "#0478df",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                  }}
+                >
+                  {item.refExpenseCategory?.charAt(0).toUpperCase() || "N"}
+                </div>
+                <div className="pl-3 flex flex-column w-full align-items-center justify-content-between">
+                  <div className="flex flex-row justify-content-between w-full">
+                    <p>{item.refExpenseCategory || "No data"}</p>
+                  </div>
+                  <div className="flex flex-row justify-content-between w-full">
+                    <p>{item.refBankName || "No data"}</p>
+                    <p>{formatRupees(item.refAmount ?? "No data")}</p>
+                  </div>
+                  <div className="flex flex-row justify-content-between w-full mt-1">
+                    <p>{item.refSubCategory || "No data"}</p>
+                    <p>{item.refExpenseDate || "No data"}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <IonModal
+          isOpen={showModal}
+          onDidDismiss={() => setShowModal(false)}
+          keepContentsMounted={true}
+          initialBreakpoint={0.4}
+          breakpoints={[0, 0.4, 0.75]}
+          className="calendar-modal"
+        >
+          <div className="p-3 flex justify-content-center">
+            <Calendar
+              value={date}
+              onChange={(e) => {
+                setDate(e.value);
+                setShowModal(false); // Close on date select
+              }}
+              inline
+              showWeek
+              view="month"
+              maxDate={new Date()}
+            />
+          </div>
+        </IonModal>
+      </IonContent>{" "}
+      <IonFooter>
+        <IonButton expand="block" onClick={handleExportCSV}>
+          Export CSV
+        </IonButton>
+      </IonFooter>
     </IonPage>
   );
 };
