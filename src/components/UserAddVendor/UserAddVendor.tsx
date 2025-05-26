@@ -200,14 +200,24 @@ const UserAddVendor: React.FC = () => {
           <InputText
             placeholder="Contact Number"
             className="w-full mt-3"
+            maxLength={10}
             value={contactNumber}
-            onChange={(e) => setContactNumber(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, ""); // allow only digits
+              setContactNumber(value);
+            }}
           />
           <InputText
             placeholder="Email"
             className="w-full mt-3"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onBlur={() => {
+              const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              if (email && !emailPattern.test(email)) {
+                alert("Invalid email format");
+              }
+            }}
           />
           <InputText
             placeholder="Address"
@@ -262,10 +272,23 @@ const UserAddVendor: React.FC = () => {
               <InputText
                 placeholder="A/C Number"
                 className="w-full"
+                maxLength={16}
                 value={detail.refAccountNo}
-                onChange={(e) =>
-                  handleInputChange(index, "refAccountNo", e.target.value)
-                }
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "");
+                  if (value.length <= 16) {
+                    handleInputChange(index, "refAccountNo", value);
+                  }
+                }}
+                onBlur={() => {
+                  if (
+                    detail.refAccountNo &&
+                    (detail.refAccountNo.length < 5 ||
+                      detail.refAccountNo.length > 16)
+                  ) {
+                    alert("Account number must be between 5 to 16 digits");
+                  }
+                }}
               />
               <InputText
                 placeholder="IFSC Code"

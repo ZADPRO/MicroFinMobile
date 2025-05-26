@@ -24,6 +24,7 @@ const ReportOverall: React.FC = () => {
 
   // HANDLE NAV
   const history = useHistory();
+
   return (
     <IonPage>
       <IonHeader>
