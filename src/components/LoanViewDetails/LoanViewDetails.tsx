@@ -46,6 +46,9 @@ const LoanViewDetails: React.FC = () => {
     };
   }, []);
 
+  //   SEARCH TERMS HANDLER
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   // NAVIGATION STATES
   const history = useHistory();
 
@@ -108,6 +111,16 @@ const LoanViewDetails: React.FC = () => {
     4: "#ffa500", // Extend - green
   };
 
+  const filteredProducts = userLists.filter((item) =>
+    Object.values(item)
+      .map((val) =>
+        typeof val === "string" || typeof val === "number" ? val : ""
+      )
+      .join(" ")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
     <IonPage>
       <IonHeader>
@@ -118,13 +131,17 @@ const LoanViewDetails: React.FC = () => {
           <IonTitle>User Loan Details</IonTitle>
         </IonToolbar>
         <IonToolbar>
-          <IonSearchbar></IonSearchbar>
+          <IonSearchbar
+            value={searchTerm}
+            onIonInput={(e) => setSearchTerm(e.detail.value!)}
+            placeholder="Search here..."
+          ></IonSearchbar>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         <div className="m-3">
-          {userLists.length > 0 ? (
-            userLists.map((item, index) => {
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((item, index) => {
               const statusId = item.refLoanStatusId;
 
               return (

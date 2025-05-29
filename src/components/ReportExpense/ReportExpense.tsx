@@ -253,7 +253,11 @@ const ReportExpense: React.FC = () => {
                   </div>
                   <div className="flex flex-row justify-content-between w-full mt-1">
                     <p>{item.refSubCategory || "No data"}</p>
-                    <p>{item.refExpenseDate || "No data"}</p>
+                  </div>
+                  <div className="flex w-full justify-content-end">
+                    <p className="mt-1 text-sm">
+                      {item.refExpenseDate || "No data"}
+                    </p>
                   </div>
                 </div>
               </div>

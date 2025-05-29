@@ -169,7 +169,7 @@ const BankMgntExpense: React.FC = () => {
           <IonSearchbar
             value={searchTerm}
             onIonInput={(e) => setSearchTerm(e.detail.value!)}
-            placeholder="Search by Product Name, Status, Interest..."
+            placeholder="Search here..."
           ></IonSearchbar>
         </IonToolbar>
       </IonHeader>
@@ -252,8 +252,8 @@ const BankMgntExpense: React.FC = () => {
           isOpen={showModal}
           onDidDismiss={() => setShowModal(false)}
           keepContentsMounted={true}
-        initialBreakpoint={0.75}
-        breakpoints={[0, 0.4, 0.75, 1]}
+          initialBreakpoint={0.75}
+          breakpoints={[0, 0.4, 0.75, 1]}
           className="calendar-modal"
         >
           <div className="p-3 flex justify-content-center">

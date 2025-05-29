@@ -293,13 +293,17 @@ const ReportMonthly: React.FC = () => {
                         ? `${item.refUserFname} ${item.refUserLname}`
                         : "No data"}
                     </p>
-                  </div>
-                  <div className="flex flex-row justify-content-between w-full">
                     <p>{item.refCustLoanId || "No data"}</p>
                   </div>
+                  <div className="flex flex-row justify-content-between w-full"></div>
                   <div className="flex flex-row justify-content-between w-full mt-1">
                     <p>{item.refRepaymentTypeName || "No data"}</p>
                     <p>{formatRupees(item.refLoanAmount ?? "No data")}</p>
+                  </div>
+                  <div className="flex w-full justify-content-end">
+                    <p className="mt-1 text-sm">
+                      {item.refLoanStartDate || "No data"}
+                    </p>
                   </div>
                 </div>
               </div>

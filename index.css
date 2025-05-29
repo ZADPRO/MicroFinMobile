@@ -38,3 +38,29 @@ ion-segment-button.segment-button-checked ion-label {
   color: #0478df;
   font-weight: bold;
 }
+
+.loan-status {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.875rem; /* equivalent to text-sm */
+}
+
+.loan-status.opened {
+  color: green;
+}
+
+.loan-status.closed {
+  color: red;
+}
+
+.loan-status.topup {
+  color: orange;
+}
+
+.loan-status.extended {
+  color: blue;
+}
+
+.loan-status.no-data {
+  color: gray;
+}

@@ -15,7 +15,7 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { funnel } from "ionicons/icons";
+import { callSharp, funnel } from "ionicons/icons";
 
 import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
 import axios from "axios";
@@ -321,14 +321,26 @@ const ReportOverall: React.FC = () => {
                 <div className="pl-3 flex flex-column w-full align-items-center justify-content-between">
                   <div className="flex flex-row justify-content-between w-full">
                     <p>{item.refUserFname || "No data"}</p>
+                    <p
+                      className={`loan-status ${
+                        item.refLoanStatus?.toLowerCase() || "no-data"
+                      }`}
+                    >
+                      {item.refLoanStatus || "No data"}
+                    </p>
                   </div>
-                  <div className="flex flex-row justify-content-between w-full">
+                  <div className="flex flex-row justify-content-between w-full mt-1">
                     <p>{item.refRepaymentTypeName || "No data"}</p>
                     <p>{formatRupees(item.refLoanAmount ?? "No data")}</p>
                   </div>
-                  <div className="flex flex-row justify-content-between w-full mt-1">
+                  <div className="flex flex-row align-items-center gap-1 w-full mt-2">
+                    <IonIcon icon={callSharp} />
                     <p>{item.refUserMobileNo || "No data"}</p>
-                    <p>{item.refLoanStartDate || "No data"}</p>
+                  </div>
+                  <div className="flex w-full justify-content-end">
+                    <p className="mt-1 text-sm">
+                      {item.refLoanStartDate || "No data"}
+                    </p>
                   </div>
                 </div>
               </div>
