@@ -3,6 +3,7 @@ import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import React, { useState } from "react";
 import decrypt from "../../services/helper";
+import { useHistory } from "react-router";
 
 interface UserDataProps {
   refCustId: string;
@@ -34,6 +35,8 @@ const Followup: React.FC<{ userData: UserDataProps }> = ({ userData }) => {
     Date: null,
   });
 
+  const history = useHistory();
+
   const updateFollowUp = () => {
     axios
       .post(
@@ -61,6 +64,7 @@ const Followup: React.FC<{ userData: UserDataProps }> = ({ userData }) => {
 
         if (data.success) {
           console.log("data", data);
+          history.replace("/userLoanRepayment");
         } else {
           console.log("data", data);
         }

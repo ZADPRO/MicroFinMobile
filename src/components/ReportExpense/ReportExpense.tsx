@@ -10,11 +10,11 @@ import {
   IonModal,
   IonIcon,
   IonFooter,
+  IonToast,
   IonButton,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { useHistory } from "react-router";
 import { Nullable } from "vitest";
 import decrypt, { formatRupees } from "../../services/helper";
 import axios from "axios";
@@ -22,7 +22,6 @@ import { Calendar } from "primereact/calendar";
 import { funnel } from "ionicons/icons";
 
 import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
-import { Capacitor } from "@capacitor/core";
 
 interface expense {
   refExpenseDate: string;
@@ -49,7 +48,9 @@ const ReportExpense: React.FC = () => {
   }, []);
 
   // HANDLE NAV
-  const history = useHistory();
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [noDataFound, setNoDataFound] = useState<boolean>(false);
@@ -95,6 +96,7 @@ const ReportExpense: React.FC = () => {
         localStorage.setItem("token", "Bearer " + data.token);
 
         if (data.success) {
+          console.log("data", data);
           setExpense(data.data);
           setNoDataFound(data.data.length === 0);
         }
@@ -153,10 +155,14 @@ const ReportExpense: React.FC = () => {
         encoding: Encoding.UTF8,
       });
 
-      alert(`CSV exported successfully to Documents folder as ${fileName}`);
+      setToastMessage(
+        `CSV exported successfully to Documents folder as ${fileName}`
+      );
+      setShowToast(true);
     } catch (e) {
       console.error("Unable to save file", e);
-      alert("Failed to export CSV.");
+      setToastMessage("Failed to export CSV.");
+      setShowToast(true);
     }
   };
 
@@ -259,8 +265,8 @@ const ReportExpense: React.FC = () => {
           isOpen={showModal}
           onDidDismiss={() => setShowModal(false)}
           keepContentsMounted={true}
-          initialBreakpoint={0.4}
-          breakpoints={[0, 0.4, 0.75]}
+          initialBreakpoint={0.75}
+          breakpoints={[0, 0.4, 0.75, 1]}
           className="calendar-modal"
         >
           <div className="p-3 flex justify-content-center">
@@ -277,6 +283,13 @@ const ReportExpense: React.FC = () => {
             />
           </div>
         </IonModal>
+
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={toastMessage}
+          duration={3000}
+        />
       </IonContent>{" "}
       <IonFooter>
         <IonButton expand="block" onClick={handleExportCSV}>

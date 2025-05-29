@@ -11,17 +11,20 @@ import {
   IonIcon,
   IonFooter,
   IonButton,
+  IonToast,
 } from "@ionic/react";
 
 import React, { useEffect, useState } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { useHistory } from "react-router";
 import decrypt, { formatRupees } from "../../services/helper";
 import { Calendar } from "primereact/calendar";
 import { funnel } from "ionicons/icons";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import axios from "axios";
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
+
+import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
+import { Nullable } from "vitest";
 
 interface option {
   label: string;
@@ -56,10 +59,12 @@ const ReportMonthly: React.FC = () => {
   }, []);
 
   // HANDLE NAV
-  const history = useHistory();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [noDataFound, setNoDataFound] = useState<boolean>(false);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   // MODAL HANDLER
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -100,42 +105,49 @@ const ReportMonthly: React.FC = () => {
     startDate: string | Date,
     endDate: string | Date
   ) => {
-    try {
-      axios
-        .post(
-          import.meta.env.VITE_API_URL + "/report/monthlyReport",
-          {
-            interest: interest,
-            principal: principal,
-            loanOption: loanOp,
-            startDate: formatToYearMonth(startDate),
-            endDate: formatToYearMonth(endDate),
+    setLoading(true);
+    setNoDataFound(false);
+
+    axios
+      .post(
+        import.meta.env.VITE_API_URL + "/report/monthlyReport",
+        {
+          interest: interest,
+          principal: principal,
+          loanOption: loanOp,
+          startDate: formatToYearMonth(startDate),
+          endDate: formatToYearMonth(endDate),
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              Authorization: localStorage.getItem("token"),
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          const data = decrypt(
-            response.data[1],
-            response.data[0],
-            import.meta.env.VITE_ENCRYPTION_KEY
-          );
-          localStorage.setItem("token", "Bearer " + data.token);
-          if (data.success) {
-            console.log("data line ------- 90", data);
-            setOverAllData(data.data);
-          }
-        });
-    } catch (error) {
-      console.log("error", error);
-    }
+        }
+      )
+      .then((response) => {
+        const data = decrypt(
+          response.data[1],
+          response.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        localStorage.setItem("token", "Bearer " + data.token);
+        if (data.success) {
+          console.log("data line ------- 90", data);
+          setOverAllData(data.data);
+          setNoDataFound(data.data.length === 0);
+        }
+      })
+      .catch((error) => {
+        console.error("error", error);
+        setNoDataFound(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     const headers = [
       "S.No",
       "Loan Id",
@@ -173,14 +185,27 @@ const ReportMonthly: React.FC = () => {
       ...rows.map((row) => row.map((value) => `"${value}"`).join(",")), // data rows
     ].join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `Monthly Report (${new Date()}).csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const fileName = `Monthly_Expense_Report_${formatToYearMonth(
+      new Date()
+    )}.csv`;
+
+    try {
+      await Filesystem.writeFile({
+        path: fileName,
+        data: csvContent,
+        directory: Directory.Documents, // Use Directory.External or Directory.Documents
+        encoding: Encoding.UTF8,
+      });
+
+      setToastMessage(
+        `CSV exported successfully to Documents folder as ${fileName}`
+      );
+      setShowToast(true);
+    } catch (e) {
+      console.error("Unable to save file", e);
+      setToastMessage("Failed to export CSV.");
+      setShowToast(true);
+    }
   };
 
   useEffect(() => {
@@ -308,8 +333,8 @@ const ReportMonthly: React.FC = () => {
               placeholder="Select a Loan"
               className=" w-full"
             />
+            <p className="mt-3">Interest Status</p>
             <MultiSelect
-              filter
               value={selectedInterestStatusOption}
               onChange={(e: MultiSelectChangeEvent) => {
                 setSelectedInterestStatusOption(e.value);
@@ -332,7 +357,7 @@ const ReportMonthly: React.FC = () => {
               options={loanStatus}
               optionLabel="label"
               placeholder="Select a Repayment Type"
-              className="w-[100%] mt-3"
+              className="mt-3 w-[14rem]"
               required
             />
             {repaymentError && (
@@ -340,8 +365,103 @@ const ReportMonthly: React.FC = () => {
                 Please select at least one repayment type.
               </small>
             )}
+
+            <p className="mt-3">Principal Status</p>
+
+            <MultiSelect
+              value={selectedPrincipalStatusOption}
+              onChange={(e: MultiSelectChangeEvent) => {
+                setSelectedPrincipalStatusOption(e.value);
+                setStatusError(e.value.length === 0); // true if nothing selected
+                if (
+                  e.value.length !== 0 &&
+                  selectedInterestStatusOption?.length !== 0
+                ) {
+                  getData(
+                    selectedLoanOption,
+                    selectedInterestStatusOption,
+                    e.value,
+                    startDate || new Date(),
+                    endDate || new Date()
+                  );
+                } else {
+                  setOverAllData([]);
+                }
+              }}
+              options={loanStatus}
+              optionLabel="label"
+              placeholder="Select a Loan Status"
+              className="mt-3"
+              required
+            />
+            {statusError && (
+              <small className="text-[red]">
+                Please select at least one loan status.
+              </small>
+            )}
+
+            <p className="mt-3">From Date</p>
+
+            <Calendar
+              value={startDate}
+              placeholder="Select Start Range"
+              className="mt-3"
+              onChange={(e) => {
+                setStartDate(e.value);
+                if (endDate && e.value && endDate < e.value) {
+                  setEndDate(e.value);
+                  getData(
+                    selectedLoanOption,
+                    selectedInterestStatusOption,
+                    selectedPrincipalStatusOption,
+                    e.value,
+                    e.value
+                  );
+                } else {
+                  getData(
+                    selectedLoanOption,
+                    selectedInterestStatusOption,
+                    selectedPrincipalStatusOption,
+                    e.value || new Date(),
+                    endDate || new Date()
+                  );
+                }
+              }}
+              view="month"
+              dateFormat="mm/yy"
+              maxDate={new Date()}
+            />
+
+            <p className="mt-3">To Date</p>
+
+            <Calendar
+              value={endDate}
+              placeholder="Select End Range"
+              onChange={(e) => {
+                setEndDate(e.value);
+                getData(
+                  selectedLoanOption,
+                  selectedInterestStatusOption,
+                  selectedPrincipalStatusOption,
+                  startDate || new Date(),
+                  e.value || new Date()
+                );
+              }}
+              className="mt-3"
+              view="month"
+              dateFormat="mm/yy"
+              minDate={startDate || undefined}
+              disabled={!startDate}
+              maxDate={new Date()}
+            />
           </div>
         </IonModal>
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={toastMessage}
+          duration={3000}
+        />
       </IonContent>
       <IonFooter>
         <IonButton expand="block" onClick={handleExportCSV}>

@@ -169,7 +169,7 @@ const Repayment: React.FC<{ userData: UserDataProps }> = ({ userData }) => {
 
         if (data.success) {
           console.log("data", data);
-          history.goBack();
+          history.replace("/adminLoanRepayment");
         } else {
           console.log("data", data);
         }

@@ -18,7 +18,7 @@ import { Nullable } from "vitest";
 import { Calendar } from "primereact/calendar";
 import { useHistory } from "react-router";
 import axios from "axios";
-import decrypt from "../../services/helper";
+import decrypt, { formatRupees } from "../../services/helper";
 
 interface UserListProps {
   refLoanAmount: string;
@@ -161,12 +161,25 @@ const LoanAdminRepayment: React.FC = () => {
               >
                 {item.refVendorName.charAt(0).toUpperCase()}
               </div>
-              <div className="pl-3 flex flex-row w-full align-items-center justify-content-between">
-                <div className="contents">
-                  <p>{item.refVendorName}</p>
+              <div className="flex flex-column w-full">
+                <div className="pl-3 flex flex-row w-full align-items-center justify-content-between">
+                  <div className="contents">
+                    <p>{item.refVendorName}</p>
+                  </div>
+                  <div className="monthDetails">
+                    <p>{formatToYearMonth(item.refPaymentDate)}</p>
+                  </div>
                 </div>
-                <div className="monthDetails">
-                  <p>{formatToYearMonth(item.refPaymentDate)}</p>
+                <div className="pl-3 mt-2 flex flex-row w-full align-items-center justify-content-between">
+                  <div className="contents">
+                    <p>{formatRupees(item.refLoanAmount)}</p>
+                  </div>
+                  <div className="monthDetails">
+                    <p>{item.refProductInterest}%</p>
+                  </div>
+                </div>
+                <div className="pl-3 mt-2 flex flex-row w-full align-items-center justify-content-between">
+                  <p>{item.refUserMobileNo}</p>
                 </div>
               </div>
             </div>
@@ -179,8 +192,8 @@ const LoanAdminRepayment: React.FC = () => {
           isOpen={showModal}
           onDidDismiss={() => setShowModal(false)}
           keepContentsMounted={true}
-          initialBreakpoint={0.6}
-          breakpoints={[0, 0.6, 0.75]}
+          initialBreakpoint={0.75}
+          breakpoints={[0, 0.4, 0.75, 1]}
           className="calendar-modal"
         >
           <div className="p-3 flex flex-column justify-content-center">

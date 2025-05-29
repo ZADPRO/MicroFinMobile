@@ -47,7 +47,7 @@ const Report: React.FC = () => {
       </IonHeader>
       <IonContent>
         <IonGrid>
-          {/* <IonRow className="ion-justify-content-center">
+          <IonRow className="ion-justify-content-center">
             <IonCol
               size="5"
               className="ion-text-center bg-white shadow-1 gap-2 m-2"
@@ -78,7 +78,7 @@ const Report: React.FC = () => {
                 <p className="pt-2">Montly Report</p>
               </div>
             </IonCol>
-          </IonRow> */}
+          </IonRow>
           <IonRow className="ion-justify-content-center">
             <IonCol
               size="5"

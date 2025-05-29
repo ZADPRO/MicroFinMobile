@@ -156,8 +156,8 @@ const Audit: React.FC<{ userData: UserDataProps }> = ({ userData }) => {
           setSelectedAuditItem(null);
         }}
         keepContentsMounted={true}
-        initialBreakpoint={0.5}
-        breakpoints={[0, 0.5, 0.75]}
+        initialBreakpoint={0.75}
+        breakpoints={[0, 0.4, 0.75, 1]}
         className="calendar-modal"
       >
         <div className="p-3 flex flex-column justify-content-center">

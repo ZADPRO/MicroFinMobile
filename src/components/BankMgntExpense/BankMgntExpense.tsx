@@ -252,8 +252,8 @@ const BankMgntExpense: React.FC = () => {
           isOpen={showModal}
           onDidDismiss={() => setShowModal(false)}
           keepContentsMounted={true}
-          initialBreakpoint={0.4}
-          breakpoints={[0, 0.4, 0.75]}
+        initialBreakpoint={0.75}
+        breakpoints={[0, 0.4, 0.75, 1]}
           className="calendar-modal"
         >
           <div className="p-3 flex justify-content-center">
