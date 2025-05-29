@@ -207,7 +207,7 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
           setBankModeType("");
           setBankid(null);
           setLoanAmt(null);
-          history.goBack();
+          history.replace("/userViewLoan", { shouldReload: true });
         }
       });
   };

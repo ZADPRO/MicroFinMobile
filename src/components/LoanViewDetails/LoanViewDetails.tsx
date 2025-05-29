@@ -15,7 +15,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { calendarOutline } from "ionicons/icons";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 interface UserLoanDetailsProps {
   refCustId: string;
@@ -113,13 +113,24 @@ const LoanViewDetails: React.FC = () => {
 
   const filteredProducts = userLists.filter((item) =>
     Object.values(item)
-      .map((val) =>
-        typeof val === "string" || typeof val === "number" ? val : ""
-      )
+      .map((val) => (val !== null && val !== undefined ? String(val) : ""))
       .join(" ")
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
+
+  const location = useLocation(); // get location object
+
+  useEffect(() => {
+    // Call API on load or reload
+    if (location.state?.shouldReload) {
+      loadData();
+      // Clear the reload flag so it doesn’t trigger again unnecessarily
+      history.replace({ ...location, state: {} });
+    } else {
+      loadData();
+    }
+  }, [location.state?.shouldReload]);
 
   return (
     <IonPage>
