@@ -36,12 +36,12 @@ interface ProductDetailsProps {
 
 const BankMgntProducts: React.FC = () => {
   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
+    
     StatusBar.setStyle({ style: Style.Dark });
-    StatusBar.setBackgroundColor({ color: "#0478df" });
+    
 
     return () => {
-      StatusBar.setOverlaysWebView({ overlay: true });
+      
     };
   }, []);
 
@@ -229,8 +229,8 @@ const BankMgntProducts: React.FC = () => {
                       Interest: {item.refProductInterest} %{" "}
                       {{
                         0: "",
-                        1: "Day wise Calculation",
-                        2: "Month wise Calculation",
+                        1: "[ Day wise Calculation ]",
+                        2: " [ Month wise Calculation ]",
                       }[item.refProductDurationType] || ""}{" "}
                     </div>
 

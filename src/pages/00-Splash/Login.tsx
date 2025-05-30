@@ -21,16 +21,16 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false); // 🔹 Loading state
 
   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
+    
     StatusBar.setStyle({ style: Style.Dark });
-    StatusBar.setBackgroundColor({ color: "#0478df" });
+    
 
     if (isAuthenticated) {
       history.replace("/home");
     }
 
     return () => {
-      StatusBar.setOverlaysWebView({ overlay: true });
+      
     };
   }, [isAuthenticated, history]);
 

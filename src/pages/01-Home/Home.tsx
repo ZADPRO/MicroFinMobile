@@ -27,16 +27,10 @@ const Home: React.FC = () => {
   const [isChartLoading, setIsChartLoading] = useState(true);
 
   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
-    StatusBar.setStyle({ style: Style.Dark });
-    StatusBar.setBackgroundColor({ color: "#0478df" });
-
     // Set default date to today
     setDate(new Date());
 
-    return () => {
-      StatusBar.setOverlaysWebView({ overlay: true });
-    };
+    return () => {};
   }, []);
 
   useEffect(() => {

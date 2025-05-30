@@ -4,12 +4,12 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 
 const Loan: React.FC = () => {
   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
+    
     StatusBar.setStyle({ style: Style.Dark });
-    StatusBar.setBackgroundColor({ color: "#0478df" });
+    
 
     return () => {
-      StatusBar.setOverlaysWebView({ overlay: true });
+      
     };
   }, []);
   return (

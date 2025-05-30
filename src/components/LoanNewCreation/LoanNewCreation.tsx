@@ -19,6 +19,7 @@ import { Divider } from "primereact/divider";
 import { InputNumber } from "primereact/inputnumber";
 import {
   CalculateFirstInterest,
+  CalculateInitialInterest,
   CalculateInterest,
   FirstInterest,
   getRemainingDaysInCurrentMonth,
@@ -101,12 +102,12 @@ interface ProductListProps {
 const LoanNewCreation: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
+    
     StatusBar.setStyle({ style: Style.Dark });
-    StatusBar.setBackgroundColor({ color: "#0478df" });
+    
 
     return () => {
-      StatusBar.setOverlaysWebView({ overlay: true });
+      
     };
   }, []);
 
@@ -114,6 +115,12 @@ const LoanNewCreation: React.FC = () => {
   const history = useHistory();
 
   // USER LOAN CREATION - STATES
+  const [minDate, setMinDate] = useState<Date | null>();
+  const [maxDate, setMaxDate] = useState<Date | null>();
+  const [viewDate, setViewDate] = useState<Date | null>();
+
+  const [tempLoanAmt, setTempLoanAmt] = useState<number>(0); // track parsed loan separately
+
   const today = new Date();
   const [customerId, setCustomerId] = useState<number>();
   const [customerList, setCustomerList] = useState<UserDetails[]>([]);
@@ -154,6 +161,49 @@ const LoanNewCreation: React.FC = () => {
   const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
   const nextMonthEnd = new Date(today.getFullYear(), today.getMonth() + 2, 0);
   const [step, setStep] = useState(0);
+
+  const getDateRange = (durationType: number) => {
+    console.log(" -> Line Number ----------------------------------- 105");
+    console.log("durationType", durationType);
+    const nextWeekStart = new Date(today);
+    const nextWeekEnd = new Date(nextWeekStart);
+    const nextDay = new Date(today);
+    switch (durationType) {
+      case 1: // Next Month
+        console.log(" -> Line Number ----------------------------------- 108");
+        setMinDate(new Date(today.getFullYear(), today.getMonth() + 1, 1));
+        setMaxDate(new Date(today.getFullYear(), today.getMonth() + 2, 0));
+        setViewDate(new Date(today.getFullYear(), today.getMonth() + 1, 1));
+        setRePaymentDate(
+          new Date(today.getFullYear(), today.getMonth() + 1, 1)
+        );
+        break;
+      case 2: // Next Week
+        console.log(" -> Line Number ----------------------------------- 114");
+        nextWeekStart.setDate(today.getDate() + (7 - today.getDay()));
+        nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
+        setMinDate(nextWeekStart);
+        setMaxDate(nextWeekEnd);
+        setViewDate(nextWeekStart);
+        setRePaymentDate(nextWeekStart);
+        break;
+
+      case 3: // Next Day
+        console.log(" -> Line Number ----------------------------------- 124");
+        nextDay.setDate(today.getDate() + 1);
+        setMinDate(nextDay);
+        setMaxDate(nextDay);
+        setViewDate(nextDay);
+        setRePaymentDate(nextDay);
+        break;
+
+      default:
+        console.log(" -> Line Number ----------------------------------- 132");
+        setMinDate(null);
+        setMaxDate(null);
+        setViewDate(null);
+    }
+  };
 
   // GET ALL USER DATA FOR NEW LOAN CREATIONS
   const getUserList = () => {
@@ -254,16 +304,33 @@ const LoanNewCreation: React.FC = () => {
 
         if (data.success) {
           console.log("data =======> ", data);
-          const productList = data.productList;
-          data.productList.map((data, index) => {
-            const name = `${data.refProductName} - ${data.refProductInterest} %- ${data.refProductDuration} Months`;
-            productList[index] = {
-              ...productList[index],
-              refProductName: name,
-            };
-          });
-          console.log("productList", productList);
-          setLoanProduct(productList);
+          const formattedProductOptions = data.productList.map((item) => ({
+            label: `${item.refProductName} || ${item.refProductInterest}% || ${
+              item.refProductDuration
+            } ${
+              item.refProductDurationType === 1
+                ? "Month"
+                : item.refProductDurationType === 2
+                ? "Weeks"
+                : item.refProductDurationType === 3
+                ? "Days"
+                : ""
+            }`,
+            value: item,
+            labelParts: {
+              name: item.refProductName,
+              interest: `${item.refProductInterest}%`,
+              duration: `${item.refProductDuration} ${
+                item.refProductDurationType === 1
+                  ? "Month"
+                  : item.refProductDurationType === 2
+                  ? "Weeks"
+                  : "Days"
+              }`,
+            },
+          }));
+          console.log("productList", formattedProductOptions);
+          setLoanProduct(formattedProductOptions);
 
           const bankList = data.allBankAccountList;
           console.log("bankList line ------ 202", bankList);
@@ -316,9 +383,10 @@ const LoanNewCreation: React.FC = () => {
 
   // CALC INITIAL INTEREST
   const initialInterest = (Pamt) => {
-    const days = getRemainingDaysInCurrentMonth();
-    console.log("days", days);
-    const amt: number = CalculateInterest({
+    const days = getRemainingDaysInCurrentMonth(
+      productId.refProductDurationType
+    );
+    const amt: number = CalculateInitialInterest({
       annualInterest: Number(productId?.refProductInterest),
       principal: Pamt,
       totalDays: days,
@@ -419,6 +487,15 @@ const LoanNewCreation: React.FC = () => {
         }
       });
   };
+
+  useEffect(() => {
+    if (step === 3) {
+      const balance = oldBalanceAmt ?? 0;
+      const total = tempLoanAmt + Number(balance);
+      setFinalLoanAmt(total);
+      initialInterest(total);
+    }
+  }, [step, tempLoanAmt, oldBalanceAmt]);
 
   return (
     <IonPage>
@@ -571,7 +648,7 @@ const LoanNewCreation: React.FC = () => {
 
           {showForm && (
             <div>
-              <Dropdown
+              {/* <Dropdown
                 filter
                 value={productId}
                 required
@@ -584,6 +661,31 @@ const LoanNewCreation: React.FC = () => {
                 options={loanProduct}
                 optionLabel="refProductName"
                 placeholder="Select Product"
+              /> */}
+
+              <Dropdown
+                value={productId}
+                filter
+                options={loanProduct}
+                onChange={(e: DropdownChangeEvent) => {
+                  setProductId(e.value);
+                  setStep(1);
+                  setSelectedRepaymentType(null);
+                  getDateRange(e.value.refProductDurationType);
+                }}
+                itemTemplate={(option) => (
+                  <div className="p-dropdown-item-custom">
+                    <div className="font-bold">
+                      <p>{option.labelParts.name}</p>
+                    </div>
+                    <small className="text-gray-500">
+                      {option.labelParts.interest} |{" "}
+                      {option.labelParts.duration}
+                    </small>
+                  </div>
+                )}
+                placeholder="Select Product"
+                className="w-full mt-3"
               />
 
               <Dropdown
@@ -609,13 +711,13 @@ const LoanNewCreation: React.FC = () => {
                 disabled={step < 2}
                 value={newLoanAmt}
                 onChange={(e: any) => {
+                  const value = parseFloat(e.value) || 0;
+                  console.log("value", value);
                   setNewLoanAmt(e.value);
+                  setTempLoanAmt(value);
+                  console.log("value", value);
                   setStep(3);
                   setBankId(null);
-                  const value = parseFloat(e.value) || 0;
-                  const balance = oldBalanceAmt ?? 0;
-                  setFinalLoanAmt(value + Number(balance));
-                  initialInterest(value + Number(balance));
                 }}
                 mode="currency"
                 currency="INR"
@@ -670,9 +772,9 @@ const LoanNewCreation: React.FC = () => {
                   setStep(5);
                   setInterestFirst(null);
                 }}
-                minDate={nextMonthStart}
-                maxDate={nextMonthEnd}
-                viewDate={nextMonthStart}
+                minDate={minDate}
+                maxDate={maxDate}
+                viewDate={viewDate}
               />
 
               <div className="flex flex-row gap-x-5 mt-3 gap-3">
@@ -697,6 +799,8 @@ const LoanNewCreation: React.FC = () => {
                           selectedRepaymentType ??
                           1,
                         loanDuration: Number(productId?.refProductDuration),
+                        durationType: productId.refProductDurationType,
+                        interestCal: productId.refProductMonthlyCal,
                       });
                     }}
                     checked={interestFirst === true}
@@ -729,7 +833,12 @@ const LoanNewCreation: React.FC = () => {
               {interestFirst && (
                 <div className="">
                   <label className="font-bold block mb-2">
-                    Enter Number Of Month
+                    Enter Number Of{" "}
+                    {productId.refProductDurationType === 1
+                      ? "Month"
+                      : productId.refProductDurationType === 2
+                      ? "Weeks"
+                      : "Days"}
                   </label>
                   <InputNumber
                     className="w-full mt-3"
@@ -749,9 +858,17 @@ const LoanNewCreation: React.FC = () => {
                           selectedRepaymentType ??
                           1,
                         loanDuration: Number(productId?.refProductDuration),
+                        durationType: productId.refProductDurationType,
+                        interestCal: productId.refProductMonthlyCal,
                       });
                     }}
-                    suffix=" Month"
+                    suffix={
+                      productId.refProductDurationType === 1
+                        ? " Month"
+                        : productId.refProductDurationType === 2
+                        ? " Weeks"
+                        : " Days"
+                    }
                   />
                 </div>
               )}
@@ -815,9 +932,23 @@ const LoanNewCreation: React.FC = () => {
               </IonRow>
               <IonRow className="mt-2">
                 <IonCol>
-                  <b> Interest for {monthCount} Month</b>
+                  <p>
+                    Interest for {monthCount}{" "}
+                    {productId.refProductDurationType === 1
+                      ? " Month"
+                      : productId.refProductDurationType === 2
+                      ? " Weeks"
+                      : " Days"}{" "}
+                    : ""
+                  </p>{" "}
                 </IonCol>
                 <IonCol>₹ {interestFirstAmt.toFixed(2)}</IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>Documentation Fee</IonCol>
+                <IonCol>
+                  : ₹ <b>{(docFee ?? 0).toFixed(2)}</b>
+                </IonCol>
               </IonRow>
               <IonRow className="mt-2">
                 <IonCol>
@@ -831,6 +962,35 @@ const LoanNewCreation: React.FC = () => {
                     (interestFirstAmt ?? 0)
                   ).toFixed(2)}
                 </IonCol>
+              </IonRow>
+              <IonRow>
+                <p>
+                  Formula :{" "}
+                  <b>
+                    {" "}
+                    [ Total Loan Amount - ( Initial Interest - Interest Paid{" "}
+                    {monthCount}{" "}
+                    {productId.refProductDurationType === 1
+                      ? " Month"
+                      : productId.refProductDurationType === 2
+                      ? " Weeks"
+                      : " Days"}{" "}
+                    - Documentation Fee ) ]
+                  </b>
+                </p>
+              </IonRow>
+              <IonRow>
+                <p>
+                  Amount to User : ₹{" "}
+                  <b>
+                    {(
+                      (newLoanAmt ?? 0) -
+                      (initialInterestAmt ?? 0) -
+                      (interestFirstAmt ?? 0) -
+                      (docFee ?? 0)
+                    ).toFixed(2)}
+                  </b>
+                </p>
               </IonRow>
             </div>
           )}

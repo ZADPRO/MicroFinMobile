@@ -108,7 +108,7 @@ export function addMonthsToMonth(
   return `${newMonth.toString().padStart(2, "0")}/${newYear}`;
 }
 
-export function getRemainingDaysInCurrentMonth(): number {
+export function getRemainingDaysInCurrentMonthOld(): number {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
@@ -121,14 +121,42 @@ export function getRemainingDaysInCurrentMonth(): number {
 
   return remainingDays;
 }
+
+export function getRemainingDaysInCurrentMonth(type: number) {
+  const today = new Date();
+
+  if (type === 1) {
+    // Remaining days in current month
+    const lastDayOfMonth = new Date(
+      today.getFullYear(),
+      today.getMonth() + 1,
+      0
+    );
+    return lastDayOfMonth.getDate() - today.getDate() + 1; // Include today
+  }
+
+  if (type === 2) {
+    // Remaining days in current week (assuming week starts on Sunday)
+    const dayOfWeek = today.getDay(); // 0 (Sun) to 6 (Sat)
+    return 7 - dayOfWeek;
+  }
+
+  if (type === 3) {
+    return 1;
+  }
+
+  return 0; // fallback if type is not 1, 2, or 3
+}
+
 interface CalaulateInterest {
   principal: number;
   annualInterest: number;
   totalDays: number;
+  interestCal?: number;
 }
-export function CalculateInterest(data: CalaulateInterest): number {
+export function CalculateInitialInterest(data: CalaulateInterest): number {
   try {
-    const Interest =
+    let Interest =
       ((Number(data.principal) * (Number(data.annualInterest) * 12)) /
         100 /
         365) *
@@ -136,22 +164,38 @@ export function CalculateInterest(data: CalaulateInterest): number {
     console.log("Interest line ----- 118", Interest);
     return Interest;
   } catch (error) {
-    console.log("error", error);
+    return 0;
+  }
+}
+export function CalculateInterest(data: CalaulateInterest): number {
+  try {
+    let Interest;
+    if (data.interestCal === 2) {
+      Interest =
+        (Number(data.principal) * (Number(data.annualInterest) * 12)) /
+        100 /
+        12;
+    } else {
+      Interest =
+        ((Number(data.principal) * (Number(data.annualInterest) * 12)) /
+          100 /
+          365) *
+        data.totalDays;
+    }
+    console.log("Interest line ----- 118", Interest);
+    return Interest;
+  } catch (error) {
     return 0;
   }
 }
 
 export function getDaysInMonths(dateStr: string, count: number): number[] {
-  console.log("count line ---- 127", count);
-  console.log("dateStr line ---- 128", dateStr);
   const date = new Date(dateStr);
   const result: number[] = [];
 
   let year = date.getFullYear();
   let month = date.getMonth();
-  console.log(" -> Line Number ----------------------------------- 134");
   for (let i = 0; i < count; i++) {
-    console.log(" -> Line Number ----------------------------------- 136");
     const days = new Date(year, month + 1, 0).getDate();
     result.push(days);
 
@@ -174,18 +218,27 @@ export interface FirstInterest {
   rePaymentDate: string;
   rePaymentType: number;
   loanDuration: number;
+  durationType?: number;
+  interestCal?: number;
 }
 export const CalculateFirstInterest = (data: FirstInterest): number => {
-  console.log("data line ---- 156", data);
-  const daysCount = getDaysInMonths(data.rePaymentDate, data.monthCount);
-  console.log("daysCount line ---- 163", daysCount);
+  let daysCount;
+  if (data.durationType === 1) {
+    daysCount = getDaysInMonths(data.rePaymentDate, data.monthCount);
+  } else if (data.durationType === 2) {
+    daysCount = Array.from({ length: data.monthCount }, () => 7);
+  } else if (data.durationType === 3) {
+    daysCount = Array.from({ length: data.monthCount }, () => 1);
+  }
 
   if (data.rePaymentType === 1 || data.rePaymentType === 3) {
     const totalDays = daysCount.reduce((sum, val) => sum + val, 0);
+
     const interestData = {
       principal: data.PrincipalAmt,
       annualInterest: data.Interest,
       totalDays: totalDays,
+      interestCal: data.durationType !== 1 ? 0 : data.interestCal,
     };
     const Interest = CalculateInterest(interestData);
     return Interest;
@@ -199,6 +252,7 @@ export const CalculateFirstInterest = (data: FirstInterest): number => {
         principal: LoanAmount,
         annualInterest: data.Interest,
         totalDays: daysCount[i],
+        interestCal: data.durationType !== 1 ? 0 : data.interestCal,
       };
       const Interest = CalculateInterest(interestData);
       totalInterest += Interest;

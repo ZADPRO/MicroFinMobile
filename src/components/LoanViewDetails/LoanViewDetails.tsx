@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 
 import { StatusBar, Style } from "@capacitor/status-bar";
 import axios from "axios";
-import decrypt from "../../services/helper";
+import decrypt, { formatRupees } from "../../services/helper";
 import { calendarOutline } from "ionicons/icons";
 import { useHistory, useLocation } from "react-router";
 
@@ -37,12 +37,12 @@ interface UserLoanDetailsProps {
 const LoanViewDetails: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
+    
     StatusBar.setStyle({ style: Style.Dark });
-    StatusBar.setBackgroundColor({ color: "#0478df" });
+    
 
     return () => {
-      StatusBar.setOverlaysWebView({ overlay: true });
+      
     };
   }, []);
 
@@ -208,7 +208,7 @@ const LoanViewDetails: React.FC = () => {
                         <IonIcon icon={calendarOutline} />{" "}
                         {item.refLoanStartDate}
                       </p>
-                      <p>₹ {item.refLoanAmount}</p>
+                      <p>{formatRupees(item.refLoanAmount)}</p>
                     </div>
                   </div>
                 </div>

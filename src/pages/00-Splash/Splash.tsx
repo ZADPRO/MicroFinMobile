@@ -9,9 +9,9 @@ const Splash: React.FC = () => {
   const history = useHistory();
 
   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
+    
     StatusBar.setStyle({ style: Style.Dark });
-    StatusBar.setBackgroundColor({ color: "#0478df" });
+    
 
     const timer = setTimeout(() => {
       const userDetails = localStorage.getItem("profile");
@@ -24,7 +24,7 @@ const Splash: React.FC = () => {
 
     return () => {
       clearTimeout(timer);
-      StatusBar.setOverlaysWebView({ overlay: true });
+      
     };
   }, []);
 

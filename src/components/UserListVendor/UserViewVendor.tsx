@@ -42,15 +42,15 @@ const UserViewVendor: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
     if (vendorData) {
-      StatusBar.setOverlaysWebView({ overlay: false });
+      
       StatusBar.setStyle({ style: Style.Dark });
-      StatusBar.setBackgroundColor({ color: "#0478df" });
+      
 
       setVendorData(); // This sets all input field states correctly
     }
 
     return () => {
-      StatusBar.setOverlaysWebView({ overlay: true });
+      
     };
   }, [vendorData]); // Trigger only when vendorData is available
 

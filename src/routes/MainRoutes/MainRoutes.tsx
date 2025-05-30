@@ -73,17 +73,15 @@ import AboutUs from "../../components/ProfilePage/AboutUs";
 const MainRoutes: React.FC = () => {
   // STATUS BAR CONFIG
   useEffect(() => {
-    const configureStatusBar = async () => {
-      if (Capacitor.isNativePlatform()) {
-        const bgcolor = "#0478df";
+    if (Capacitor.isNativePlatform()) {
+      StatusBar.setOverlaysWebView({ overlay: false });
+      StatusBar.setStyle({ style: Style.Dark });
+      StatusBar.setBackgroundColor({ color: "#0377de" });
 
-        await StatusBar.setOverlaysWebView({ overlay: false });
-        await StatusBar.setBackgroundColor({ color: bgcolor });
-        await StatusBar.setStyle({ style: Style.Light });
-      }
-    };
-
-    configureStatusBar();
+      return () => {
+        StatusBar.setOverlaysWebView({ overlay: true });
+      };
+    }
   }, []);
 
   const location = useLocation();

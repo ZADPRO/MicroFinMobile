@@ -43,12 +43,12 @@ interface FundDetailsProps {
 const BankMgntFunds: React.FC = () => {
   // STATUS BAR HANDLER
   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
+    
     StatusBar.setStyle({ style: Style.Dark });
-    StatusBar.setBackgroundColor({ color: "#0478df" });
+    
 
     return () => {
-      StatusBar.setOverlaysWebView({ overlay: true });
+      
     };
   }, []);
 

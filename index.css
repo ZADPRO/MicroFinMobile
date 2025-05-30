@@ -68,3 +68,8 @@ ion-segment-button.segment-button-checked ion-label {
 .p-datepicker-trigger.p-button.p-component.p-button-icon-only {
   border-top-right-radius: 7px;
 }
+
+.p-dropdown-item-custom {
+  display: flex;
+  flex-direction: column;
+}
