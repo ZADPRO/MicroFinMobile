@@ -169,12 +169,16 @@ const LoanUserRepayment: React.FC = () => {
                 <div className="contents w-full">
                   <div className="flex justify-content-between w-full">
                     <p>{item.refCustId}</p>
-                    <p>{formatToYearMonth(item.refPaymentDate)}</p>
+                    <p className="">₹{item.refLoanAmount}</p>
                   </div>
-                  <p className="mt-2">
+                  <p className="mt-1">
                     {item.refUserFname} {item.refUserLname}
                   </p>
-                  <p className="mt-2">₹{item.refLoanAmount}</p>
+                  <div className="flex w-full justify-content-end">
+                    <p className="text-sm">
+                      {formatToYearMonth(item.refPaymentDate)}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -204,15 +208,20 @@ const LoanUserRepayment: React.FC = () => {
                 }
               }}
               view="month"
+              showIcon
               dateFormat="mm/yy"
             />
             <Calendar
               value={endDate}
               placeholder="Select End Range"
-              onChange={(e) => setEndDate(e.value)}
+              onChange={(e) => {
+                setEndDate(e.value);
+                setShowModal(false);
+              }}
               view="month"
               className="mt-3"
               dateFormat="mm/yy"
+              showIcon
               minDate={startDate || undefined}
               disabled={!startDate}
             />

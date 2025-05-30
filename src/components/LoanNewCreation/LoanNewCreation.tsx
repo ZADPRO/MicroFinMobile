@@ -217,7 +217,7 @@ const LoanNewCreation: React.FC = () => {
       if (data.success) {
         console.log("data", data);
         const options = data.data.map((d: any) => ({
-          name: `${d.refLoanAmount} - ${d.refProductInterest} - ${d.refProductDuration}`,
+          name: `₹ ${d.refLoanAmount} - ${d.refProductInterest}% - ${d.refProductDuration}`,
           value: d.refLoanId,
         }));
         console.log("options", options);
@@ -256,7 +256,7 @@ const LoanNewCreation: React.FC = () => {
           console.log("data =======> ", data);
           const productList = data.productList;
           data.productList.map((data, index) => {
-            const name = `Name : ${data.refProductName} - Interest : ${data.refProductInterest} %- Duration : ${data.refProductDuration} Months`;
+            const name = `${data.refProductName} - ${data.refProductInterest} %- ${data.refProductDuration} Months`;
             productList[index] = {
               ...productList[index],
               refProductName: name,
@@ -268,7 +268,7 @@ const LoanNewCreation: React.FC = () => {
           const bankList = data.allBankAccountList;
           console.log("bankList line ------ 202", bankList);
           bankList.map((data, index) => {
-            const name = `Name : ${data.refBankName} | Balance : ₹ ${data.refBalance}`;
+            const name = `${data.refBankName} | ₹ ${data.refBalance}`;
             bankList[index] = { ...bankList[index], refBankName: name };
           });
           console.log("bankList", bankList);

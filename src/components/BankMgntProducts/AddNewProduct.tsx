@@ -35,6 +35,23 @@ const AddNewProduct: React.FC = () => {
     { name: "Inactive", code: "inactive" },
   ];
 
+  const [selectedDurationType, setSelectedDurationType] = useState({
+    name: "Monthly",
+    code: 1,
+  });
+  const [selectedInterestCal, setSelectedInterestCal] = useState<number>(1);
+
+  const durationType = [
+    { name: "Monthly", code: 1 },
+    { name: "Weekly", code: 2 },
+    { name: "Daily", code: 3 },
+  ];
+
+  const interestCalculationType = [
+    { name: "DayWise Monthly Calculation", code: 1 },
+    { name: "Monthly Calculation", code: 2 },
+  ];
+
   const [inputs, setInputs]: any = useState({
     refProductName: "",
     refProductInterest: "",
@@ -53,7 +70,7 @@ const AddNewProduct: React.FC = () => {
 
   const handleInput = (e: any) => {
     const { name, value } = e.target;
-    setInputs((prevState) => ({
+    setInputs((prevState: any) => ({
       ...prevState,
       [name]: value,
     }));
@@ -86,6 +103,8 @@ const AddNewProduct: React.FC = () => {
           refProductDuration: inputs.refProductDuration,
           refProductStatus: inputs.refProductStatus,
           refProductDescription: inputs.refProductDescription,
+          refProductDurationType: selectedDurationType.code,
+          refProductMonthlyCal: selectedInterestCal,
         },
         {
           headers: {
@@ -106,7 +125,7 @@ const AddNewProduct: React.FC = () => {
       if (data.success) {
         history.replace("/productDetails", { shouldReload: true });
       }
-    } catch (e: any) {
+    } catch (e) {
       console.log(e);
     }
   };
@@ -131,6 +150,23 @@ const AddNewProduct: React.FC = () => {
             placeholder="Enter Product Name"
             value={inputs.refProductName}
             onChange={handleInput}
+            required
+          />
+          <Dropdown
+            inputId="durationType"
+            value={selectedDurationType}
+            onChange={(e) => {
+              setSelectedDurationType(e.value);
+              if (e.value.code === 1) {
+                setSelectedInterestCal(1);
+              } else {
+                setSelectedInterestCal(0);
+              }
+            }}
+            options={durationType}
+            optionLabel="name"
+            placeholder="Select Duration"
+            className="mt-3 w-full"
             required
           />
           <InputText
@@ -160,6 +196,22 @@ const AddNewProduct: React.FC = () => {
             onChange={handleInput}
             required
           />
+
+          {selectedDurationType.code === 1 && (
+            <Dropdown
+              value={selectedInterestCal}
+              options={interestCalculationType}
+              optionLabel="name"
+              optionValue="code"
+              onChange={(e) => {
+                console.log("e", e);
+                setSelectedInterestCal(e.value);
+              }}
+              className="w-full mt-3"
+              required
+            />
+          )}
+
           <Dropdown
             name="refProductStatus"
             value={inputs.refProductStatus}

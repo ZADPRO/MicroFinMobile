@@ -118,7 +118,7 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
           console.log("matchedLoan", matchedLoan);
           setLoanDetails(matchedLoan);
           const options = data.bank.map((d: any) => ({
-            name: `Name : ${d.refBankName} - A/C : ${d.refBankAccountNo} - IFSC's : ${d.refIFSCsCode}`,
+            name: `${d.refBankName}`,
             value: d.refBankId,
             refAccountType: d.refAccountType,
           }));

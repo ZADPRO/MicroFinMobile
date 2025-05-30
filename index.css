@@ -64,3 +64,7 @@ ion-segment-button.segment-button-checked ion-label {
 .loan-status.no-data {
   color: gray;
 }
+
+.p-datepicker-trigger.p-button.p-component.p-button-icon-only {
+  border-top-right-radius: 7px;
+}

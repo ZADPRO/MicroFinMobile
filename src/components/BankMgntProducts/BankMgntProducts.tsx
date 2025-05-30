@@ -28,6 +28,8 @@ interface ProductDetailsProps {
   refProductInterest: string;
   refProductName: string;
   refProductStatus: string;
+  refProductDurationType: number;
+  refProductMonthlyCal: number;
   updatedAt: string;
   updatedBy: string;
 }
@@ -196,12 +198,9 @@ const BankMgntProducts: React.FC = () => {
                   >
                     {item.refProductName.charAt(0).toUpperCase()}
                   </div>
-                  <div className="pl-3 flex w-full align-items-center justify-content-between">
-                    <div className="flex flex-column">
-                      <p>{item.refProductName}</p>
-                      <p>{item.createdAt}</p>
-                    </div>
-                    <div className="amount">
+                  <div className="pl-3 flex flex-column w-full justify-content-between">
+                    <div className="flex flex-row justify-content-between">
+                      <p className="capitalize">{item.refProductName}</p>
                       <p
                         style={{
                           color:
@@ -215,6 +214,28 @@ const BankMgntProducts: React.FC = () => {
                       >
                         {item.refProductStatus}
                       </p>
+                    </div>
+
+                    <div className="flex flex-row justify-content-between mt-1">
+                      Duration: {item.refProductDuration}{" "}
+                      {{
+                        1: "Monthly",
+                        2: "Weekly",
+                        3: "Daily",
+                      }[item.refProductDurationType] || ""}{" "}
+                    </div>
+
+                    <div className="flex flex-row justify-content-between mt-1">
+                      Interest: {item.refProductInterest} %{" "}
+                      {{
+                        0: "",
+                        1: "Day wise Calculation",
+                        2: "Month wise Calculation",
+                      }[item.refProductDurationType] || ""}{" "}
+                    </div>
+
+                    <div className="flex text-sm w-full justify-content-end mt-2">
+                      <p>{item.createdAt}</p>
                     </div>
                   </div>
                 </div>
