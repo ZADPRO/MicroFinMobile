@@ -73,6 +73,19 @@ const EditExistingProduct: React.FC = () => {
     }));
   };
 
+  useEffect(() => {
+    // Set Duration Type from productItems
+    const matchedDuration = durationType.find(
+      (d) => d.code === productItems.refProductDurationType
+    );
+    if (matchedDuration) {
+      setSelectedDurationType(matchedDuration);
+    }
+
+    // Set Interest Calculation Type
+    setSelectedInterestCal(productItems.refProductMonthlyCal || 1);
+  }, []);
+
   const status = [
     { name: "Active", code: "active" },
     { name: "Inactive", code: "inactive" },
@@ -143,7 +156,7 @@ const EditExistingProduct: React.FC = () => {
           />
           <Dropdown
             inputId="durationType"
-            value={inputs.refProductDurationType}
+            value={selectedDurationType}
             onChange={(e) => {
               setSelectedDurationType(e.value);
               if (e.value.code === 1) {
@@ -193,7 +206,6 @@ const EditExistingProduct: React.FC = () => {
               optionLabel="name"
               optionValue="code"
               onChange={(e) => {
-                console.log("e", e);
                 setSelectedInterestCal(e.value);
               }}
               className="w-full mt-3"
