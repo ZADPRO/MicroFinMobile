@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 import { funnel } from "ionicons/icons";
 import axios from "axios";
 import decrypt from "../../services/helper";
-import { Nullable } from "vitest";
+import { Nullable } from "primereact/ts-helpers";
 import { Calendar } from "primereact/calendar";
 import { useHistory } from "react-router";
 
@@ -70,6 +70,15 @@ const LoanUserRepayment: React.FC = () => {
     return `${year}-${month}`;
   }
 
+  function formatToDDMMYYYY(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
+  }
+
   // USER LIST - IN REPAYMENT
   const loadData = () => {
     try {
@@ -78,8 +87,8 @@ const LoanUserRepayment: React.FC = () => {
           import.meta.env.VITE_API_URL + "/rePayment/userList",
           {
             ifMonth: userListType.code === 0 ? false : true,
-            startDate: startDate ? formatToYearMonth(startDate) : "",
-            endDate: endDate ? formatToYearMonth(endDate) : "",
+            startDate: startDate ? formatToDDMMYYYY(startDate) : "",
+            endDate: endDate ? formatToDDMMYYYY(endDate) : "",
           },
           {
             headers: {
@@ -112,7 +121,7 @@ const LoanUserRepayment: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [startDate, endDate]);
 
   const filteredProducts = userLists.filter((item) =>
     Object.values(item)
@@ -209,52 +218,25 @@ const LoanUserRepayment: React.FC = () => {
           className="calendar-modal"
         >
           <div className="p-3 flex flex-column justify-content-center">
-            <label className="mt-2 font-semibold">Start Date</label>
             <Calendar
               value={startDate}
-              placeholder="Select Start Date"
-              className="mt-1"
               onChange={(e) => {
-                const newStartDate = e.value;
-                setStartDate(newStartDate);
-
-                // Auto-adjust endDate if it's before new startDate
-                if (endDate && newStartDate && endDate < newStartDate) {
-                  setEndDate(newStartDate);
+                setStartDate(e.value);
+                if (endDate && e.value && endDate < e.value) {
+                  setEndDate(e.value);
                 }
               }}
-              dateFormat="yy-mm-dd"
-              showIcon
-              showButtonBar
-              touchUI
+              dateFormat="dd-mm-yy"
             />
-
-            <label className="mt-3 font-semibold">End Date</label>
             <Calendar
               value={endDate}
-              placeholder="Select End Date"
-              className="mt-1"
               onChange={(e) => {
                 setEndDate(e.value);
               }}
-              dateFormat="yy-mm-dd"
+              dateFormat="dd-mm-yy"
               minDate={startDate || undefined}
               disabled={!startDate}
-              showIcon
-              showButtonBar
-              touchUI
             />
-
-            <button
-              className="mt-4 p-2 bg-blue-500 text-white font-semibold rounded"
-              disabled={!startDate || !endDate}
-              onClick={() => {
-                loadData();
-                setShowModal(false);
-              }}
-            >
-              Apply Filter
-            </button>
           </div>
         </IonModal>
       </IonContent>

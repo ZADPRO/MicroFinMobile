@@ -7,6 +7,7 @@ import {
   IonCardTitle,
   IonCol,
   IonContent,
+  IonGrid,
   IonHeader,
   IonPage,
   IonRow,
@@ -56,6 +57,8 @@ interface LoadDetailsResponseProps {
   totalLoanPaidDuration: string;
   totalPrincipal: string;
   finalBalanceAmt: string;
+  durationType: number;
+  interestCalType: number;
 }
 
 interface UserDetails {
@@ -278,7 +281,14 @@ const LoanNewCreation: React.FC = () => {
         const options = data.data.map((d: any) => ({
           name: `₹ ${d.refLoanAmount || "0"} || ${
             d.refProductInterest || "0"
-          }% || ${d.refProductDuration || "0"}`,
+          }% || ${d.refProductDuration || "0"}
+          ${
+            d.refProductDurationType === 1
+              ? "Month"
+              : d.refProductDurationType === 2
+              ? "Weeks"
+              : "Days"
+          }`,
           value: d.refLoanId,
           loanAmount: d.refLoanAmount || "0",
           productInterest: d.refProductInterest || "0",
@@ -414,6 +424,7 @@ const LoanNewCreation: React.FC = () => {
       annualInterest: Number(productId?.refProductInterest),
       principal: Pamt,
       totalDays: days,
+      interestCal: Number(productId?.refProductMonthlyCal),
     });
     console.log("amt line ----- 175", amt);
     // setNewLoan({ ...newLoan, initialInterestAmt: amt })
@@ -572,6 +583,7 @@ const LoanNewCreation: React.FC = () => {
             onChange={(e: DropdownChangeEvent) => {
               console.log("e line ----------- 405", e);
               setCustomerId(e.target.value);
+              setStep(0.5);
               setSelectedLoanType(0);
             }}
             required
@@ -593,12 +605,14 @@ const LoanNewCreation: React.FC = () => {
           <Dropdown
             value={selectedLoanType}
             className="w-full mt-3"
+            disabled={step < 0.5}
             onChange={(e: DropdownChangeEvent) => {
               setSelectedLoanType(e.value);
               getUserLoanData();
               getAllLoanData();
               setSelectedLoan(null);
               show(e.value, null);
+              setStep(0);
             }}
             required
             options={loanTypeOptions}
@@ -632,94 +646,125 @@ const LoanNewCreation: React.FC = () => {
           />
 
           {showLoanInfo && (
-            <div className="mt-3">
-              <Divider>LOAN DETAILS</Divider>
+            <IonCard className="loan-summary-card shadow-2">
+              <IonCardHeader>
+                <IonCardTitle className="text-center text-xl underline">
+                  LOAN DETAILS
+                </IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                <div className="loan-summary-table">
+                  <div className="row">
+                    <div className="label">Total Loan Amount</div>
+                    <div className="value">
+                      ₹{loadDetailsResponse?.totalLoanAmt}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="label">Loan Interest</div>
+                    <div className="value">
+                      {loadDetailsResponse?.loanInterest} %
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="label">Loan Duration</div>
+                    <div className="value">
+                      {loadDetailsResponse?.loanDuration}{" "}
+                      {loadDetailsResponse?.durationType === 1
+                        ? "Months"
+                        : loadDetailsResponse?.durationType === 2
+                        ? "Weeks"
+                        : "Days"}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="label">Initial Interest</div>
+                    <div className="value">
+                      ₹{loadDetailsResponse?.initialInterest}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="label">Interest Paid (1st)</div>
+                    <div className="value">
+                      {loadDetailsResponse?.interestFirst ? "Yes" : "No"}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="label">Interest Paid </div>
+                    <div className="value">
+                      {" "}
+                      {loadDetailsResponse?.interestFirstMonth}{" "}
+                      {loadDetailsResponse?.durationType === 1
+                        ? "Months"
+                        : loadDetailsResponse?.durationType === 2
+                        ? "Weeks"
+                        : "Days"}{" "}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="label">Total Principal Amount</div>
+                    <div className="value">
+                      ₹{loadDetailsResponse?.totalPrincipal}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="label">Total Interest Amount</div>
+                    <div className="value">
+                      ₹{loadDetailsResponse?.totalInterest}
+                    </div>
+                  </div>
+                </div>
+              </IonCardContent>
+            </IonCard>
+          )}
 
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Total Loan</b>
-                </IonCol>
-                <IonCol>₹ {loadDetailsResponse?.loanInterest} %</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Loan Interest</b>
-                </IonCol>
-                <IonCol>{loadDetailsResponse?.loanDuration} Month</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Loan Duration</b>
-                </IonCol>
-                <IonCol>{loadDetailsResponse?.totalLoanAmt}</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Initial Interest</b>
-                </IonCol>
-                <IonCol>₹ {loadDetailsResponse?.initialInterest}</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Interest Paid (1st)</b>
-                </IonCol>
-                <IonCol>
-                  {loadDetailsResponse?.interestFirst === true ? "Yes" : "No"}
-                </IonCol>{" "}
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Interest Paid (Month)</b>
-                </IonCol>
-                <IonCol>
-                  {loadDetailsResponse?.interestFirstMonth} Month{" "}
-                </IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Total Principal Amt</b>
-                </IonCol>
-                <IonCol> ₹ {loadDetailsResponse?.totalPrincipal} </IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Total Interest Amt</b>
-                </IonCol>
-                <IonCol>₹ {loadDetailsResponse?.totalInterest}</IonCol>
-              </IonRow>
-
-              <Divider>LOAN CALCULATIONS</Divider>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Total Principal Paid</b>
-                </IonCol>
-                <IonCol>₹ {loadDetailsResponse?.totalPrincipal}</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Total Interest Paid</b>
-                </IonCol>
-                <IonCol>₹ {loadDetailsResponse?.totalInterestPaid}</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Initial Interest Paid</b>
-                </IonCol>
-                <IonCol>₹ {loadDetailsResponse?.totalInitialInterest}</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Loan Duration</b>
-                </IonCol>
-                <IonCol>{loadDetailsResponse?.loanDuration} Month</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Balance Amt</b>
-                </IonCol>
-                <IonCol>₹ {loadDetailsResponse?.finalBalanceAmt}</IonCol>
-              </IonRow>
-            </div>
+          {showLoanInfo && (
+            <IonCard className="loan-summary-card shadow-2 mt-3">
+              <IonCardHeader>
+                <IonCardTitle className="text-center text-xl underline">
+                  LOAN CALCULATIONS
+                </IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                <div className="loan-summary-table">
+                  <div className="row">
+                    <div className="label">Total Principal Paid</div>
+                    <div className="value">
+                      ₹{loadDetailsResponse?.totalPrincipal}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="label">Total Interest Paid</div>
+                    <div className="value">
+                      ₹{loadDetailsResponse?.totalInterestPaid}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="label">Initial Interest Paid</div>
+                    <div className="value">
+                      ₹{loadDetailsResponse?.totalInitialInterest}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="label">Loan Duration</div>
+                    <div className="value">
+                      {loadDetailsResponse?.loanDuration}{" "}
+                      {loadDetailsResponse?.durationType === 1
+                        ? "Months"
+                        : loadDetailsResponse?.durationType === 2
+                        ? "Weeks"
+                        : "Days"}
+                    </div>
+                  </div>
+                  <div className="row total">
+                    <div className="label">Balance Amount</div>
+                    <div className="value">
+                      ₹{loadDetailsResponse?.finalBalanceAmt}
+                    </div>
+                  </div>
+                </div>
+              </IonCardContent>
+            </IonCard>
           )}
 
           <Divider />
@@ -870,6 +915,7 @@ const LoanNewCreation: React.FC = () => {
                     disabled={step < 5}
                     onChange={(e: RadioButtonChangeEvent) => {
                       setInterestFirst(true);
+                      setDocFee(0);
                       setMonthCount(1);
                       setStep(6);
                       calculateInterest({
@@ -901,6 +947,7 @@ const LoanNewCreation: React.FC = () => {
                     required
                     onChange={(e: RadioButtonChangeEvent) => {
                       setInterestFirst(false);
+                      setDocFee(0);
                       setMonthCount(0);
                       setInterestFirstAmt(0);
                       setStep(6);
@@ -931,6 +978,7 @@ const LoanNewCreation: React.FC = () => {
                     required
                     onChange={(e: any) => {
                       setMonthCount(e.value);
+                      setDocFee(0);
                       calculateInterest({
                         Interest: Number(productId?.refProductInterest),
                         PrincipalAmt: Number(FinalLoanAmt),

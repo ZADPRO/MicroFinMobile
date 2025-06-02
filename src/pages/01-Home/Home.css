@@ -10,9 +10,9 @@ ion-datetime {
   border-radius: 16px;
 }
 
-.p-datepicker {
+/* .p-datepicker {
   width: 100% !important;
-}
+} */
 
 .profiltAnalysis .p-chart canvas {
   width: 70% !important;
