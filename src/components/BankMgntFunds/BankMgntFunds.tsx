@@ -43,13 +43,7 @@ interface FundDetailsProps {
 const BankMgntFunds: React.FC = () => {
   // STATUS BAR HANDLER
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   // HISTORY NAV

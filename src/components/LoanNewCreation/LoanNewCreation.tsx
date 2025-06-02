@@ -235,14 +235,14 @@ const LoanNewCreation: React.FC = () => {
         console.log("data line ------ 350 ", data);
         if (data.success) {
           const userList = data.data;
-          userList.map((data: any, index: any) => {
-            const name = `${data.refUserFname} ${data.refUserLname} | ${data.refUserMobileNo}`;
+          userList.map((data: any, index: number) => {
             userList[index] = {
-              ...userList[index],
-              label: name,
+              ...data,
+              label: `${data.refUserFname} ${data.refUserLname} || ${data.refUserMobileNo}`,
               value: data.refUserId,
             };
           });
+
           setCustomerList(userList);
         }
       });
@@ -275,12 +275,16 @@ const LoanNewCreation: React.FC = () => {
       localStorage.setItem("token", "Bearer " + data.token);
 
       if (data.success) {
-        console.log("data", data);
         const options = data.data.map((d: any) => ({
-          name: `₹ ${d.refLoanAmount} - ${d.refProductInterest}% - ${d.refProductDuration}`,
+          name: `₹ ${d.refLoanAmount || "0"} || ${
+            d.refProductInterest || "0"
+          }% || ${d.refProductDuration || "0"}`,
           value: d.refLoanId,
+          loanAmount: d.refLoanAmount || "0",
+          productInterest: d.refProductInterest || "0",
+          productDuration: d.refProductDuration || "0",
         }));
-        console.log("options", options);
+
         setUserLoan(options);
       }
     } catch (error) {
@@ -345,8 +349,18 @@ const LoanNewCreation: React.FC = () => {
           const bankList = data.allBankAccountList;
           console.log("bankList line ------ 202", bankList);
           bankList.map((data, index) => {
-            const name = `${data.refBankName} | ₹ ${data.refBalance}`;
-            bankList[index] = { ...bankList[index], refBankName: name };
+            const bankName = data.refBankName || "0";
+            const balance =
+              data.refBalance != null ? `₹ ${data.refBalance}` : "₹ 0";
+
+            bankList[index] = {
+              ...bankList[index],
+              labelParts: {
+                name: bankName,
+                balance: balance,
+              },
+              refBankName: `${bankName} || ${balance}`,
+            };
           });
           console.log("bankList", bankList);
           setBankList(bankList);
@@ -564,7 +578,18 @@ const LoanNewCreation: React.FC = () => {
             options={customerList}
             optionLabel="label"
             placeholder="Select Customer To Provide Loan"
+            itemTemplate={(option) => (
+              <div className="p-dropdown-item-custom">
+                <div className="font-bold text-sm">
+                  <p>{`${option.refUserFname} ${option.refUserLname}`}</p>
+                </div>
+                <small className="text-gray-500">
+                  {option.refUserMobileNo} | {option.refUserEmail}
+                </small>
+              </div>
+            )}
           />
+
           <Dropdown
             value={selectedLoanType}
             className="w-full mt-3"
@@ -591,8 +616,19 @@ const LoanNewCreation: React.FC = () => {
             }}
             filter
             options={userLoan}
-            optionLabel="name"
             placeholder="Select Old Loan"
+            optionLabel="name" // fallback label if itemTemplate not used for display in input
+            itemTemplate={(option) => (
+              <div className="p-dropdown-item-custom flex flex-col">
+                <div className="font-bold">₹ {option.loanAmount || "0"}</div>
+                <small className="text-gray-500">
+                  Interest: {option.productInterest || "0"}%
+                </small>
+                <small className="text-gray-500">
+                  Duration: {option.productDuration || "0"}
+                </small>
+              </div>
+            )}
           />
 
           {showLoanInfo && (
@@ -690,21 +726,6 @@ const LoanNewCreation: React.FC = () => {
 
           {showForm && (
             <div>
-              {/* <Dropdown
-                filter
-                value={productId}
-                required
-                className="w-full"
-                onChange={(e: DropdownChangeEvent) => {
-                  setProductId(e.value);
-                  setStep(1);
-                  setSelectedRepaymentType(null);
-                }}
-                options={loanProduct}
-                optionLabel="refProductName"
-                placeholder="Select Product"
-              /> */}
-
               <Dropdown
                 value={productId}
                 filter
@@ -801,13 +822,24 @@ const LoanNewCreation: React.FC = () => {
                 className="w-full mt-3"
                 required
                 onChange={(e: DropdownChangeEvent) => {
-                  setBankId(e.value);
+                  console.log("e", e);
+                  setBankId(e.value); // e.value is the selected full object
                   setStep(4);
                   setRePaymentDate(nextMonth);
                 }}
                 options={bankList}
-                optionLabel="refBankName"
+                optionLabel="refBankName" // 👈 Shows `refBankName` when selected
                 placeholder="Select Amount From"
+                itemTemplate={(option) => (
+                  <div className="p-dropdown-item-custom">
+                    <div className="font-bold">
+                      {option.labelParts?.name || "0"}
+                    </div>
+                    <small className="text-gray-500">
+                      {option.labelParts?.balance || "₹ 0"}
+                    </small>
+                  </div>
+                )}
               />
 
               <Calendar

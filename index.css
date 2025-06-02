@@ -67,6 +67,7 @@ ion-segment-button.segment-button-checked ion-label {
 
 .p-datepicker-trigger.p-button.p-component.p-button-icon-only {
   border-top-right-radius: 7px;
+  border-bottom-right-radius: 7px;
 }
 
 .p-dropdown-item-custom {
@@ -145,4 +146,8 @@ ion-segment-button.segment-button-checked ion-label {
   font-size: 16px;
   font-weight: bold;
   color: #2e7d32;
+}
+
+.p-datepicker.p-component {
+  width: 94% !important;
 }

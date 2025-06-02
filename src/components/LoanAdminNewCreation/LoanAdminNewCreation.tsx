@@ -11,7 +11,6 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import axios from "axios";
 import decrypt, { getDateAfterMonths } from "../../services/helper";
@@ -98,13 +97,7 @@ interface CustomerDetailsProps {
 const LoanAdminNewCreation: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   // HANDLE NAVIGATION
@@ -175,13 +168,22 @@ const LoanAdminNewCreation: React.FC = () => {
         if (data.success) {
           const venList = data.data;
           venList.map((data, index) => {
-            const name = `Name : ${data.refVendorName} | Mobile : ${
-              data.refVendorMobileNo
-            } | Vendor Type : ${
-              data.refVenderType === 1 ? "Outside Vendor" : "Bank"
-            }`;
-            venList[index] = { ...venList[index], refVendorName: name };
+            const labelParts = {
+              name: data.refVendorName,
+              mobile: data.refVendorMobileNo,
+              type: data.refVenderType === 1 ? "Outside Vendor" : "Bank",
+            };
+
+            const label = `Name: ${labelParts.name} | Mobile: ${labelParts.mobile} | Vendor Type: ${labelParts.type}`;
+
+            venList[index] = {
+              ...data,
+              label,
+              value: data.refUserId,
+              labelParts,
+            };
           });
+
           setCustomerList(venList);
         }
       });
@@ -425,16 +427,24 @@ const LoanAdminNewCreation: React.FC = () => {
             value={customerId}
             className="w-full mt-3"
             filter
-            onChange={(e: DropdownChangeEvent) => {
-              console.log("e line ----------- 405", e);
-              setCustomerId(e.target.value);
-              setSelectedLoanType(0);
-            }}
             required
             options={customerList}
-            optionLabel="refVendorName"
+            onChange={(e: DropdownChangeEvent) => {
+              console.log("e line ----------- 405", e);
+              setCustomerId(e.value);
+              setSelectedLoanType(0);
+            }}
             placeholder="Select Vendor"
+            itemTemplate={(option) => (
+              <div className="p-dropdown-item-custom">
+                <div className="font-bold">{option.labelParts?.name}</div>
+                <small className="text-gray-500">
+                  {option.labelParts?.mobile} | {option.labelParts?.type}
+                </small>
+              </div>
+            )}
           />
+
           <Dropdown
             value={selectedLoanType}
             className="w-full mt-3"
@@ -450,6 +460,7 @@ const LoanAdminNewCreation: React.FC = () => {
             optionLabel="name"
             placeholder="Select Loan Type"
           />
+
           <Dropdown
             value={selectedLoan}
             disabled={selectedLoanType === 1 || selectedLoanType === 0}

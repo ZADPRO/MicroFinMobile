@@ -49,6 +49,9 @@ const LoanUserRepayment: React.FC = () => {
   // SHOW MODAL
   const [showModal, setShowModal] = useState<boolean>(false);
 
+  //   SEARCH TERMS
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   // STATES FOR USER LISTING
   const [userLists, setUserLists] = useState<UserListProps[] | []>([]);
 
@@ -109,7 +112,14 @@ const LoanUserRepayment: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  }, [startDate, endDate]);
+  }, []);
+
+  const filteredProducts = userLists.filter((item) =>
+    Object.values(item)
+      .join(" ")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   return (
     <IonPage>
@@ -128,14 +138,18 @@ const LoanUserRepayment: React.FC = () => {
           </IonButtons>
         </IonToolbar>
         <IonToolbar>
-          <IonSearchbar />
+          <IonSearchbar
+            value={searchTerm}
+            onIonInput={(e) => setSearchTerm(e.detail.value!)}
+            placeholder="Search by Bank, A/C, IFSC..."
+          ></IonSearchbar>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         {/* LIST THE USERS */}
 
-        {userLists.length > 0 ? (
-          userLists.map((item, index) => (
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((item, index) => (
             <div
               key={index}
               onClick={() =>
@@ -168,6 +182,10 @@ const LoanUserRepayment: React.FC = () => {
                   <p className="mt-1">
                     {item.refUserFname} {item.refUserLname}
                   </p>
+                  <div className="mt-1 flex justify-content-between">
+                    <p>Interest: {item.refProductInterest}%</p>
+                    <p>Duration: {item.refProductDuration}</p>
+                  </div>
                   <div className="flex w-full justify-content-end">
                     <p className="text-sm">
                       {formatToYearMonth(item.refPaymentDate)}
@@ -191,34 +209,52 @@ const LoanUserRepayment: React.FC = () => {
           className="calendar-modal"
         >
           <div className="p-3 flex flex-column justify-content-center">
+            <label className="mt-2 font-semibold">Start Date</label>
             <Calendar
               value={startDate}
-              placeholder="Select Start Range"
-              className="mt-3"
+              placeholder="Select Start Date"
+              className="mt-1"
               onChange={(e) => {
-                setStartDate(e.value);
-                if (endDate && e.value && endDate < e.value) {
-                  setEndDate(e.value);
+                const newStartDate = e.value;
+                setStartDate(newStartDate);
+
+                // Auto-adjust endDate if it's before new startDate
+                if (endDate && newStartDate && endDate < newStartDate) {
+                  setEndDate(newStartDate);
                 }
               }}
-              view="month"
+              dateFormat="yy-mm-dd"
               showIcon
-              dateFormat="mm/yy"
+              showButtonBar
+              touchUI
             />
+
+            <label className="mt-3 font-semibold">End Date</label>
             <Calendar
               value={endDate}
-              placeholder="Select End Range"
+              placeholder="Select End Date"
+              className="mt-1"
               onChange={(e) => {
                 setEndDate(e.value);
-                setShowModal(false);
               }}
-              view="month"
-              className="mt-3"
-              dateFormat="mm/yy"
-              showIcon
+              dateFormat="yy-mm-dd"
               minDate={startDate || undefined}
               disabled={!startDate}
+              showIcon
+              showButtonBar
+              touchUI
             />
+
+            <button
+              className="mt-4 p-2 bg-blue-500 text-white font-semibold rounded"
+              disabled={!startDate || !endDate}
+              onClick={() => {
+                loadData();
+                setShowModal(false);
+              }}
+            >
+              Apply Filter
+            </button>
           </div>
         </IonModal>
       </IonContent>

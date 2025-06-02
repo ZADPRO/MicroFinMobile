@@ -23,13 +23,7 @@ import "./Bank.css"; // CSS for styling
 
 const Bank: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   const history = useHistory();

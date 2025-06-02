@@ -19,13 +19,7 @@ import { warningOutline } from "ionicons/icons";
 
 const AddNewProduct: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   const history = useHistory();
@@ -130,6 +124,19 @@ const AddNewProduct: React.FC = () => {
     }
   };
 
+  const getDurationUnit = (code: number) => {
+    switch (code) {
+      case 1:
+        return "Months";
+      case 2:
+        return "Weeks";
+      case 3:
+        return "Days";
+      default:
+        return "";
+    }
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -172,7 +179,9 @@ const AddNewProduct: React.FC = () => {
           <InputText
             id="refProductDuration"
             name="refProductDuration"
-            placeholder="Enter Product Duration (Months)"
+            placeholder={`Enter Product Duration (${getDurationUnit(
+              selectedDurationType?.code || 1
+            )})`}
             className="w-full mt-3"
             value={inputs.refProductDuration}
             onChange={handleInput}

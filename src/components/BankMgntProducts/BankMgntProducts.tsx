@@ -36,13 +36,7 @@ interface ProductDetailsProps {
 
 const BankMgntProducts: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   //   HISTORY NAVIGATION
@@ -231,7 +225,7 @@ const BankMgntProducts: React.FC = () => {
                         0: "",
                         1: "[ Day wise Calculation ]",
                         2: " [ Month wise Calculation ]",
-                      }[item.refProductDurationType] || ""}{" "}
+                      }[item.refProductMonthlyCal] || ""}{" "}
                     </div>
 
                     <div className="flex text-sm w-full justify-content-end mt-2">

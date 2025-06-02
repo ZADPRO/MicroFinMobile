@@ -16,15 +16,15 @@ import AdminLoanDashboard from "../../components/AdminLoanDashboard/AdminLoanDas
 import { Calendar } from "primereact/calendar";
 import { calendarOutline } from "ionicons/icons";
 
-import { Chart } from "primereact/chart";
-import { Skeleton } from "primereact/skeleton";
+// import { Chart } from "primereact/chart";
+// import { Skeleton } from "primereact/skeleton";
 import { Nullable } from "primereact/ts-helpers";
 
 const Home: React.FC = () => {
   const [selectedSegment, setSelectedSegment] = useState<string>("user");
   const [date, setDate] = useState<Nullable<Date>>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [isChartLoading, setIsChartLoading] = useState(true);
+  // const [isChartLoading, setIsChartLoading] = useState(true);
 
   useEffect(() => {
     // Set default date to today
@@ -56,43 +56,43 @@ const Home: React.FC = () => {
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
 
-  const [chartData, setChartData] = useState({});
-  const [chartOptions, setChartOptions] = useState({});
+  // const [chartData, setChartData] = useState({});
+  // const [chartOptions, setChartOptions] = useState({});
 
-  useEffect(() => {
-    const documentStyle = getComputedStyle(document.documentElement);
+  // useEffect(() => {
+  //   const documentStyle = getComputedStyle(document.documentElement);
 
-    // Simulate data fetch delay
-    const timer = setTimeout(() => {
-      const data = {
-        labels: ["Salary", "Rent", "Travel"],
-        datasets: [
-          {
-            data: [300, 50, 100],
-            backgroundColor: [
-              documentStyle.getPropertyValue("--blue-500"),
-              documentStyle.getPropertyValue("--yellow-500"),
-              documentStyle.getPropertyValue("--green-500"),
-            ],
-            hoverBackgroundColor: [
-              documentStyle.getPropertyValue("--blue-400"),
-              documentStyle.getPropertyValue("--yellow-400"),
-              documentStyle.getPropertyValue("--green-400"),
-            ],
-          },
-        ],
-      };
-      const options = {
-        cutout: "70%",
-      };
+  //   // Simulate data fetch delay
+  //   const timer = setTimeout(() => {
+  //     const data = {
+  //       labels: ["Salary", "Rent", "Travel"],
+  //       datasets: [
+  //         {
+  //           data: [300, 50, 100],
+  //           backgroundColor: [
+  //             documentStyle.getPropertyValue("--blue-500"),
+  //             documentStyle.getPropertyValue("--yellow-500"),
+  //             documentStyle.getPropertyValue("--green-500"),
+  //           ],
+  //           hoverBackgroundColor: [
+  //             documentStyle.getPropertyValue("--blue-400"),
+  //             documentStyle.getPropertyValue("--yellow-400"),
+  //             documentStyle.getPropertyValue("--green-400"),
+  //           ],
+  //         },
+  //       ],
+  //     };
+  //     const options = {
+  //       cutout: "70%",
+  //     };
 
-      setChartData(data);
-      setChartOptions(options);
-      setIsChartLoading(false);
-    }, 1000); // simulate delay
+  //     setChartData(data);
+  //     setChartOptions(options);
+  //     setIsChartLoading(false);
+  //   }, 1000); // simulate delay
 
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   return (
     <IonPage>
@@ -131,7 +131,7 @@ const Home: React.FC = () => {
         </div>
 
         {/* Chart Analysis for Profilt & Loss */}
-        <div className="profiltAnalysis mt-5">
+        {/* <div className="profiltAnalysis mt-5">
           <p>Expense Analysis</p>
           {isChartLoading ? (
             <div className="w-full md:w-30rem">
@@ -147,14 +147,14 @@ const Home: React.FC = () => {
               className="w-full md:w-30rem"
             />
           )}
-        </div>
+        </div> */}
 
         {/* Modal with Calendar */}
         <IonModal
           isOpen={showModal}
           onDidDismiss={() => setShowModal(false)}
           keepContentsMounted={true}
-          initialBreakpoint={0.75}
+          initialBreakpoint={0.4}
           breakpoints={[0, 0.4, 0.75, 1]}
           className="calendar-modal"
         >

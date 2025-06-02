@@ -20,13 +20,7 @@ import vendorIcon from "../../assets/users/vendor.png";
 
 const User: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   const history = useHistory();

@@ -36,13 +36,7 @@ interface BankAcDetails {
 
 const BankMgntBankDetails: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   //   SEARCH TERMS
