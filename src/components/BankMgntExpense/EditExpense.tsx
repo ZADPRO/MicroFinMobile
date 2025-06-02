@@ -9,7 +9,7 @@ import {
 } from "@ionic/react";
 
 import React, { useEffect, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
@@ -28,7 +28,7 @@ interface option {
 const EditExpense: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

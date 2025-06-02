@@ -1,7 +1,7 @@
 import { IonContent, IonPage } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import loginImg from "../../assets/login/loginImg.png";
 import { InputText } from "primereact/inputtext";
 import { useHistory } from "react-router";
@@ -22,7 +22,7 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     if (isAuthenticated) {

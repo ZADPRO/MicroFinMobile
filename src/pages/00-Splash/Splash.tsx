@@ -2,7 +2,7 @@ import { IonContent, IonPage } from "@ionic/react";
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import splashImage from "../../assets/splash/splashLogo.png";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import "./Splash.css";
 
 const Splash: React.FC = () => {
@@ -10,7 +10,7 @@ const Splash: React.FC = () => {
 
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     const timer = setTimeout(() => {

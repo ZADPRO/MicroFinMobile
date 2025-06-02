@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import {
   IonBackButton,
   IonButtons,
@@ -27,7 +27,7 @@ const UserAgentEdit: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

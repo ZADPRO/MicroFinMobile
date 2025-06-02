@@ -10,7 +10,7 @@ import {
 } from "@ionic/react";
 
 import React, { useEffect, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
 import { InputText } from "primereact/inputtext";
 import axios from "axios";
@@ -20,7 +20,7 @@ import { useHistory } from "react-router";
 const AddNewBank: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

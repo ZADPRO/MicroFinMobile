@@ -14,7 +14,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { callSharp, funnel } from "ionicons/icons";
 
 import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
@@ -57,7 +57,7 @@ interface option {
 const ReportOverall: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

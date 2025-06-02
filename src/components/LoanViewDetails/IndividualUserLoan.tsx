@@ -12,7 +12,7 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { useLocation } from "react-router";
 import IndividualLoanAudit from "./IndividualLoanAudit";
 import IndividualLoanClosing from "./IndividualLoanClosing";
@@ -38,7 +38,7 @@ const IndividualUserLoan: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

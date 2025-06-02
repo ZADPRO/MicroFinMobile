@@ -9,7 +9,7 @@ import {
   IonToast,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { useHistory } from "react-router";
@@ -29,7 +29,7 @@ interface option {
 const AddNewExpense: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

@@ -65,7 +65,7 @@ import ReportMonthly from "../../components/ReportMonthly/ReportMonthly";
 import ReportExpense from "../../components/ReportExpense/ReportExpense";
 import EditExpense from "../../components/BankMgntExpense/EditExpense";
 import { Capacitor } from "@capacitor/core";
-import { StatusBar, Style } from "@capacitor/status-bar";
+import { StatusBar } from "@capacitor/status-bar";
 import ForgotPassword from "../../pages/00-Splash/ForgotPassword";
 import ProfilePage from "../../components/ProfilePage/ProfilePage";
 import AboutUs from "../../components/ProfilePage/AboutUs";
@@ -75,7 +75,7 @@ const MainRoutes: React.FC = () => {
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
       StatusBar.setOverlaysWebView({ overlay: false });
-      StatusBar.setStyle({ style: Style.Dark });
+
       StatusBar.setBackgroundColor({ color: "#0377de" });
 
       return () => {

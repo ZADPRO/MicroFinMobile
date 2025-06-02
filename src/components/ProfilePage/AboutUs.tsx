@@ -8,12 +8,12 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import React, { useEffect } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 
 const AboutUs: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

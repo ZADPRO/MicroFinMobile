@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import {
   CalendarDays,
   CreditCard,
@@ -46,7 +46,7 @@ interface StatusProps {
 const UserAddCustomer: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

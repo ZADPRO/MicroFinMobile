@@ -14,7 +14,7 @@ import {
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import decrypt from "../../services/helper";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import UserCustomerDetailsCard from "../UserCustomerDetailsCard/UserCustomerDetailsCard";
 import { add } from "ionicons/icons";
 import { useHistory } from "react-router";
@@ -50,7 +50,7 @@ const UsersCustomerDetails: React.FC = () => {
 
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

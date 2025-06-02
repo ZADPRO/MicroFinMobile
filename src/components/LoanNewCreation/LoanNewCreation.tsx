@@ -9,9 +9,8 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-import { StatusBar, Style } from "@capacitor/status-bar";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import axios from "axios";
 import decrypt, { getDateAfterMonths } from "../../services/helper";
@@ -28,6 +27,8 @@ import { Calendar } from "primereact/calendar";
 import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
 import { InputTextarea } from "primereact/inputtextarea";
 import { useHistory } from "react-router";
+import { Nullable } from "primereact/ts-helpers";
+import { InputText } from "primereact/inputtext";
 
 interface LoanType {
   name: string;
@@ -99,26 +100,30 @@ interface ProductListProps {
   updatedBy: string;
 }
 
+const formatINR = (amount: string | number) => {
+  const number = Number(amount.toString().replace(/[^0-9]/g, ""));
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(number);
+};
+
 const LoanNewCreation: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
-    
-    StatusBar.setStyle({ style: Style.Dark });
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   // HANDLE NAVIGATION
   const history = useHistory();
 
   // USER LOAN CREATION - STATES
-  const [minDate, setMinDate] = useState<Date | null>();
-  const [maxDate, setMaxDate] = useState<Date | null>();
-  const [viewDate, setViewDate] = useState<Date | null>();
+  const [minDate, setMinDate] = useState<Nullable<Date>>(null);
+  const [maxDate, setMaxDate] = useState<Nullable<Date>>(null);
+  const [viewDate, setViewDate] = useState<Nullable<Date>>(null);
 
+  const [newLoanAmt, setNewLoanAmt] = useState<string>("");
   const [tempLoanAmt, setTempLoanAmt] = useState<number>(0); // track parsed loan separately
 
   const today = new Date();
@@ -126,7 +131,6 @@ const LoanNewCreation: React.FC = () => {
   const [customerList, setCustomerList] = useState<UserDetails[]>([]);
   const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
   const [rePaymentDate, setRePaymentDate] = useState<Date>(nextMonth);
-  const [newLoanAmt, setNewLoanAmt] = useState<number | null>();
   const [oldBalanceAmt, setOldBalanceAmt] = useState<number | null>(0);
   const [FinalLoanAmt, setFinalLoanAmt] = useState<number>(0);
   const [interestFirst, setInterestFirst] = useState<boolean | null>(false);
@@ -497,6 +501,24 @@ const LoanNewCreation: React.FC = () => {
     }
   }, [step, tempLoanAmt, oldBalanceAmt]);
 
+  const rawAmountRef = useRef<number>(0); // Store the actual number
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("e", e);
+    const input = e.target.value;
+    console.log("input", input);
+    const numericValue = input.replace(/[^0-9]/g, ""); // strip non-digits
+
+    const number = parseInt(numericValue || "0", 10);
+    rawAmountRef.current = number;
+
+    const formatted = formatINR(number);
+    setNewLoanAmt(formatted);
+    setTempLoanAmt(number);
+    setStep(3);
+    setBankId(null);
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -703,15 +725,24 @@ const LoanNewCreation: React.FC = () => {
                 placeholder="Select Re-payment Type"
               />
 
-              <InputNumber
+              <InputText
+                placeholder="Enter Loan Amount"
+                value={newLoanAmt}
+                className="w-full mt-3"
+                onChange={handleInputChange}
+                disabled={step < 2}
+              />
+
+              {/* <InputNumber
                 className="w-full mt-3"
                 placeholder="Enter Loan Amount"
                 inputId="currency-india"
                 required
                 disabled={step < 2}
                 value={newLoanAmt}
-                onChange={(e: any) => {
-                  const value = parseFloat(e.value) || 0;
+                onChange={(e) => {
+                  console.log("e", e.value);
+                  const value = e.value || 0;
                   console.log("value", value);
                   setNewLoanAmt(e.value);
                   setTempLoanAmt(value);
@@ -723,7 +754,7 @@ const LoanNewCreation: React.FC = () => {
                 currency="INR"
                 currencyDisplay="symbol"
                 locale="en-IN"
-              />
+              /> */}
 
               {(selectedLoanType === 2 || selectedLoanType === 3) && (
                 <div className="w-full mt-3">
@@ -957,7 +988,7 @@ const LoanNewCreation: React.FC = () => {
                 <IonCol>
                   ₹{" "}
                   {(
-                    (newLoanAmt ?? 0) -
+                    (tempLoanAmt ?? 0) -
                     (initialInterestAmt ?? 0) -
                     (interestFirstAmt ?? 0)
                   ).toFixed(2)}
@@ -984,7 +1015,7 @@ const LoanNewCreation: React.FC = () => {
                   Amount to User : ₹{" "}
                   <b>
                     {(
-                      (newLoanAmt ?? 0) -
+                      (tempLoanAmt ?? 0) -
                       (initialInterestAmt ?? 0) -
                       (interestFirstAmt ?? 0) -
                       (docFee ?? 0)

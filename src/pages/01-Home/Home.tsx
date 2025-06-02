@@ -8,21 +8,21 @@ import {
   IonSegmentButton,
 } from "@ionic/react";
 import React, { useEffect, useRef, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import Header from "../../components/Header/Header";
 import "./Home.css";
 import UserLoanDashboard from "../../components/UserLoanDashboard/UserLoanDashboard";
 import AdminLoanDashboard from "../../components/AdminLoanDashboard/AdminLoanDashboard";
 import { Calendar } from "primereact/calendar";
-// import { Nullable } from "primereact/ts-helpers";
 import { calendarOutline } from "ionicons/icons";
 
 import { Chart } from "primereact/chart";
 import { Skeleton } from "primereact/skeleton";
+import { Nullable } from "primereact/ts-helpers";
 
 const Home: React.FC = () => {
   const [selectedSegment, setSelectedSegment] = useState<string>("user");
-  const [date, setDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<Nullable<Date>>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isChartLoading, setIsChartLoading] = useState(true);
 

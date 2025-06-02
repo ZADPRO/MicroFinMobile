@@ -12,7 +12,7 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import LoanDetails from "./LoanDetails";
 import Repayment from "./Repayment";
 import Followup from "./Followup";
@@ -42,7 +42,7 @@ const RepaymentDetails: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

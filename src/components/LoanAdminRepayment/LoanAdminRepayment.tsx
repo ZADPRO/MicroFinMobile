@@ -12,7 +12,7 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { funnel } from "ionicons/icons";
 import { Nullable } from "vitest";
 import { Calendar } from "primereact/calendar";
@@ -37,7 +37,7 @@ const LoanAdminRepayment: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

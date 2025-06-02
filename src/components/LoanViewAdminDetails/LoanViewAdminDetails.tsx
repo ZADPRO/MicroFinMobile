@@ -10,7 +10,7 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { calendarOutline } from "ionicons/icons";
@@ -36,7 +36,7 @@ const LoanViewAdminDetails: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

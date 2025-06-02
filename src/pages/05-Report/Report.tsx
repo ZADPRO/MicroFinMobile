@@ -11,7 +11,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import React, { useEffect } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { useHistory } from "react-router";
 
 import overallReport from "../../assets/report/overallReport.png";
@@ -21,7 +21,7 @@ import expenseReport from "../../assets/report/ExpenseReport.png";
 const Report: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

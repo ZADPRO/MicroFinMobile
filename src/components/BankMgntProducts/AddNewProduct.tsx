@@ -9,7 +9,7 @@ import {
   IonToast,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { InputText } from "primereact/inputtext";
 import decrypt from "../../services/helper";
 import axios from "axios";
@@ -20,7 +20,7 @@ import { warningOutline } from "ionicons/icons";
 const AddNewProduct: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

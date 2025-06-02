@@ -13,7 +13,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { add } from "ionicons/icons";
@@ -37,7 +37,7 @@ interface ProductDetailsProps {
 const BankMgntProducts: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

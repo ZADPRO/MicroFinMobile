@@ -11,7 +11,7 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { add, trash } from "ionicons/icons";
@@ -43,7 +43,7 @@ const UserViewVendor: React.FC = () => {
   useEffect(() => {
     if (vendorData) {
       
-      StatusBar.setStyle({ style: Style.Dark });
+      
       
 
       setVendorData(); // This sets all input field states correctly

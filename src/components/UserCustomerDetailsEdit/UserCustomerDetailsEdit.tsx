@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import {
   IonBackButton,
   IonButtons,
@@ -20,7 +20,7 @@ import UserAudit from "./UserAudit";
 const UserCustomerDetailsEdit: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

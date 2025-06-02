@@ -14,7 +14,7 @@ import {
   IonButton,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { Nullable } from "vitest";
 import decrypt, { formatRupees } from "../../services/helper";
 import axios from "axios";
@@ -39,7 +39,7 @@ interface expense {
 const ReportExpense: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

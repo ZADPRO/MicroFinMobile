@@ -11,7 +11,7 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import axios from "axios";
 import decrypt, { getDateAfterMonths } from "../../services/helper";
@@ -99,7 +99,7 @@ const LoanAdminNewCreation: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

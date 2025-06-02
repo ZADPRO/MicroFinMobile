@@ -11,14 +11,14 @@ import {
   IonLabel,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import AddFunds from "./AddFunds";
 import SelfTransfer from "./SelfTransfer";
 
 const AddNewFunds: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {

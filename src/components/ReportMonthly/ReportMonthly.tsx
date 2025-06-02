@@ -15,7 +15,7 @@ import {
 } from "@ionic/react";
 
 import React, { useEffect, useState } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+
 import decrypt, { formatRupees } from "../../services/helper";
 import { Calendar } from "primereact/calendar";
 import { funnel } from "ionicons/icons";
@@ -50,7 +50,7 @@ interface LoanDetails {
 const ReportMonthly: React.FC = () => {
   useEffect(() => {
     
-    StatusBar.setStyle({ style: Style.Dark });
+    
     
 
     return () => {
