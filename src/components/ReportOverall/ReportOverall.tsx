@@ -56,13 +56,7 @@ interface option {
 
 const ReportOverall: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   const LoanOption: option[] = [
@@ -300,7 +294,7 @@ const ReportOverall: React.FC = () => {
             overAllData.map((item: LoanDetails, idx: number) => (
               <div
                 key={idx}
-                className="flex p-2 shadow-3 p-3 my-2 border-round-md align-items-center"
+                className="flex shadow-3 p-3 my-2 border-round-md align-items-center"
               >
                 <div
                   style={{
@@ -333,13 +327,13 @@ const ReportOverall: React.FC = () => {
                     <p>{item.refRepaymentTypeName || "No data"}</p>
                     <p>{formatRupees(item.refLoanAmount ?? "No data")}</p>
                   </div>
-                  <div className="flex flex-row align-items-center gap-1 w-full mt-2">
+                  <div className="flex flex-row align-items-center gap-1 w-full mt-1">
                     <IonIcon icon={callSharp} />
-                    <p>{item.refUserMobileNo || "No data"}</p>
+                    <p>: +91 {item.refUserMobileNo || "No data"}</p>
                   </div>
                   <div className="flex w-full justify-content-end">
-                    <p className="mt-1 text-sm">
-                      {item.refLoanStartDate || "No data"}
+                    <p className="mt-1 text-xs text-black">
+                      Created: {item.refLoanStartDate || "No data"}
                     </p>
                   </div>
                 </div>

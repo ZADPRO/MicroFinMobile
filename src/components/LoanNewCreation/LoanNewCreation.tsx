@@ -1,6 +1,10 @@
 import {
   IonBackButton,
   IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
   IonCol,
   IonContent,
   IonHeader,
@@ -19,7 +23,6 @@ import { InputNumber } from "primereact/inputnumber";
 import {
   CalculateFirstInterest,
   CalculateInitialInterest,
-  CalculateInterest,
   FirstInterest,
   getRemainingDaysInCurrentMonth,
 } from "../../services/loanCalc";
@@ -119,9 +122,9 @@ const LoanNewCreation: React.FC = () => {
   const history = useHistory();
 
   // USER LOAN CREATION - STATES
-  const [minDate, setMinDate] = useState<Nullable<Date>>(null);
-  const [maxDate, setMaxDate] = useState<Nullable<Date>>(null);
-  const [viewDate, setViewDate] = useState<Nullable<Date>>(null);
+  const [minDate, setMinDate] = useState<Date | undefined>();
+  const [maxDate, setMaxDate] = useState<Date | undefined>();
+  const [viewDate, setViewDate] = useState<Date | undefined>();
 
   const [newLoanAmt, setNewLoanAmt] = useState<string>("");
   const [tempLoanAmt, setTempLoanAmt] = useState<number>(0); // track parsed loan separately
@@ -130,7 +133,7 @@ const LoanNewCreation: React.FC = () => {
   const [customerId, setCustomerId] = useState<number>();
   const [customerList, setCustomerList] = useState<UserDetails[]>([]);
   const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-  const [rePaymentDate, setRePaymentDate] = useState<Date>(nextMonth);
+  const [rePaymentDate, setRePaymentDate] = useState<Nullable<Date>>(nextMonth);
   const [oldBalanceAmt, setOldBalanceAmt] = useState<number | null>(0);
   const [FinalLoanAmt, setFinalLoanAmt] = useState<number>(0);
   const [interestFirst, setInterestFirst] = useState<boolean | null>(false);
@@ -139,7 +142,10 @@ const LoanNewCreation: React.FC = () => {
   const [productId, setProductId] = useState<number | null | any>(null);
   const [interestFirstAmt, setInterestFirstAmt] = useState<number>(0);
   const [initialInterestAmt, setInitialInterestAmt] = useState<number>(0);
-  const [docFee, setDocFee] = useState<number | null>();
+
+  const [docFee, setDocFee] = useState<number | null>(null);
+  const [formattedDocFee, setFormattedDocFee] = useState<string>("");
+
   const [security, setSecurity] = useState<string>();
   const [loadDetailsResponse, setLoanDetailsReponse] =
     useState<LoadDetailsResponseProps | null>(null);
@@ -517,6 +523,20 @@ const LoanNewCreation: React.FC = () => {
     setTempLoanAmt(number);
     setStep(3);
     setBankId(null);
+  };
+
+  const handleDocFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    const numericValue = input.replace(/[^0-9]/g, ""); // strip non-digits
+
+    const number = parseInt(numericValue || "0", 10);
+    setDocFee(number);
+
+    const formatted = formatINR(number);
+    setFormattedDocFee(formatted);
+
+    setSecurity("");
+    setStep(7);
   };
 
   return (
@@ -904,7 +924,7 @@ const LoanNewCreation: React.FC = () => {
                 </div>
               )}
 
-              <InputNumber
+              {/* <InputNumber
                 className="w-full mt-3"
                 placeholder="Document Fee"
                 inputId="currency-india"
@@ -920,6 +940,15 @@ const LoanNewCreation: React.FC = () => {
                   setSecurity("");
                   setStep(7);
                 }}
+              /> */}
+
+              <InputText
+                className="w-full mt-3"
+                placeholder="Document Fee"
+                disabled={step < 6}
+                value={formattedDocFee}
+                required
+                onChange={handleDocFeeChange}
               />
 
               <InputTextarea
@@ -936,83 +965,84 @@ const LoanNewCreation: React.FC = () => {
           )}
 
           {step >= 7 && (
-            <div>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Total Loan Amount</b>
-                </IonCol>
-                <IonCol>₹ {FinalLoanAmt.toFixed(2)}</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>New Loan Amount</b>
-                </IonCol>
-                <IonCol>₹ {newLoanAmt}</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Old Loan Amount</b>
-                </IonCol>
-                <IonCol>₹ {oldBalanceAmt}</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Interest For This Month</b>
-                </IonCol>
-                <IonCol>₹ {initialInterestAmt.toFixed(2)}</IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <p>
-                    Interest for {monthCount}{" "}
-                    {productId.refProductDurationType === 1
-                      ? " Month"
-                      : productId.refProductDurationType === 2
-                      ? " Weeks"
-                      : " Days"}{" "}
-                    : ""
-                  </p>{" "}
-                </IonCol>
-                <IonCol>₹ {interestFirstAmt.toFixed(2)}</IonCol>
-              </IonRow>
-              <IonRow>
-                <IonCol>Documentation Fee</IonCol>
-                <IonCol>
-                  : ₹ <b>{(docFee ?? 0).toFixed(2)}</b>
-                </IonCol>
-              </IonRow>
-              <IonRow className="mt-2">
-                <IonCol>
-                  <b>Amount to User</b>
-                </IonCol>
-                <IonCol>
-                  ₹{" "}
-                  {(
-                    (tempLoanAmt ?? 0) -
-                    (initialInterestAmt ?? 0) -
-                    (interestFirstAmt ?? 0)
-                  ).toFixed(2)}
-                </IonCol>
-              </IonRow>
-              <IonRow>
-                <p>
-                  Formula :{" "}
+            <>
+              <Divider />
+              <IonCard className="loan-summary-card shadow-2">
+                <IonCardHeader>
+                  <IonCardTitle className="text-center text-xl underline">
+                    LOAN SUMMARY
+                  </IonCardTitle>
+                </IonCardHeader>
+                <IonCardContent>
+                  <div className="loan-summary-table">
+                    <div className="row">
+                      <div className="label">Total Loan Amount</div>
+                      <div className="value">₹{FinalLoanAmt.toFixed(2)}</div>
+                    </div>
+                    <div className="row">
+                      <div className="label">New Loan Amount</div>
+                      <div className="value">{newLoanAmt}</div>
+                    </div>
+                    <div className="row">
+                      <div className="label">Old Loan Amount</div>
+                      <div className="value">₹{oldBalanceAmt}</div>
+                    </div>
+                    <div className="row">
+                      <div className="label">Interest (This Month)</div>
+                      <div className="value">
+                        ₹{initialInterestAmt.toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="label">
+                        Interest for {monthCount}{" "}
+                        {productId.refProductDurationType === 1
+                          ? "Month"
+                          : productId.refProductDurationType === 2
+                          ? "Weeks"
+                          : "Days"}
+                      </div>
+                      <div className="value">
+                        ₹{interestFirstAmt.toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="label">Documentation Fee</div>
+                      <div className="value">₹{(docFee ?? 0).toFixed(2)}</div>
+                    </div>
+                    <div className="row total">
+                      <div className="label">Amount to User</div>
+                      <div className="value">
+                        ₹
+                        {(
+                          (tempLoanAmt ?? 0) -
+                          (initialInterestAmt ?? 0) -
+                          (interestFirstAmt ?? 0)
+                        ).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                </IonCardContent>
+              </IonCard>
+              <div className="formula-container mt-3 shadow-2">
+                <p className="formula-title underline">Formula:</p>
+                <p className="formula-text mt-2">
                   <b>
-                    {" "}
-                    [ Total Loan Amount - ( Initial Interest - Interest Paid{" "}
-                    {monthCount}{" "}
+                    [Total Loan - Initial Interest - Interest for {monthCount}{" "}
                     {productId.refProductDurationType === 1
-                      ? " Month"
+                      ? "Month"
                       : productId.refProductDurationType === 2
-                      ? " Weeks"
-                      : " Days"}{" "}
-                    - Documentation Fee ) ]
+                      ? "Weeks"
+                      : "Days"}{" "}
+                    - Documentation Fee]
                   </b>
                 </p>
-              </IonRow>
-              <IonRow>
-                <p>
-                  Amount to User : ₹{" "}
+                <hr />
+                <p className="final-amount-label underline">
+                  Final Amount to User:
+                </p>
+                <p className="final-amount-value mt-2">
+                  ₹{" "}
                   <b>
                     {(
                       (tempLoanAmt ?? 0) -
@@ -1022,8 +1052,8 @@ const LoanNewCreation: React.FC = () => {
                     ).toFixed(2)}
                   </b>
                 </p>
-              </IonRow>
-            </div>
+              </div>
+            </>
           )}
 
           {step >= 6 && (

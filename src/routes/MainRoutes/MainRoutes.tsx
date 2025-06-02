@@ -9,7 +9,7 @@ import {
 } from "@ionic/react";
 import "../../pages/04-Loan/Loan.css";
 import React, { useEffect, useState } from "react";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect, Route, useLocation } from "react-router-dom";
 import {
   card,
   cardOutline,
@@ -104,9 +104,9 @@ const MainRoutes: React.FC = () => {
     <div>
       <IonTabs>
         <IonRouterOutlet>
-          <PrivateRoute path="/splash">
+          <Route path="/splash">
             <Splash />
-          </PrivateRoute>
+          </Route>
           <PrivateRoute path="/login">
             <Login />
           </PrivateRoute>

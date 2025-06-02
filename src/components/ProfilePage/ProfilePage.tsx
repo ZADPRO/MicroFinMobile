@@ -21,13 +21,7 @@ import decrypt from "../../services/helper";
 
 const ProfilePage: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   const history = useHistory();
@@ -36,7 +30,7 @@ const ProfilePage: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    history.push("/");
+    history.push("/splash");
   };
 
   const handleAboutUs = () => {

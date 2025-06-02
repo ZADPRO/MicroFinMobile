@@ -12,7 +12,6 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-
 import { funnel } from "ionicons/icons";
 import axios from "axios";
 import decrypt from "../../services/helper";
@@ -42,13 +41,7 @@ interface UserListProps {
 const LoanUserRepayment: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   // HISTORY FOR NAVIGATE
@@ -98,6 +91,7 @@ const LoanUserRepayment: React.FC = () => {
             response.data[0],
             import.meta.env.VITE_ENCRYPTION_KEY
           );
+          console.log("data", data);
 
           localStorage.setItem("token", "Bearer " + data.token);
 

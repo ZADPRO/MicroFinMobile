@@ -9,10 +9,7 @@ const Splash: React.FC = () => {
   const history = useHistory();
 
   useEffect(() => {
-    
-    
-    
-
+    console.log("User Login Page");
     const timer = setTimeout(() => {
       const userDetails = localStorage.getItem("profile");
       if (userDetails) {
@@ -24,7 +21,6 @@ const Splash: React.FC = () => {
 
     return () => {
       clearTimeout(timer);
-      
     };
   }, []);
 
