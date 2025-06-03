@@ -611,7 +611,7 @@ const LoanAdminNewCreation: React.FC = () => {
               </IonRow>
               <IonRow className="mt-2">
                 <IonCol>
-                  <b>Interest Paid (Month)</b>
+                  <b>Interest Paid</b>
                 </IonCol>
                 <IonCol>
                   {loadDetailsResponse?.interestFirstMonth}{" "}

@@ -10,7 +10,6 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { calendarOutline } from "ionicons/icons";
@@ -30,18 +29,14 @@ interface LoanData {
   refLoanStatus: string;
   refVenderType: number;
   refLoanStatusId: number;
+  refProductDurationType?: number;
+  refProductMonthlyCal?: number;
 }
 
 const LoanViewAdminDetails: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   // NAVIGATION STATES
@@ -173,8 +168,12 @@ const LoanViewAdminDetails: React.FC = () => {
 
                     <div className="flex mt-1 flex-row justify-content-between">
                       <p className="flex align-items-center gap-1">
-                        <IonIcon icon={calendarOutline} />{" "}
-                        {item.refLoanStartDate}
+                        {item.refLoanDuration}{" "}
+                        {item?.refProductDurationType === 1
+                          ? "Months"
+                          : item?.refProductDurationType === 2
+                          ? "Weeks"
+                          : "Days"}
                       </p>
                       <p>₹ {item.refLoanAmount}</p>
                     </div>

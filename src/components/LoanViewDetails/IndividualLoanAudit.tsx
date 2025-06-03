@@ -38,6 +38,7 @@ interface LoanAuditProps {
   refLoanStatus: string;
   refProductDuration: string;
   refProductInterest: string;
+  refProductDurationType: number;
   refProductName: string;
   refRepaymentStartDate: string;
   refRepaymentTypeName: string;
@@ -83,6 +84,7 @@ const IndividualLoanAudit: React.FC<IndividualLoanAuditProps> = ({
 
   //   LOAN AUDIT DATA HANDLER
   const [auditData, setAuditData] = useState<AuditData[]>([]);
+  const [loanStatus, setLoanStatus] = useState<string>();
 
   //   GET LOAN DATA
   const getLoanDatas = async (loanId: any) => {
@@ -118,6 +120,7 @@ const IndividualLoanAudit: React.FC<IndividualLoanAuditProps> = ({
               console.log("data ------------ > 291", data.data);
               console.log("audit line ------ 290", audit);
               setLoanDetails([audit]);
+              setLoanStatus(audit.refLoanStatus);
             }
           });
         }
@@ -353,7 +356,12 @@ const IndividualLoanAudit: React.FC<IndividualLoanAuditProps> = ({
                   <b>Loan Duration</b>
                 </IonCol>
                 <IonCol>
-                  {loanDetails[selectedIndex]?.refProductDuration}
+                  {loanDetails[selectedIndex]?.refProductDuration}{" "}
+                  {loanDetails[selectedIndex]?.refProductDurationType === 1
+                    ? "Months"
+                    : loanDetails[selectedIndex]?.refProductDurationType === 2
+                    ? "Weeks"
+                    : "Days"}{" "}
                 </IonCol>
               </IonRow>
               <IonRow className="mt-2">
@@ -386,7 +394,15 @@ const IndividualLoanAudit: React.FC<IndividualLoanAuditProps> = ({
               </IonRow>
               <IonRow className="mt-2">
                 <IonCol>
-                  <b>No of Month Paid First</b>
+                  <b>
+                    No of {loanDetails[selectedIndex]?.refProductDuration}{" "}
+                    {loanDetails[selectedIndex]?.refProductDurationType === 1
+                      ? "Months"
+                      : loanDetails[selectedIndex]?.refProductDurationType === 2
+                      ? "Weeks"
+                      : "Days"}{" "}
+                    Paid First
+                  </b>
                 </IonCol>
                 <IonCol>
                   ₹ {loanDetails[selectedIndex]?.refInterestMonthCount}
@@ -411,7 +427,14 @@ const IndividualLoanAudit: React.FC<IndividualLoanAuditProps> = ({
               {/* =========================== */}
               <IonRow className="mt-2">
                 <IonCol>
-                  <b>Loan Start Month</b>
+                  <b>
+                    Loan Start{" "}
+                    {loanDetails[selectedIndex]?.refProductDurationType === 1
+                      ? "Months"
+                      : loanDetails[selectedIndex]?.refProductDurationType === 2
+                      ? "Weeks"
+                      : "Days"}{" "}
+                  </b>
                 </IonCol>
                 <IonCol>
                   ₹{" "}
@@ -424,7 +447,14 @@ const IndividualLoanAudit: React.FC<IndividualLoanAuditProps> = ({
               </IonRow>
               <IonRow className="mt-2">
                 <IonCol>
-                  <b>Loan End Month</b>
+                  <b>
+                    Loan End{" "}
+                    {loanDetails[selectedIndex]?.refProductDurationType === 1
+                      ? "Months"
+                      : loanDetails[selectedIndex]?.refProductDurationType === 2
+                      ? "Weeks"
+                      : "Days"}{" "}
+                  </b>
                 </IonCol>
                 <IonCol>₹ {loanDetails[selectedIndex]?.refLoanDueDate}</IonCol>
               </IonRow>

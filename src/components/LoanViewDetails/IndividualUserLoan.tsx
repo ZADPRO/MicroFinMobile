@@ -12,7 +12,6 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-
 import { useLocation } from "react-router";
 import IndividualLoanAudit from "./IndividualLoanAudit";
 import IndividualLoanClosing from "./IndividualLoanClosing";
@@ -37,13 +36,7 @@ interface UserDataProps {
 const IndividualUserLoan: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   //   HANDLE STATES FROM PREVIOSU PROPS

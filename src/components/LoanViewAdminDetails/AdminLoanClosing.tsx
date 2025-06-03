@@ -233,7 +233,7 @@ const AdminLoanClosing: React.FC<IndividualLoanAuditProps> = ({ loanData }) => {
               />
             </div>
             <InputNumber
-              placeholder="Enter Balance Amount"
+              placeholder="Select Amount Type"
               mode="currency"
               value={loanAmt}
               max={parseFloat(loanDetails?.refBalanceAmt ?? "0")} // ✅ convert to number
@@ -356,7 +356,15 @@ const AdminLoanClosing: React.FC<IndividualLoanAuditProps> = ({ loanData }) => {
                 <IonCol>
                   <b>Loan Duration</b>
                 </IonCol>
-                <IonCol>{loanDetails?.refProductDuration} Month</IonCol>
+                <IonCol>
+                  {" "}
+                  {loanDetails?.refProductDuration}{" "}
+                  {loanDetails?.refProductDurationType === 1
+                    ? "Months"
+                    : loanDetails?.refProductDurationType === 2
+                    ? "Weeks"
+                    : "Days"}{" "}
+                </IonCol>
               </IonRow>
               <IonRow className="mt-2">
                 <IonCol>
@@ -380,7 +388,15 @@ const AdminLoanClosing: React.FC<IndividualLoanAuditProps> = ({ loanData }) => {
               </IonRow>
               <IonRow className="mt-2">
                 <IonCol>
-                  <b>No of Month Paid First</b>
+                  <b>
+                    No of{" "}
+                    {loanDetails?.refProductDurationType === 1
+                      ? "Months"
+                      : loanDetails?.refProductDurationType === 2
+                      ? "Weeks"
+                      : "Days"}{" "}
+                    Paid First
+                  </b>
                 </IonCol>
                 <IonCol>
                   {" "}
@@ -409,7 +425,15 @@ const AdminLoanClosing: React.FC<IndividualLoanAuditProps> = ({ loanData }) => {
               </IonRow>
               <IonRow className="mt-2">
                 <IonCol>
-                  <b>Loan Start Month</b>
+                  <b>
+                    Loan Start{" "}
+                    {loanDetails?.refProductDurationType === 1
+                      ? "Months"
+                      : loanDetails?.refProductDurationType === 2
+                      ? "Weeks"
+                      : "Days"}{" "}
+                    :{" "}
+                  </b>
                 </IonCol>
                 <IonCol>
                   {" "}
@@ -420,7 +444,14 @@ const AdminLoanClosing: React.FC<IndividualLoanAuditProps> = ({ loanData }) => {
               </IonRow>
               <IonRow className="mt-2">
                 <IonCol>
-                  <b>Loan End Month</b>
+                  <b>
+                    Loan End{" "}
+                    {loanDetails?.refProductDurationType === 1
+                      ? "Months"
+                      : loanDetails?.refProductDurationType === 2
+                      ? "Weeks"
+                      : "Days"}{" "}
+                  </b>
                 </IonCol>
                 <IonCol>{loanDetails?.refLoanDueDate}</IonCol>
               </IonRow>

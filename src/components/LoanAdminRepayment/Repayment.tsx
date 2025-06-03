@@ -9,7 +9,7 @@ import { useHistory } from "react-router";
 interface UserDataProps {
   refCustId: string;
   refLoanAmount: string;
-  refLoanId: number;
+  rePaymentInforefLoanId: number;
   refPaymentDate: string;
   refProductDuration: string;
   refProductInterest: string;

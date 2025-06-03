@@ -12,7 +12,6 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-
 import { funnel } from "ionicons/icons";
 import { Nullable } from "vitest";
 import { Calendar } from "primereact/calendar";
@@ -36,13 +35,7 @@ interface UserListProps {
 const LoanAdminRepayment: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   // HISTORY FOR NAVIGATE
@@ -60,11 +53,13 @@ const LoanAdminRepayment: React.FC = () => {
   });
 
   // FORMAT THE YEAR TO MONTH
-  function formatToYearMonth(dateInput: string | Date): string {
-    const date = new Date(dateInput);
+  function formatToDDMMYYYY(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is 0-indexed
-    return `${year}-${month}`;
+
+    return `${day}-${month}-${year}`;
   }
 
   const [startDate, setStartDate] = useState<Nullable<Date>>(null);
@@ -78,8 +73,8 @@ const LoanAdminRepayment: React.FC = () => {
           import.meta.env.VITE_API_URL + "/AdminRePayment/userList",
           {
             ifMonth: userListType.code === 0 ? false : true,
-            startDate: startDate ? formatToYearMonth(startDate) : "",
-            endDate: endDate ? formatToYearMonth(endDate) : "",
+            startDate: startDate ? formatToDDMMYYYY(startDate) : "",
+            endDate: endDate ? formatToDDMMYYYY(endDate) : "",
           },
           {
             headers: {
@@ -213,10 +208,12 @@ const LoanAdminRepayment: React.FC = () => {
             <Calendar
               value={endDate}
               placeholder="Select End Range"
-              onChange={(e) => setEndDate(e.value)}
+              onChange={(e) => {
+                setEndDate(e.value);
+              }}
+              dateFormat="dd-mm-yy"
               view="month"
               className="mt-3"
-              dateFormat="mm/yy"
               minDate={startDate || undefined}
               disabled={!startDate}
             />

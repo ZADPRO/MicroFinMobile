@@ -25,6 +25,7 @@ interface UserLoanRepaymentProps {
   refRepaymentTypeName: string;
   totalInterest: string;
   totalPrincipal: string;
+  refProductDurationType: number;
 }
 
 interface UserDataProps {
@@ -130,7 +131,15 @@ const LoanDetails: React.FC<{ userData: UserDataProps }> = ({ userData }) => {
           <IonCol>
             <b>Loan Duration</b>
           </IonCol>
-          <IonCol>{loanDetails?.refProductDuration} months</IonCol>
+          <IonCol>
+            {" "}
+            {loanDetails?.refProductDuration}{" "}
+            {loanDetails?.refProductDurationType === 1
+              ? "Months"
+              : loanDetails?.refProductDurationType === 2
+              ? "Weeks"
+              : "Days"}
+          </IonCol>
         </IonRow>
         <IonRow className="mt-2">
           <IonCol>
@@ -152,7 +161,15 @@ const LoanDetails: React.FC<{ userData: UserDataProps }> = ({ userData }) => {
         </IonRow>
         <IonRow className="mt-2">
           <IonCol>
-            <b>No. of Months Paid First</b>
+            <b>
+              No. of{" "}
+              {loanDetails?.refProductDurationType === 1
+                ? "Months"
+                : loanDetails?.refProductDurationType === 2
+                ? "Weeks"
+                : "Days"}{" "}
+              Paid First
+            </b>
           </IonCol>
           <IonCol>{loanDetails?.refInterestMonthCount}</IonCol>
         </IonRow>
@@ -172,7 +189,15 @@ const LoanDetails: React.FC<{ userData: UserDataProps }> = ({ userData }) => {
         </IonRow>
         <IonRow className="mt-2">
           <IonCol>
-            <b>Loan Start Month</b>
+            <b>
+              Loan Start{" "}
+              {loanDetails?.refProductDurationType === 1
+                ? "Months"
+                : loanDetails?.refProductDurationType === 2
+                ? "Weeks"
+                : "Days"}{" "}
+              :{" "}
+            </b>
           </IonCol>
           <IonCol>
             {loanDetails?.refRepaymentStartDate
@@ -182,7 +207,14 @@ const LoanDetails: React.FC<{ userData: UserDataProps }> = ({ userData }) => {
         </IonRow>
         <IonRow className="mt-2">
           <IonCol>
-            <b>Loan End Month</b>
+            <b>
+              Loan End{" "}
+              {loanDetails?.refProductDurationType === 1
+                ? "Months"
+                : loanDetails?.refProductDurationType === 2
+                ? "Weeks"
+                : "Days"}{" "}
+            </b>
           </IonCol>
           <IonCol>{loanDetails?.refLoanDueDate}</IonCol>
         </IonRow>
