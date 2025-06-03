@@ -30,7 +30,7 @@ const ProfilePage: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    history.push("/splash");
+    history.push("/login");
   };
 
   const handleAboutUs = () => {
