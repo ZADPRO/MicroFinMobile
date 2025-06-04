@@ -10,7 +10,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { funnel } from "ionicons/icons";
 import axios from "axios";
@@ -231,6 +231,7 @@ const LoanUserRepayment: React.FC = () => {
                 }
               }}
               placeholder="Start Date"
+              showButtonBar
               showIcon
               touchUI
               dateFormat="dd/mm/yy"
@@ -243,6 +244,7 @@ const LoanUserRepayment: React.FC = () => {
                 setEndDate(e.value);
               }}
               touchUI
+              showButtonBar
               dateFormat="dd/mm/yy"
               showIcon
               minDate={startDate || undefined}
