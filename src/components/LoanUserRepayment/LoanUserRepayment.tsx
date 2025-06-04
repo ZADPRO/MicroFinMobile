@@ -217,7 +217,11 @@ const LoanUserRepayment: React.FC = () => {
           breakpoints={[0, 0.4, 0.75, 1]}
           className="calendar-modal"
         >
-          <div className="p-3 flex flex-column justify-content-center">
+          <div
+            className="p-3 flex flex-column justify-content-center gap-3"
+            tabIndex={-1}
+          >
+            <p>Start Date</p>
             <Calendar
               value={startDate}
               onChange={(e) => {
@@ -226,14 +230,21 @@ const LoanUserRepayment: React.FC = () => {
                   setEndDate(e.value);
                 }
               }}
-              dateFormat="dd-mm-yy"
+              placeholder="Start Date"
+              showIcon
+              touchUI
+              dateFormat="dd/mm/yy"
             />
+            <p>End Date</p>
             <Calendar
+              placeholder="End Date"
               value={endDate}
               onChange={(e) => {
                 setEndDate(e.value);
               }}
-              dateFormat="dd-mm-yy"
+              touchUI
+              dateFormat="dd/mm/yy"
+              showIcon
               minDate={startDate || undefined}
               disabled={!startDate}
             />
