@@ -226,9 +226,9 @@ const LoanUserRepayment: React.FC = () => {
               value={startDate}
               onChange={(e) => {
                 setStartDate(e.value);
-                if (endDate && e.value && endDate < e.value) {
-                  setEndDate(e.value);
-                }
+                // if (endDate && e.value && endDate < e.value) {
+                //   setEndDate(e.value);
+                // }
               }}
               placeholder="Start Date"
               showButtonBar
