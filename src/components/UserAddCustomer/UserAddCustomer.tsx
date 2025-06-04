@@ -45,13 +45,7 @@ interface StatusProps {
 
 const UserAddCustomer: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   const status: StatusProps[] = [
@@ -269,7 +263,6 @@ const UserAddCustomer: React.FC = () => {
       state,
       district,
       pincode,
-      password,
     } = inputs;
 
     // Add any field that must be filled before submitting
@@ -285,8 +278,7 @@ const UserAddCustomer: React.FC = () => {
       !address ||
       !state ||
       !district ||
-      !pincode ||
-      !password
+      !pincode
     ) {
       setToastMessage("Upload failed. Please fill all required fields.");
       setShowToast(true);
@@ -428,7 +420,12 @@ const UserAddCustomer: React.FC = () => {
             <img
               src={previewProfile}
               alt="Profile Preview"
-              style={{ width: "30%", borderRadius: "50%" }}
+              style={{
+                height: "150px",
+                width: "150px",
+                objectFit: "cover",
+                borderRadius: "50%",
+              }}
               className="object-cover cursor-pointer shadow-lg"
               onClick={() => handleImageClick("profile")}
             />
@@ -570,7 +567,11 @@ const UserAddCustomer: React.FC = () => {
             <img
               src={previewAadhar || defaultProfilePic}
               alt="Aadhar Preview"
-              style={{ width: "20%" }}
+              style={{
+                height: "70px",
+                width: "70px",
+                objectFit: "cover",
+              }}
               className="object-cover cursor-pointer shadow-lg"
               onClick={() => handleImageClick("aadhar")}
             />
@@ -629,7 +630,11 @@ const UserAddCustomer: React.FC = () => {
             <img
               src={previewPan || defaultProfilePic}
               alt="PAN Preview"
-              style={{ width: "20%" }}
+              style={{
+                height: "70px",
+                width: "70px",
+                objectFit: "cover",
+              }}
               className="object-cover cursor-pointer shadow-lg"
               onClick={() => handleImageClick("pan")}
             />
@@ -640,7 +645,9 @@ const UserAddCustomer: React.FC = () => {
               accept="image/png, image/jpeg, image/jpg"
               onChange={(e) => handleFileChange(e, "pan")}
             />
-            <button onClick={handleUpload}>Upload</button>
+            <button className="" onClick={handleUpload}>
+              Upload
+            </button>
             <p className="py-2 text-gray-500 text-sm">
               Click the image to choose file, then click Upload
             </p>

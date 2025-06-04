@@ -1,7 +1,6 @@
 import { IonContent, IonPage } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-
 import loginImg from "../../assets/login/loginImg.png";
 import { InputText } from "primereact/inputtext";
 import { useHistory } from "react-router";
@@ -21,17 +20,11 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false); // 🔹 Loading state
 
   useEffect(() => {
-    
-    
-    
-
     if (isAuthenticated) {
       history.replace("/home");
     }
 
-    return () => {
-      
-    };
+    return () => {};
   }, [isAuthenticated, history]);
 
   const handleLogin = async () => {

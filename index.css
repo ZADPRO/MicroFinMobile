@@ -65,6 +65,10 @@ ion-segment-button.segment-button-checked ion-label {
   color: gray;
 }
 
+.p-datepicker.p-component.p-datepicker-inline.p-datepicker-monthpicker.p-ripple-disabled {
+  width: 100% !important;
+}
+
 .p-datepicker-trigger.p-button.p-component.p-button-icon-only {
   border-top-right-radius: 7px;
   border-bottom-right-radius: 7px;

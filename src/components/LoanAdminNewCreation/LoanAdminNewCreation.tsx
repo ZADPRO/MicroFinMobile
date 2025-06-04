@@ -111,7 +111,7 @@ const LoanAdminNewCreation: React.FC = () => {
   // HANDLE NAVIGATION
   const history = useHistory();
 
-  // USER LOAN CREATION - STATES
+  // ADMIN LOAN CREATION - STATES
   const today = new Date();
   const [customerId, setCustomerId] = useState<CustomerDetailsProps | null>(
     null

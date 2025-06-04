@@ -177,7 +177,7 @@ const AdminLoanClosing: React.FC<IndividualLoanAuditProps> = ({ loanData }) => {
     console.log("selectedLoan", selectedLoan);
     axios
       .post(
-        import.meta.env.VITE_API_URL + "/rePayment/payPrincipalAmt",
+        import.meta.env.VITE_API_URL + "/adminLoan/payPrincipalAmt",
         {
           LoanId: selectedLoan,
           principalAmt: Number(loanAmt),

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import decrypt from "../../services/helper";
-import { IonCol, IonIcon, IonLabel, IonModal, IonRow } from "@ionic/react";
+import { IonCol, IonIcon, IonModal, IonRow } from "@ionic/react";
 import { informationCircleOutline } from "ionicons/icons";
 import { InputNumber } from "primereact/inputnumber";
 import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";

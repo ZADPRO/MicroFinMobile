@@ -351,6 +351,7 @@ const LoanNewCreation: React.FC = () => {
                   ? "Weeks"
                   : "Days"
               }`,
+              refProductMonthlyCal: item.refProductMonthlyCal,
             },
           }));
           console.log("productList", formattedProductOptions);
@@ -789,6 +790,13 @@ const LoanNewCreation: React.FC = () => {
                     <small className="text-gray-500">
                       {option.labelParts.interest} |{" "}
                       {option.labelParts.duration}
+                      {option.labelParts.refProductMonthlyCal === 0
+                        ? " "
+                        : option.labelParts.refProductMonthlyCal === 1
+                        ? " | Daywise Interest Calculation"
+                        : option.labelParts.refProductMonthlyCal === 2
+                        ? " | Monthwise Interest Calculation"
+                        : " "}
                     </small>
                   </div>
                 )}
@@ -1061,11 +1069,11 @@ const LoanNewCreation: React.FC = () => {
                     </div>
                     <div className="row">
                       <div className="label">New Loan Amount</div>
-                      <div className="value">{newLoanAmt}</div>
+                      <div className="value">{newLoanAmt}.00</div>
                     </div>
                     <div className="row">
                       <div className="label">Old Loan Amount</div>
-                      <div className="value">₹{oldBalanceAmt}</div>
+                      <div className="value">₹{oldBalanceAmt}.00</div>
                     </div>
                     <div className="row">
                       <div className="label">Interest (This Month)</div>
@@ -1089,17 +1097,6 @@ const LoanNewCreation: React.FC = () => {
                     <div className="row">
                       <div className="label">Documentation Fee</div>
                       <div className="value">₹{(docFee ?? 0).toFixed(2)}</div>
-                    </div>
-                    <div className="row total">
-                      <div className="label">Amount to User</div>
-                      <div className="value">
-                        ₹
-                        {(
-                          (tempLoanAmt ?? 0) -
-                          (initialInterestAmt ?? 0) -
-                          (interestFirstAmt ?? 0)
-                        ).toFixed(2)}
-                      </div>
                     </div>
                   </div>
                 </IonCardContent>
