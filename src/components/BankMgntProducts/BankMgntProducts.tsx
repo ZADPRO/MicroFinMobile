@@ -50,7 +50,7 @@ const BankMgntProducts: React.FC = () => {
   //   PRODUCTS GET DATA FROM BACKEND
   const [userLists, setUserLists] = useState<ProductDetailsProps[] | []>([]);
 
-  const location = useLocation();
+  const location = useLocation<{ shouldReload?: boolean }>();
 
   useEffect(() => {
     loadData();

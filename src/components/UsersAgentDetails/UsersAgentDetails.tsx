@@ -16,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { add } from "ionicons/icons";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import UserAgentCards from "./UserAgentCards";
 
 interface UserListProps {
@@ -45,14 +45,10 @@ interface UserListProps {
 
 const UsersAgentDetails: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
+
+  const location = useLocation<{ shouldReload?: boolean }>();
 
   const [userLists, setUserLists] = useState<UserListProps[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -105,6 +101,18 @@ const UsersAgentDetails: React.FC = () => {
       user.refCustId.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
+
+  useEffect(() => {
+    // Call API on load or reload
+    if (location.state?.shouldReload) {
+      loadData();
+      // Clear the reload flag so it doesn’t trigger again unnecessarily
+      history.replace({ ...location, state: {} });
+    } else {
+      loadData();
+    }
+  }, [location.state?.shouldReload]);
+
   return (
     <IonPage>
       <IonHeader>

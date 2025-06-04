@@ -203,7 +203,7 @@ const LoanAdminRepayment: React.FC = () => {
                 }
               }}
               view="month"
-              dateFormat="mm/yy"
+              dateFormat="dd-mm-yy"
             />
             <Calendar
               value={endDate}

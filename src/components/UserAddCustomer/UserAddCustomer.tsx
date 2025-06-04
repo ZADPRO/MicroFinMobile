@@ -393,7 +393,7 @@ const UserAddCustomer: React.FC = () => {
             setPreviewProfile(defaultProfilePic);
             setPreviewAadhar(null);
             setPreviewPan(null);
-            history.goBack();
+            history.replace("/userList", { shouldReload: true });
           } else {
             setToastMessage("Customer Added Failed !" + data.message);
             setShowToast(true);

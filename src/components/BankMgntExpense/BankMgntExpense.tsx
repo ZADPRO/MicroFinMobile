@@ -37,13 +37,7 @@ interface expense {
 
 const BankMgntExpense: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   const location = useLocation<{ shouldReload?: boolean }>();

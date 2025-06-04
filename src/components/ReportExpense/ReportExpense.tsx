@@ -38,13 +38,7 @@ interface expense {
 
 const ReportExpense: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   // HANDLE NAV
@@ -269,7 +263,7 @@ const ReportExpense: React.FC = () => {
           isOpen={showModal}
           onDidDismiss={() => setShowModal(false)}
           keepContentsMounted={true}
-          initialBreakpoint={0.75}
+          initialBreakpoint={0.4}
           breakpoints={[0, 0.4, 0.75, 1]}
           className="calendar-modal"
         >

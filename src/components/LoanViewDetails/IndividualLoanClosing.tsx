@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import decrypt from "../../services/helper";
 import { IonCol, IonIcon, IonModal, IonRow } from "@ionic/react";
 import { informationCircleOutline } from "ionicons/icons";
@@ -8,6 +8,7 @@ import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
 import { Message } from "primereact/message";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { useHistory } from "react-router";
+import { InputText } from "primereact/inputtext";
 
 interface IndividualLoanAuditProps {
   loanData: {
@@ -81,7 +82,8 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
   const [showCard, setShowCard] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [errorShow, setErrorShow] = useState(false);
-  const [loanAmt, setLoanAmt] = useState<number | null>();
+  const [loanAmt, setLoanAmt] = useState<string | null>();
+  const [newLoanAmt, setNewLoanAmt] = useState<number | null>();
   const [bankDetailsResponse, setBankDetailsReponse] = useState<
     BankDetailsReponseProps[] | []
   >([]);
@@ -183,7 +185,7 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
         import.meta.env.VITE_API_URL + "/rePayment/payPrincipalAmt",
         {
           LoanId: selectedLoan,
-          principalAmt: Number(loanAmt),
+          principalAmt: newLoanAmt,
           bankId: bankID,
         },
         {
@@ -213,6 +215,37 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
       });
   };
 
+  const rawAmountRef = useRef<number>(0); // Store the actual number
+  const formatINR = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const handleInputValueChangeForInr = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const input = e.target.value;
+    const numericValue = input.replace(/[^0-9]/g, ""); // Remove non-numeric chars
+    console.log("numericValue", numericValue);
+
+    let amount = parseInt(numericValue || "0", 10);
+    const maxValue = parseFloat(loanDetails?.refBalanceAmt ?? "0");
+
+    if (amount > maxValue) {
+      amount = Math.floor(maxValue); // Clamp to max
+    }
+
+    rawAmountRef.current = amount;
+    console.log("rawAmountRef", rawAmountRef);
+    const formatted = formatINR(amount);
+    console.log("formatted", formatted);
+    setNewLoanAmt(Number(numericValue));
+    setLoanAmt(formatted);
+  };
+
   useEffect(() => {
     setShowCard(true);
     setErrorShow(false);
@@ -236,26 +269,13 @@ const IndividualLoanClosing: React.FC<IndividualLoanAuditProps> = ({
                 style={{ fontSize: "22px" }}
               />
             </div>
-            <InputNumber
-              placeholder="Enter Balance Amount"
-              mode="currency"
-              value={loanAmt}
-              max={parseFloat(loanDetails?.refBalanceAmt ?? "0")} // ✅ convert to number
-              currency="INR"
-              className="w-full mt-3"
-              disabled={loanData?.refLoanStatus !== "opened"}
-              currencyDisplay="symbol"
-              locale="en-IN"
-              onChange={(e: any) => {
-                const enteredValue = e.value;
-                const maxValue = parseFloat(loanDetails?.refBalanceAmt ?? "0"); // ✅ safely parse
 
-                if (!isNaN(enteredValue) && enteredValue <= maxValue) {
-                  setLoanAmt(enteredValue);
-                } else {
-                  setLoanAmt(maxValue); // ✅ force value to max
-                }
-              }}
+            <InputText
+              className="mt-3 w-full"
+              placeholder="Enter Balance Amount"
+              disabled={loanData?.refLoanStatus !== "opened"}
+              value={loanAmt ?? ""}
+              onChange={handleInputValueChangeForInr}
             />
 
             <div className="flex flex-wrap gap-3 mt-3">

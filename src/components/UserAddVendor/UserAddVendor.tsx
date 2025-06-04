@@ -12,7 +12,6 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { add, trash } from "ionicons/icons";
@@ -29,13 +28,7 @@ const vendorTypeOptions = [
 const UserAddVendor: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   //   HISTORY
