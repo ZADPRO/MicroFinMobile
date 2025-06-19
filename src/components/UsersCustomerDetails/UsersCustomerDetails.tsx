@@ -17,7 +17,7 @@ import decrypt from "../../services/helper";
 
 import UserCustomerDetailsCard from "../UserCustomerDetailsCard/UserCustomerDetailsCard";
 import { add } from "ionicons/icons";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 interface UserListProps {
   createdAt: string;
@@ -48,14 +48,10 @@ const UsersCustomerDetails: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const history = useHistory();
 
-  useEffect(() => {
-    
-    
-    
+  const location = useLocation<{ shouldReload?: boolean }>();
 
-    return () => {
-      
-    };
+  useEffect(() => {
+    return () => {};
   }, []);
 
   const loadData = () => {
@@ -105,6 +101,17 @@ const UsersCustomerDetails: React.FC = () => {
       user.refCustId.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
+
+  useEffect(() => {
+    // Call API on load or reload
+    if (location.state?.shouldReload) {
+      loadData();
+      // Clear the reload flag so it doesn’t trigger again unnecessarily
+      history.replace({ ...location, state: {} });
+    } else {
+      loadData();
+    }
+  }, [location.state?.shouldReload]);
 
   return (
     <IonPage>

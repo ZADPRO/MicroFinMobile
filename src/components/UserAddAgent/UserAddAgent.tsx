@@ -22,13 +22,7 @@ import { useHistory } from "react-router";
 
 const UserAddAgent: React.FC = () => {
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   // HISTORY NAVIAGTE
@@ -261,7 +255,7 @@ const UserAddAgent: React.FC = () => {
             );
 
             if (data.success) {
-              history.goBack();
+              history.replace("/agentList", { shouldReload: true });
             }
           });
       }

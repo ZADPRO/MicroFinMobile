@@ -48,7 +48,7 @@ const BankMgntFunds: React.FC = () => {
 
   // HISTORY NAV
   const history = useHistory();
-  const location = useLocation(); // get location object
+  const location = useLocation<{ shouldReload?: boolean }>();
 
   useEffect(() => {
     console.log("location", location);

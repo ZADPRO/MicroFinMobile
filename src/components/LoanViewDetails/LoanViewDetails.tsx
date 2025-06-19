@@ -11,7 +11,6 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-
 import axios from "axios";
 import decrypt, { formatRupees } from "../../services/helper";
 import { calendarOutline } from "ionicons/icons";
@@ -37,13 +36,7 @@ interface UserLoanDetailsProps {
 const LoanViewDetails: React.FC = () => {
   // STATUS BAR
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   //   SEARCH TERMS HANDLER
@@ -119,7 +112,7 @@ const LoanViewDetails: React.FC = () => {
       .includes(searchTerm.toLowerCase())
   );
 
-  const location = useLocation(); // get location object
+  const location = useLocation<{ shouldReload?: boolean }>();
 
   useEffect(() => {
     // Call API on load or reload

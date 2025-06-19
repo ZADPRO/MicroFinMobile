@@ -10,7 +10,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { funnel } from "ionicons/icons";
 import axios from "axios";
@@ -217,23 +217,36 @@ const LoanUserRepayment: React.FC = () => {
           breakpoints={[0, 0.4, 0.75, 1]}
           className="calendar-modal"
         >
-          <div className="p-3 flex flex-column justify-content-center">
+          <div
+            className="p-3 flex flex-column justify-content-center gap-3"
+            tabIndex={-1}
+          >
+            <p>Start Date</p>
             <Calendar
               value={startDate}
               onChange={(e) => {
                 setStartDate(e.value);
-                if (endDate && e.value && endDate < e.value) {
-                  setEndDate(e.value);
-                }
+                // if (endDate && e.value && endDate < e.value) {
+                //   setEndDate(e.value);
+                // }
               }}
-              dateFormat="dd-mm-yy"
+              placeholder="Start Date"
+              showButtonBar
+              showIcon
+              touchUI
+              dateFormat="dd/mm/yy"
             />
+            <p>End Date</p>
             <Calendar
+              placeholder="End Date"
               value={endDate}
               onChange={(e) => {
                 setEndDate(e.value);
               }}
-              dateFormat="dd-mm-yy"
+              touchUI
+              showButtonBar
+              dateFormat="dd/mm/yy"
+              showIcon
               minDate={startDate || undefined}
               disabled={!startDate}
             />

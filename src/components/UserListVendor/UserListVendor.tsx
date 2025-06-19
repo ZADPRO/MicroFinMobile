@@ -13,11 +13,10 @@ import {
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
-
 import axios from "axios";
 import decrypt from "../../services/helper";
 import { add } from "ionicons/icons";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 interface Vendor {
   refVendorId: number;
@@ -38,15 +37,11 @@ interface Bank {
 }
 
 const UserListVendor: React.FC = () => {
+  const location = useLocation<{ shouldReload?: boolean }>();
+
   // STATUS BAR
   useEffect(() => {
-    
-    
-    
-
-    return () => {
-      
-    };
+    return () => {};
   }, []);
 
   const [searchTerm, setSearchTerm] = useState<string>("");
