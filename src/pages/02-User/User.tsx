@@ -17,6 +17,7 @@ import "./User.css";
 import agentIcon from "../../assets/users/agentImg.png";
 import userIcon from "../../assets/users/userImg.png";
 import vendorIcon from "../../assets/users/vendor.png";
+import areaIcon from "../../assets/users/AREA-01.png";
 
 const User: React.FC = () => {
   useEffect(() => {
@@ -92,8 +93,19 @@ const User: React.FC = () => {
             </IonCol>
             <IonCol
               size="5"
-              className="ion-text-center bg-white gap-2 m-2"
-            ></IonCol>
+              className="ion-text-center bg-white shadow-1 gap-2 mx-2"
+              style={{ borderRadius: "7px" }}
+              onClick={() => handleNavigation("/areaList")}
+            >
+              <div className="rounded">
+                <img
+                  src={areaIcon}
+                  alt="Users"
+                  style={{ width: "80px", height: "auto", margin: "0 auto" }}
+                />
+                <p className="pt-2">Area</p>
+              </div>
+            </IonCol>
           </IonRow>
         </IonGrid>
       </IonContent>

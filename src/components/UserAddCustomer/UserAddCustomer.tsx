@@ -43,6 +43,11 @@ interface StatusProps {
   code: string;
 }
 
+interface areaDetails {
+  areaName: string;
+  areaPrifix: string;
+}
+
 const UserAddCustomer: React.FC = () => {
   useEffect(() => {
     return () => {};
@@ -128,6 +133,9 @@ const UserAddCustomer: React.FC = () => {
   // STATE AND CITY HANDLING
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
+
+  const [addArea, setAddArea] = useState<boolean | null>(null);
+  const [areaName, setAreaName] = useState<areaDetails | null>(null);
 
   useEffect(() => {
     const countryStates: any = State.getStatesOfCountry("IN");
@@ -726,6 +734,14 @@ const UserAddCustomer: React.FC = () => {
               }}
             />
           </div>
+          {!addArea && addArea !== null && (
+            <small id="username-help" className="text-[green]">
+              This Pincode Is Under the Area of{" "}
+              <b>
+                {areaName?.areaName} [{areaName?.areaPrifix}]
+              </b>
+            </small>
+          )}
 
           <Divider />
 

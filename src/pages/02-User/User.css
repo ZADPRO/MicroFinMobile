@@ -9,6 +9,17 @@
   border-radius: 6px;
 }
 
+.warningButton {
+  background: #8d8d8d;
+  color: white;
+  padding-top: 13px;
+  font-size: 15px;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding-bottom: 13px;
+  border-radius: 6px;
+}
+
 .inputTypeStyles {
   width: 100%;
   padding: 10px 15px;

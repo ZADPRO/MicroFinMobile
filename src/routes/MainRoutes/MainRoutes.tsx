@@ -69,7 +69,10 @@ import { StatusBar } from "@capacitor/status-bar";
 import ForgotPassword from "../../pages/00-Splash/ForgotPassword";
 import ProfilePage from "../../components/ProfilePage/ProfilePage";
 import AboutUs from "../../components/ProfilePage/AboutUs";
-
+import AreaList from "../../components/AreaList/AreaList";
+import AddNewArea from "../../components/AreaList/AddNewArea";
+import AreaViewPinCodes from "../../components/AreaList/AreaViewPinCodes";
+import UpdateAreaDetails from "../../components/AreaList/UpdateAreaDetails";
 const MainRoutes: React.FC = () => {
   // STATUS BAR CONFIG
   useEffect(() => {
@@ -170,6 +173,20 @@ const MainRoutes: React.FC = () => {
           </PrivateRoute>
           <PrivateRoute path="/editAgent">
             <UserAgentEdit />
+          </PrivateRoute>
+
+          {/* AREA ROUTES*/}
+          <PrivateRoute path="/areaList">
+            <AreaList />
+          </PrivateRoute>
+          <PrivateRoute path="/addNewArea">
+            <AddNewArea />
+          </PrivateRoute>
+          <PrivateRoute path="/viewAreaPinCodes">
+            <AreaViewPinCodes />
+          </PrivateRoute>
+          <PrivateRoute path="/updateAreaDetails">
+            <UpdateAreaDetails />
           </PrivateRoute>
 
           {/* BANK ROUTES */}
